@@ -13,6 +13,6 @@ jobs:
           go-version: '1.22.x'
 
       - name: Build
-        run: go build -v ./backend/...
+        run: go build -v ./backend/
       - name: Test with the Go CLI
-        run: go test ./backend/...
+        run: go test ./backend/
