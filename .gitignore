@@ -24,6 +24,9 @@ backend/go.work.sum
 # env file
 backend/.env
 
+# binary
+backend/bin
+
 
 #Logs
 frontend/logs
