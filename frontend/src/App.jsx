@@ -1,23 +1,22 @@
 import './App.css'
-import { GoogleLogin } from '@react-oauth/google';
-import * as jwtDecode from 'jwt-decode';
+
+import React from "react";
+import LoginPage from './component/loginPage';
+import { isMobile } from "react-device-detect";
 
 function App() {
+  React.useEffect(() => {
+    if (!isMobile) {
+      alert("ATTENTO Il sito e' disponibile solo da cellulare!");
+    }
+  }, []);
   return (
-    <GoogleLogin
-      hosted_domain='iismargheritahackbaronissi.edu.it'
-      onSuccess={(CredentialResponse) => {
-        const CredentialResponseDecoded = jwtDecode.jwtDecode(
-          CredentialResponse.credential
-        );
-        console.log(CredentialResponseDecoded);
-      }}
-      onError={() => {
-        console.log("Login Failed");
-      }}
-    />
+   <LoginPage>
+   </LoginPage>
   );
 
 }
 
 export default App;
+
+
