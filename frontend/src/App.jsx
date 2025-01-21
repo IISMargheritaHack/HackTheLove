@@ -7,7 +7,7 @@ import { isMobile } from "react-device-detect";
 function App() {
   React.useEffect(() => {
     if (!isMobile) {
-      alert("Stai utilizzando un dispositivo non mobile!");
+      alert("ATTENTO Il sito e' disponibile solo da cellulare!");
     }
   }, []);
   return (
