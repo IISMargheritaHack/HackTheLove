@@ -5,22 +5,25 @@ function LoginPage() {
     return(
         
         <div id='main'>
-            <div id='center' className=''>
-                 <img id='lg' src={'logo.svg'} alt="Logo" /> 
-                 
+           <div id='header' className='mt-[28vh]'> 
+                <div id='center' className=''>
+                    <img id='logo' src={'logo.svg'} alt="Logo" /> 
+                    
+                </div>
+                
+                <div id='Hack' className=' flex'>
+                    <h1 className='ms-auto me-auto' id='h1'>Hack The Love</h1>
+                </div>
+                
+                <div>
+                    <p id='p1'>Scopri chi è la tua anima gemella nella scuola</p>
+                </div>
             </div>
-            
-            <div>
-                <h1 className='' id='h1'>Hack The Love</h1>
-            </div>
-            
-            <div>
-                <p id='p1'>Scopri chi è la tua anima gemella nella scuola</p>
-            </div>
-        <div className=''>    
-            <div id='services' className=''>
+        
+        <div id='container-footer' className='fixed mt-56'>
+            <div id='services'>
                 <p id='p2'>Cliccando Log in accetti automaticamente i nostri termini
-                    di servizio. Leggi come gestiamo i tuoi dati con la nostra Privacy Policy e Coockies Policy.
+                    di servizio. Leggi come gestiamo i tuoi dati con la nostra <br></br><span className='underline'>Privacy Policy</span> e <span className='underline'>Coockies Policy.</span>
                 </p>
             </div> 
             
@@ -28,8 +31,8 @@ function LoginPage() {
                 <LButton >
 
                 </LButton>
-            </div>
-        </div>   
+        </div>    
+            </div>   
         </div>
     )
 }
