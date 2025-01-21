@@ -34,5 +34,8 @@ func NewServer() *http.Server {
 		WriteTimeout: 30 * time.Second,
 	}
 
+	// Pass the underlying db connection to InitTable
+	database.InitTable(NewServer.db)
+
 	return server
 }

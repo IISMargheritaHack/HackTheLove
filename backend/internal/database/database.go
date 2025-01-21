@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	_ "embed"
 	"fmt"
 	"log"
 	"os"
@@ -12,6 +13,9 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/joho/godotenv/autoload"
 )
+
+//go:embed init.sql
+var tablesQueries string
 
 // Service represents a service that interacts with a database.
 type Service interface {
@@ -29,15 +33,16 @@ type service struct {
 }
 
 var (
-	database   = os.Getenv("BLUEPRINT_DB_DATABASE")
-	password   = os.Getenv("BLUEPRINT_DB_PASSWORD")
-	username   = os.Getenv("BLUEPRINT_DB_USERNAME")
-	port       = os.Getenv("BLUEPRINT_DB_PORT")
-	host       = os.Getenv("BLUEPRINT_DB_HOST")
-	schema     = os.Getenv("BLUEPRINT_DB_SCHEMA")
+	database   = os.Getenv("DB_DATABASE")
+	password   = os.Getenv("DB_PASSWORD")
+	username   = os.Getenv("DB_USERNAME")
+	port       = os.Getenv("DB_PORT")
+	host       = os.Getenv("DB_HOST")
+	schema     = os.Getenv("DB_SCHEMA")
 	dbInstance *service
 )
 
+// For user the instance: db.(*service).db
 func New() Service {
 	// Reuse Connection
 	if dbInstance != nil {
@@ -52,6 +57,14 @@ func New() Service {
 		db: db,
 	}
 	return dbInstance
+}
+
+func InitTable(db Service) {
+	dbInstance := db.(*service).db
+	_, err := dbInstance.Exec(tablesQueries)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // Health checks the health of the database connection by pinging the database.
