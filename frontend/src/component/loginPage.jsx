@@ -15,7 +15,7 @@ function LoginPage() {
                     <h1 className='ms-auto me-auto' id='h1'>Hack The Love</h1>
                 </div>
                 
-                <div>
+                <div className='mt-2'>
                     <p id='p1'>Scopri chi è la tua anima gemella nella scuola</p>
                 </div>
             </div>

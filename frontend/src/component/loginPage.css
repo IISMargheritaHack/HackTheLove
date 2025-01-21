@@ -1,13 +1,13 @@
 @font-face {
     font-family: 'Gilmer';
-    src: url('./Gilmer-Bold.otf') format('opentype');
+    src: url('../assets/fonts/Gilmer-Bold.otf') format('opentype');
     font-weight: bold;
     font-style: normal;
   }
   
   @font-face {
     font-family: 'Gilmer';
-    src: url('./Gilmer-Regular.otf') format('opentype');
+    src: url('../assets/fonts/Gilmer-Regular.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
   }
@@ -22,7 +22,7 @@
     gap: 0px;
     opacity: 0px;
     font-family: Gilmer;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 'bold';
     line-height: 26.4px;
     text-align: center;
