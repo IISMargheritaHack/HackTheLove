@@ -11,16 +11,15 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(255) NOT NULL, -- Name
     cognome VARCHAR(255) NOT NULL, -- Surname
     phone VARCHAR(10), -- Phone
-    sex BOOL, -- Sex
+    sex BOOLEAN, -- Sex
     bio TEXT, -- Biography
     age INTEGER, -- Age
-    section VARCHAR(1) -- Section
-
+    section VARCHAR(1), -- Section
     date_created TIMESTAMP DEFAULT NOW() -- Date of creation
 );
 
 -- Table Images
-CREATE TABLE IF NOT EXISTS images  (
+CREATE TABLE IF NOT EXISTS images (
     id_image SERIAL PRIMARY KEY, -- Primary key
     email_user INTEGER REFERENCES users(email) ON DELETE CASCADE, -- User reference
     lo_oid OID NOT NULL, -- File reference
@@ -29,11 +28,10 @@ CREATE TABLE IF NOT EXISTS images  (
 );
 
 -- Questions and answers table
-
 CREATE TABLE IF NOT EXISTS questions (
     id_question SERIAL PRIMARY KEY, -- Primary key
     question TEXT NOT NULL, -- Question
     type VARCHAR(255) NOT NULL, -- Type of question
-    options JSONB -- Options for the question
+    options JSONB, -- Options for the question
     possible_answers JSONB -- Possible answers
 );
