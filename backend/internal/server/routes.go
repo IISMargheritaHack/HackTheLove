@@ -27,6 +27,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.GET("/getUser", s.getUser)
 	r.GET("/getSurvey", s.getSurvey)
 	r.GET("/getPhoto", s.getPhoto)
+	r.GET("/getQuestions", s.getQuestions)
 
 	r.POST("/addUser", s.addUser)
 	r.POST("/addSurvey", s.addSurvey)
@@ -64,6 +65,8 @@ func (s *Server) getUser(c *gin.Context) {
 func (s *Server) getSurvey(c *gin.Context) {}
 
 func (s *Server) getPhoto(c *gin.Context) {}
+
+func (s *Server) getQuestions(c *gin.Context) {}
 
 func (s *Server) addUser(c *gin.Context) {}
 
