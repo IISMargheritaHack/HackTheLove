@@ -1,15 +1,12 @@
 package server
 
 import (
-	logger "backend/internal"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
-
-var l = logger.GetLogger()
 
 func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
