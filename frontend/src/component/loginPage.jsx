@@ -20,7 +20,7 @@ function LoginPage() {
                 </div>
             </div>
         
-        <div id='container-footer' className='fixed mt-56'>
+        <div id='container-footer' className='center mt-56'>
             <div id='services'>
                 <p id='p2'>Cliccando Log in accetti automaticamente i nostri termini
                     di servizio. Leggi come gestiamo i tuoi dati con la nostra <br></br><span className='underline'>Privacy Policy</span> e <span className='underline'>Coockies Policy.</span>
