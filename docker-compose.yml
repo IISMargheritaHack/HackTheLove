@@ -10,6 +10,33 @@ services:
       - "${DB_PORT}:5432"
     volumes:
       - psql_volume:/var/lib/postgresql/data
-
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      APP_PORT: ${APP_PORT}
+      DB_CONNECTION: pgsql
+      DB_HOST: psql
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - psql
+    ports:
+      - "${APP_PORT}:8080"
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      APP_PORT: ${APP_PORT_FE}
+    depends_on:
+      - backend
+    ports:
+      - "${APP_PORT_FE}:80"
 volumes:
   psql_volume:
