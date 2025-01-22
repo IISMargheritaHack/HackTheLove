@@ -1,15 +1,31 @@
+@font-face {
+    font-family: 'Gilmer';
+    src: url('../assets/fonts/Gilmer-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Gilmer';
+    src: url('../assets/fonts/Gilmer-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  body {
+    font-family: 'Gilmer', sans-serif;
+  }
 #h1{
     width: 153px;
     height: 26px;
-    top: 368px;
-    left: 120px;
+    
     gap: 0px;
     opacity: 0px;
-    font-family: Gilmer Bold;
-    font-size: 22px;
-    font-weight: 700;
+    font-family: Gilmer;
+    font-size: 20px;
+    font-weight: 'bold';
     line-height: 26.4px;
-    text-align: left;
+    text-align: center;
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
     color: #FFFFFF;
@@ -19,19 +35,34 @@
 #p1{
     width: 333px;
     height: 14px;
-    top: 399px;
-    left: 30px;
+    
     gap: 0px;
     opacity: 0px;
-    font-family: Gilmer Regular;
+    font-family: Gilmer;
     font-size: 12px;
-    font-weight: 400;
+    font-weight: regular;
     line-height: 14.4px;
     text-align: center;
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
-
+    color: #FFFFFF;
 }
+
+#p2{
+    width: 346px;
+    height: 42px;
+    gap: 0px;
+    opacity: 0px;
+    font-family: Gilmer ;
+    font-size: 12px;
+    font-weight: 'Regular';
+    line-height: 14.4px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #FFFFFF;    
+}
+
 #button {
     display: flex;
     justify-content: center; /* Centrare il bottone orizzontalmente */
@@ -43,9 +74,10 @@
   }
 
 
-#lg {
+#logo {
     align-items: center; 
     width: 200px;
-    height: 200px;
+    height: 100px;
     margin: 0 auto;
 }
+
