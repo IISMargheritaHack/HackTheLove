@@ -14,8 +14,7 @@ import (
 
 type Server struct {
 	port int
-
-	db database.Service
+	db   database.Service
 }
 
 var l = internal.GetLogger()
