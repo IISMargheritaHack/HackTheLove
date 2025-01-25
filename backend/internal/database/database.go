@@ -1,12 +1,11 @@
 package database
 
 import (
+	"backend/internal"
 	"context"
 	"database/sql"
 	_ "embed"
 	"fmt"
-	"log"
-	"os"
 	"strconv"
 	"time"
 
@@ -33,14 +32,16 @@ type service struct {
 }
 
 var (
-	database   = os.Getenv("DB_DATABASE")
-	password   = os.Getenv("DB_PASSWORD")
-	username   = os.Getenv("DB_USERNAME")
-	port       = os.Getenv("DB_PORT")
-	host       = os.Getenv("DB_HOST")
-	schema     = os.Getenv("DB_SCHEMA")
+	database   = internal.GetEnv("DB_DATABASE", "postgres")
+	password   = internal.GetEnv("DB_PASSWORD", "password")
+	username   = internal.GetEnv("DB_USERNAME", "username")
+	port       = internal.GetEnv("DB_PORT", "5432")
+	host       = internal.GetEnv("DB_HOST", "localhost")
+	schema     = internal.GetEnv("DB_SCHEMA", "public")
 	dbInstance *service
 )
+
+var l = internal.GetLogger()
 
 // For user the instance: db.(*service).db
 func New() Service {
@@ -49,9 +50,12 @@ func New() Service {
 		return dbInstance
 	}
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", username, password, host, port, database, schema)
+
+	l.Debug().Msg(connStr)
+
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {
-		log.Fatal(err)
+		l.Fatal().Err(err).Msg("Failed to open database connection")
 	}
 	dbInstance = &service{
 		db: db,
@@ -63,7 +67,7 @@ func InitTable(db Service) {
 	dbInstance := db.(*service).db
 	_, err := dbInstance.Exec(tablesQueries)
 	if err != nil {
-		log.Fatal(err)
+		l.Fatal().Err(err).Msg("Failed to initialize tables")
 	}
 }
 
@@ -80,7 +84,7 @@ func (s *service) Health() map[string]string {
 	if err != nil {
 		stats["status"] = "down"
 		stats["error"] = fmt.Sprintf("db down: %v", err)
-		log.Fatalf("db down: %v", err) // Log the error and terminate the program
+		l.Error().Err(err).Msg("Database is down")
 		return stats
 	}
 
@@ -101,18 +105,22 @@ func (s *service) Health() map[string]string {
 	// Evaluate stats to provide a health message
 	if dbStats.OpenConnections > 40 { // Assuming 50 is the max for this example
 		stats["message"] = "The database is experiencing heavy load."
+		l.Warn().Str("message", stats["message"]).Msg("Database load warning")
 	}
 
 	if dbStats.WaitCount > 1000 {
 		stats["message"] = "The database has a high number of wait events, indicating potential bottlenecks."
+		l.Warn().Str("message", stats["message"]).Msg("Database wait event warning")
 	}
 
 	if dbStats.MaxIdleClosed > int64(dbStats.OpenConnections)/2 {
 		stats["message"] = "Many idle connections are being closed, consider revising the connection pool settings."
+		l.Warn().Str("message", stats["message"]).Msg("Idle connections warning")
 	}
 
 	if dbStats.MaxLifetimeClosed > int64(dbStats.OpenConnections)/2 {
 		stats["message"] = "Many connections are being closed due to max lifetime, consider increasing max lifetime or revising the connection usage pattern."
+		l.Warn().Str("message", stats["message"]).Msg("Max lifetime closed warning")
 	}
 
 	return stats
@@ -123,6 +131,6 @@ func (s *service) Health() map[string]string {
 // If the connection is successfully closed, it returns nil.
 // If an error occurs while closing the connection, it returns the error.
 func (s *service) Close() error {
-	log.Printf("Disconnected from database: %s", database)
+	l.Info().Msgf("Disconnected from database: %s", database)
 	return s.db.Close()
 }

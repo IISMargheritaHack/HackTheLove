@@ -3,12 +3,12 @@ package server
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
 	_ "github.com/joho/godotenv/autoload"
 
+	"backend/internal"
 	"backend/internal/database"
 )
 
@@ -18,8 +18,14 @@ type Server struct {
 	db database.Service
 }
 
+var l = internal.GetLogger()
+
 func NewServer() *http.Server {
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
+	port, err := strconv.Atoi(internal.GetEnv("APP_PORT", "8080"))
+	if err != nil {
+		l.Fatal().Err(err).Msg("Failed to parse APP_PORT environment variable")
+	}
+
 	NewServer := &Server{
 		port: port,
 		db:   database.New(),
@@ -35,7 +41,10 @@ func NewServer() *http.Server {
 	}
 
 	// Pass the underlying db connection to InitTable
+	l.Info().Msg("Initializing database tables")
 	database.InitTable(NewServer.db)
+
+	l.Info().Msgf("Server is starting on port %d", NewServer.port)
 
 	return server
 }

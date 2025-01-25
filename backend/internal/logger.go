@@ -1,7 +1,6 @@
-package logger
+package internal
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -21,13 +20,6 @@ import (
 var Logger zerolog.Logger
 
 func init() {
-
-	eiud := os.Geteuid()
-	if eiud != 0 {
-		log.Fatal("Remember to run the program with `sudo` or with root")
-		os.Exit(1)
-	}
-
 	// Some customizations
 	zerolog.CallerMarshalFunc = func(pc uintptr, file string, line int) string {
 		return filepath.Base(file) + ":" + strconv.Itoa(line)
