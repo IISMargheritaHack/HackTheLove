@@ -1,12 +1,20 @@
 package server
 
 import (
-	"fmt"
+	"backend/internal"
+	"backend/internal/database"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
+
+var validate = validator.New()
+
+func init() {
+	validate.RegisterValidation("email_host", internal.EmailHost)
+}
 
 func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
@@ -16,9 +24,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true, // Enable cookies/auth
-	}))
+	}), JWTAuthMiddleware())
 
-	r.GET("/", s.HelloWorldHandler)
+	r.GET("/", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"GG WP": 200}) })
 	r.GET("/health", s.healthHandler)
 
 	r.GET("/getUser", s.getUser)
@@ -29,15 +37,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.POST("/addUser", s.addUser)
 	r.POST("/addSurvey", s.addSurvey)
 	r.POST("/addPhoto", s.addPhoto)
+	r.POST("/addUserInfo", s.addUserInfo)
 
 	return r
-}
-
-func (s *Server) HelloWorldHandler(c *gin.Context) {
-	resp := make(map[string]string)
-	resp["message"] = "Hello World"
-
-	c.JSON(http.StatusOK, resp)
 }
 
 func (s *Server) healthHandler(c *gin.Context) {
@@ -45,18 +47,24 @@ func (s *Server) healthHandler(c *gin.Context) {
 }
 
 func (s *Server) getUser(c *gin.Context) {
-	auth, err := c.Cookie("auth") // Viene preso il cookie AUTH dal client (generato da google pero che gira solo in runtime quindi non salvato da nessuna) viene parsato e verra usato per fare tutte le query in modo sicuro
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+	tokenString := c.GetHeader("Authorization")
+
+	if tokenString == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token missing"})
+		c.Abort()
 		return
 	}
-	user, err := parseJWT(auth)
 
-	l.Debug().Msg(auth)
-	l.Debug().Msg(fmt.Sprint(parseJWT(auth)))
-	l.Debug().Str("Email", user.Email).Msg("Displayed data")
+	claims, err := ValidateJWT(tokenString)
 
-	// user, err := s.db.GetUser(auth)
+	user, err := database.GetUser(claims.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": 500})
+		l.Err(err).Msg("Error in the database")
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
 }
 
 func (s *Server) getSurvey(c *gin.Context) {}
@@ -65,8 +73,79 @@ func (s *Server) getPhoto(c *gin.Context) {}
 
 func (s *Server) getQuestions(c *gin.Context) {}
 
-func (s *Server) addUser(c *gin.Context) {}
+/*
+This function init a new user in the database without the extra information like survey,photo,bio,etc...
+
+The function will be expeted a json like this:
+
+	{
+		"email": "xxxxx@iismargheritahackbaronissi.edu.it"
+		"family_name": "name",
+		"given_name": "surname",
+	}
+*/
+func (s *Server) addUser(c *gin.Context) {
+	var user internal.User
+
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Error in the json bind probably json invalid": err.Error()})
+		return
+	}
+
+	if err := validate.Struct(user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Data invalid"})
+		l.Err(err).Msg("Validation failed")
+		return
+	}
+
+	if err := database.AddUser(user); err != nil {
+		if user, err := database.GetUser(user.Email); err == nil && user.User.Email != "" {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "User already exists"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": 500})
+		l.Err(err).Msg("Error in the database")
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": "User created"})
+}
 
 func (s *Server) addSurvey(c *gin.Context) {}
 
 func (s *Server) addPhoto(c *gin.Context) {}
+
+/*
+Expected json:
+
+	{
+		"email": "",
+		"phone": "",
+		"bio": "",
+		"age": 0,
+		"section": "",
+		"sex": "",
+	}
+*/
+func (s *Server) addUserInfo(c *gin.Context) {
+
+	var user internal.UserInfo
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Error in the json bind probably json invalid": err.Error()})
+		return
+	}
+
+	if err := validate.Struct(user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Data invalid"})
+		l.Err(err).Msg("Validation failed")
+		return
+	}
+
+	if err := database.AddUserInfo(user, GetEmail(c)); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": 500})
+		l.Err(err).Msg("Error in the database")
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": "User info created"})
+}
