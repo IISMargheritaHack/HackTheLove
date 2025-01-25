@@ -1,36 +1,32 @@
+@import "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
 
-  color: #FFFFFF;
-  background: linear-gradient(180deg, #ff007a, #800040);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    color: #FFFFFF;
+    background: linear-gradient(180deg, #ff007a, #800040);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 
 
 body {
-  margin: 0;
-  display: flex;
-  
-  min-width: 200px;
-  min-height: 100vh;
+    margin: 0;
+    display: flex;
+
+    min-width: 200px;
+    min-height: 100vh;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 2.2;
+    font-size: 3.2em;
+    line-height: 2.2;
 }
-
-
-
-
-
