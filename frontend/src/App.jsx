@@ -1,22 +1,21 @@
-import './App.css'
+import "./App.css";
 
 import React from "react";
-import LoginPage from './component/loginPage';
+import LoginPage from "./pages/loginPage";
 import { isMobile } from "react-device-detect";
 
 function App() {
+  const AlertMessageDesktop =
+    "ATTENTO Il sito è disponibile solo da cellulare!";
+
   React.useEffect(() => {
     if (!isMobile) {
-      alert("ATTENTO Il sito e' disponibile solo da cellulare!");
+      {
+        alert(AlertMessageDesktop);
+      }
     }
   }, []);
-  return (
-   <LoginPage>
-   </LoginPage>
-  );
-
+  return <LoginPage></LoginPage>;
 }
 
 export default App;
-
-
