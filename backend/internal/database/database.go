@@ -134,3 +134,57 @@ func (s *service) Close() error {
 	l.Info().Msgf("Disconnected from database: %s", database)
 	return s.db.Close()
 }
+
+func GetUser(email string) (internal.CompleteUser, error) {
+	stm, err := dbInstance.db.Prepare("SELECT email, name, surname, phone, age, sex, bio, section FROM users WHERE email = $1")
+	defer stm.Close()
+	if err != nil {
+		return internal.CompleteUser{}, fmt.Errorf("Error in the query of user %v", err)
+	}
+	var user internal.CompleteUser
+	err = stm.QueryRow(email).Scan(
+		&user.User.Email,
+		&user.User.GivenName,
+		&user.User.FamilyName,
+		&user.UserInfo.Phone,
+		&user.UserInfo.Bio,
+		&user.UserInfo.Age,
+		&user.UserInfo.Section,
+		&user.UserInfo.Sex,
+	)
+	if err != nil {
+		return internal.CompleteUser{}, fmt.Errorf("Error in the query of user %v", err)
+	}
+	if err != nil {
+		return internal.CompleteUser{}, fmt.Errorf("Error in the query of user %v", err)
+	}
+
+	return user, nil
+}
+
+func AddUser(user internal.User) error {
+	stm, err := dbInstance.db.Prepare("INSERT INTO users (email, name, surname) VALUES ($1, $2, $3)")
+	defer stm.Close()
+	result, err := stm.Exec(user.Email, user.GivenName, user.FamilyName)
+	if err != nil {
+		return fmt.Errorf("Error in the insert of user %v", err)
+	}
+
+	l.Debug().Msg(fmt.Sprint(result.RowsAffected()))
+
+	return nil
+}
+func AddUserInfo(user internal.UserInfo, email string) error {
+
+	stm, err := dbInstance.db.Prepare("UPDATE users SET phone = $1, bio = $2, age = $3, section = $4, sex = $5 WHERE email = $6;")
+	defer stm.Close()
+	result, err := stm.Exec(user.Phone, user.Bio, user.Age, user.Section, user.Sex, email)
+
+	l.Debug().Msg(fmt.Sprint(result))
+
+	if err != nil {
+		return fmt.Errorf("error in the insert of user: %v", err)
+	}
+
+	return nil
+}
