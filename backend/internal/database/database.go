@@ -174,6 +174,7 @@ func AddUser(user internal.User) error {
 
 	return nil
 }
+
 func AddUserInfo(user internal.UserInfo, email string) error {
 
 	stm, err := dbInstance.db.Prepare("UPDATE users SET phone = $1, bio = $2, age = $3, section = $4, sex = $5 WHERE email = $6;")
@@ -186,5 +187,20 @@ func AddUserInfo(user internal.UserInfo, email string) error {
 		return fmt.Errorf("error in the insert of user: %v", err)
 	}
 
+	return nil
+}
+
+func AddSurvey(survey internal.Survey, email string) error {
+	// stm, err := dbInstance.db.Prepare("INSERT INTO survey (id_survey, response, email) VALUES ($1, $2, $3)")
+	// defer stm.Close()
+	// result, err := stm.Exec(survey.IdSurvey, survey.Response, email)
+
+	// l.Debug().Msg(fmt.Sprint(result))
+
+	// if err != nil {
+	// 	return fmt.Errorf("error in the insert of survey: %v", err)
+	// }
+
+	// return nil
 	return nil
 }

@@ -10,7 +10,7 @@ import (
 )
 
 var jwtSecret = []byte(internal.GetEnv("SECRET_KEY", "secretkey"))
-var GoogleClientID = []byte(internal.GetEnv("GOOGLE_CLIENT_ID", "443648413060-db7g7i880qktvmlemmcnthg4qptclu2l.apps.googleusercontent.com"))
+var GoogleClientID = internal.GetEnv("GOOGLE_CLIENT_ID", "443648413060-db7g7i880qktvmlemmcnthg4qptclu2l.apps.googleusercontent.com")
 
 type Claims struct {
 	Email string `json:"email" validate:"required,email,email_host"`
