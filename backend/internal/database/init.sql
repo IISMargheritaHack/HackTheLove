@@ -1,6 +1,7 @@
 -- Table SurveysResponse
 CREATE TABLE IF NOT EXISTS surveys_response (
     id_surveys SERIAL PRIMARY KEY, -- Primary key
+    response VARCHAR(11) NOT NULL, -- Response each letter i a response to a question
     date_created TIMESTAMP DEFAULT NOW() -- Date of creation
 );
 
@@ -25,13 +26,4 @@ CREATE TABLE IF NOT EXISTS images (
     lo_oid OID NOT NULL, -- File reference
     uploaded_at TIMESTAMP DEFAULT NOW(), -- Date of upload
     metadata JSONB -- Extra information
-);
-
--- Questions and answers table
-CREATE TABLE IF NOT EXISTS questions (
-    id_question SERIAL PRIMARY KEY, -- Primary key
-    question TEXT NOT NULL, -- Question
-    type VARCHAR(255) NOT NULL, -- Type of question
-    options JSONB, -- Options for the question
-    possible_answers JSONB -- Possible answers
 );

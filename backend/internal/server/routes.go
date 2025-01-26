@@ -3,6 +3,9 @@ package server
 import (
 	"backend/internal"
 	"backend/internal/database"
+	_ "embed"
+	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -14,6 +17,9 @@ import (
 )
 
 var validate = validator.New()
+
+//go:embed questions.json
+var questions []byte
 
 func init() {
 	validate.RegisterValidation("email_host", internal.EmailHost)
@@ -38,6 +44,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	public.POST("/verifyGoogleJWT", s.verifyGoogleToken)
 	public.GET("/", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"GG WP": 200}) })
 	public.GET("/health", s.healthHandler)
+	public.GET("/getQuestions", s.getQuestions)
 
 	protected := r.Group("/")
 	protected.Use(JWTAuthMiddleware())
@@ -45,7 +52,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 		protected.GET("/getUser", s.getUser)
 		protected.GET("/getSurvey", s.getSurvey)
 		protected.GET("/getPhoto", s.getPhoto)
-		protected.GET("/getQuestions", s.getQuestions)
 
 		protected.POST("/addUser", s.addUser)
 		protected.POST("/addSurvey", s.addSurvey)
@@ -85,7 +91,15 @@ func (s *Server) getSurvey(c *gin.Context) {}
 
 func (s *Server) getPhoto(c *gin.Context) {}
 
-func (s *Server) getQuestions(c *gin.Context) {}
+func (s *Server) getQuestions(c *gin.Context) {
+	var questionsModel internal.Questions
+
+	err := json.Unmarshal(questions, &questionsModel)
+	if err != nil {
+		log.Fatalf("Errore nel parsing del JSON: %v", err)
+	}
+	c.JSON(http.StatusAccepted, questionsModel)
+}
 
 /*
 This function init a new user in the database without the extra information like survey,photo,bio,etc...
@@ -125,7 +139,28 @@ func (s *Server) addUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "User created"})
 }
 
-func (s *Server) addSurvey(c *gin.Context) {}
+func (s *Server) addSurvey(c *gin.Context) {
+	var survey internal.Survey
+
+	if err := c.ShouldBindJSON(&survey); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Error in the json bind probably json invalid": err.Error()})
+		return
+	}
+
+	if err := validate.Struct(survey); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Data invalid"})
+		l.Err(err).Msg("Validation failed")
+		return
+	}
+
+	if err := database.AddSurvey(survey, GetEmail(c)); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": 500})
+		l.Err(err).Msg("Error in the database")
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": "Survey created"})
+}
 
 func (s *Server) addPhoto(c *gin.Context) {}
 

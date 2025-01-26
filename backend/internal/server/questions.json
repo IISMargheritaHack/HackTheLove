@@ -1,0 +1,249 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "Come preferisci passare il tempo libero?",
+      "options": [
+        [
+          "Relax a casa (film, libri, videogiochi)",
+          "a"
+        ],
+        [
+          "Attività all’aperto (sport, passeggiate, escursioni)",
+          "b"
+        ],
+        [
+          "Uscire con gli amici (cene, eventi sociali)",
+          "c"
+        ],
+        [
+          "Viaggiare o esplorare posti nuovi",
+          "d"
+        ]
+      ],
+      "weight": 0.3
+    },
+    {
+      "id": 2,
+      "question": "Come descriveresti il tuo approccio alla vita?",
+      "options": [
+        [
+          "Pragmatico e razionale",
+          "a"
+        ],
+        [
+          "Creativo e spontaneo",
+          "b"
+        ],
+        [
+          "Rilassato e senza fretta",
+          "c"
+        ],
+        [
+          "Ambizioso e orientato agli obiettivi",
+          "d"
+        ]
+      ],
+      "weight": 0.5
+    },
+    {
+      "id": 3,
+      "question": "Qual è la tua idea di una serata perfetta?",
+      "options": [
+        [
+          "Una cena intima a casa o al ristorante",
+          "a"
+        ],
+        [
+          "Divertimento con un gruppo di amici",
+          "b"
+        ],
+        [
+          "Un’attività avventurosa o insolita",
+          "c"
+        ],
+        [
+          "Una serata tranquilla dedicata ai propri hobby",
+          "d"
+        ]
+      ],
+      "weight": 0.3
+    },
+    {
+      "id": 4,
+      "question": "Quali sono le tue priorità nella vita?",
+      "options": [
+        [
+          "Famiglia e relazioni",
+          "a"
+        ],
+        [
+          "Carriera e successo professionale",
+          "b"
+        ],
+        [
+          "Esperienze e avventure",
+          "c"
+        ],
+        [
+          "Crescita personale e spirituale",
+          "d"
+        ]
+      ],
+      "weight": 1
+    },
+    {
+      "id": 5,
+      "question": "Come gestisci i conflitti?",
+      "options": [
+        [
+          "Preferisco affrontarli subito e risolverli",
+          "a"
+        ],
+        [
+          "Mi prendo il tempo per riflettere prima di parlarne",
+          "b"
+        ],
+        [
+          "Cerco di evitare lo scontro il più possibile",
+          "c"
+        ],
+        [
+          "Dipende dal tipo di conflitto",
+          "d"
+        ]
+      ],
+      "weight": 0.8
+    },
+    {
+      "id": 6,
+      "question": "Quanto sei organizzato nella vita quotidiana?",
+      "options": [
+        [
+          "Molto organizzato, pianifico tutto nei dettagli",
+          "a"
+        ],
+        [
+          "Abbastanza organizzato, ma lascio spazio alla flessibilità",
+          "b"
+        ],
+        [
+          "Non molto organizzato, vivo alla giornata",
+          "c"
+        ],
+        [
+          "Preferisco delegare o affidarmi al caso",
+          "d"
+        ]
+      ],
+      "weight": 0.4
+    },
+    {
+      "id": 7,
+      "question": "Che ruolo ha l’umorismo in una relazione per te?",
+      "options": [
+        [
+          "È fondamentale, devo poter ridere spesso con il partner",
+          "a"
+        ],
+        [
+          "È importante, ma non essenziale",
+          "b"
+        ],
+        [
+          "Lo apprezzo, ma preferisco conversazioni serie",
+          "c"
+        ],
+        [
+          "Non è una priorità, ognuno ha il proprio modo di essere",
+          "d"
+        ]
+      ],
+      "weight": 0.6
+    },
+    {
+      "id": 8,
+      "question": "Quale sarebbe il tuo approccio a un viaggio?",
+      "options": [
+        [
+          "Pianificare ogni dettaglio in anticipo",
+          "a"
+        ],
+        [
+          "Lasciare spazio all’improvvisazione",
+          "b"
+        ],
+        [
+          "Seguire una guida ma senza troppi vincoli",
+          "c"
+        ],
+        [
+          "Non amo viaggiare molto",
+          "d"
+        ]
+      ],
+      "weight": 0.1
+    },
+    {
+      "id": 9,
+      "question": "Quanto sei aperto a cambiare abitudini per una relazione?",
+      "options": [
+        [
+          "Sono molto aperto, se serve per migliorare la relazione",
+          "a"
+        ],
+        [
+          "Sono disposto a cambiare alcune cose, ma non tutto",
+          "b"
+        ],
+        [
+          "Preferisco che entrambi manteniamo i nostri spazi e abitudini",
+          "c"
+        ],
+        [
+          "Non credo sia necessario cambiare per qualcun altro",
+          "d"
+        ]
+      ],
+      "weight": 0.8
+    },
+    {
+      "id": 10,
+      "question": "Cosa significa per te il successo?",
+      "options": [
+        [
+          "Avere stabilità finanziaria e una carriera di successo",
+          "a"
+        ],
+        [
+          "Coltivare relazioni profonde e appaganti",
+          "b"
+        ],
+        [
+          "Vivere esperienze memorabili e avventurose",
+          "c"
+        ],
+        [
+          "Sentirsi felici e soddisfatti con ciò che si ha",
+          "d"
+        ]
+      ],
+      "weight": 0.5
+    },
+    {
+      "id": 11,
+      "question": "Ti piacciono le olive?",
+      "options": [
+        [
+          "Si",
+          "a"
+        ],
+        [
+          "No",
+          "b"
+        ]
+      ],
+      "weight": 1
+    }
+  ]
+}
