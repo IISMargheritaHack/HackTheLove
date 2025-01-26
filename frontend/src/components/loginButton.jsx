@@ -1,23 +1,29 @@
-import { GoogleLogin } from "@react-oauth/google";
-import * as jwtDecode from "jwt-decode";
+import { GoogleLogin } from '@react-oauth/google';
+import * as jwtDecode from 'jwt-decode';
+import { useNavigate } from 'react-router';
 
-function LButton() {
+export default function LoginButton() {
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    navigate('/introPage');
+  };
+
   return (
     <GoogleLogin
       hosted_domain="iismargheritahackbaronissi.edu.it"
       shape="pill"
-      width={"350px"}
+      width={'350px'}
       onSuccess={(CredentialResponse) => {
         const CredentialResponseDecoded = jwtDecode.jwtDecode(
           CredentialResponse.credential
         );
         console.log(CredentialResponseDecoded);
+        handleRedirect();
       }}
       onError={() => {
-        console.log("Login Failed");
+        console.log('Login Failed');
       }}
     />
   );
 }
-
-export default LButton;
