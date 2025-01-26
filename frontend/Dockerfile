@@ -1,22 +1,21 @@
-FROM node:18 AS build
+FROM oven/bun:latest as build
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json bun.lock ./
 
-RUN npm install
+RUN bun install
 
 COPY . .
 
-RUN npm run build
+RUN bun run build
 
 FROM nginx:alpine
 
-# Copiamo la build dal container di build alla directory di Nginx
+RUN apk add --no-cache ca-certificates
+
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Esporre la porta 80, la porta di default per Nginx
 EXPOSE 80
 
-# Comando di avvio di Nginx
 CMD ["nginx", "-g", "daemon off;"]

@@ -12,6 +12,7 @@ export default defineConfig({
       '@images': '/src/assets/images',
       '@pages': '/src/pages',
       '@fonts': '/src/assets/fonts',
+      '@api': '/src/api/',
     },
   },
 });

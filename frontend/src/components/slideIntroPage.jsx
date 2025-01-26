@@ -1,6 +1,7 @@
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import ArrowRight from '@icons/arrowRight';
+import { getUser } from '@api/api';
 
 const responsive = {
   tablet: {
@@ -80,6 +81,10 @@ export default function SlideIntroPage() {
       </div>
     );
   };
+
+  (async () => {
+    console.log(await getUser());
+  })();
 
   return (
     <div className="w-[80vw]">

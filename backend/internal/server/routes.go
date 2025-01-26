@@ -4,10 +4,13 @@ import (
 	"backend/internal"
 	"backend/internal/database"
 	"net/http"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v5"
+	"google.golang.org/api/idtoken"
 )
 
 var validate = validator.New()
@@ -20,24 +23,35 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"}, // Add your frontend URL
+		AllowOrigins: []string{
+			"http://localhost:5173",
+			"http://frontend:80",
+			"http://localhost:80",
+			"http://localhost",
+		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
-		AllowCredentials: true, // Enable cookies/auth
-	}), JWTAuthMiddleware())
+		AllowCredentials: true,
+	}))
 
-	r.GET("/", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"GG WP": 200}) })
-	r.GET("/health", s.healthHandler)
+	public := r.Group("/")
+	public.POST("/verifyGoogleJWT", s.verifyGoogleToken)
+	public.GET("/", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"GG WP": 200}) })
+	public.GET("/health", s.healthHandler)
 
-	r.GET("/getUser", s.getUser)
-	r.GET("/getSurvey", s.getSurvey)
-	r.GET("/getPhoto", s.getPhoto)
-	r.GET("/getQuestions", s.getQuestions)
+	protected := r.Group("/")
+	protected.Use(JWTAuthMiddleware())
+	{
+		protected.GET("/getUser", s.getUser)
+		protected.GET("/getSurvey", s.getSurvey)
+		protected.GET("/getPhoto", s.getPhoto)
+		protected.GET("/getQuestions", s.getQuestions)
 
-	r.POST("/addUser", s.addUser)
-	r.POST("/addSurvey", s.addSurvey)
-	r.POST("/addPhoto", s.addPhoto)
-	r.POST("/addUserInfo", s.addUserInfo)
+		protected.POST("/addUser", s.addUser)
+		protected.POST("/addSurvey", s.addSurvey)
+		protected.POST("/addPhoto", s.addPhoto)
+		protected.POST("/addUserInfo", s.addUserInfo)
+	}
 
 	return r
 }
@@ -148,4 +162,48 @@ func (s *Server) addUserInfo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "User info created"})
+}
+
+func (s *Server) verifyGoogleToken(c *gin.Context) {
+	var body struct {
+		IDToken string `json:"idToken"`
+	}
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		l.Err(err).Msg("Error during json binding")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Token not found"})
+		return
+	}
+
+	l.Debug().Str("token", body.IDToken).Msg("Verifying google token")
+
+	validator, err := idtoken.Validate(c, body.IDToken, GoogleClientID)
+	if err != nil {
+		l.Err(err).Msg("Error during google jwt validation")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Google jwt not valid"})
+		return
+	}
+
+	payload := validator.Claims
+	email := payload["email"].(string)
+	familyName := payload["family_name"].(string)
+	givenName := payload["given_name"].(string)
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"email":       email,
+		"family_name": familyName,
+		"given_name":  givenName,
+		"exp":         time.Now().Add(time.Hour * 24 * 7).Unix(),
+	})
+
+	signedToken, err := token.SignedString(jwtSecret)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error during token signing"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"token":   signedToken,
+	})
 }
