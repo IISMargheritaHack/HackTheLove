@@ -1,4 +1,4 @@
-FROM golang:1.23.4-alpine
+FROM golang:1.23.4-alpine AS build
 
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
@@ -8,17 +8,21 @@ ENV GO111MODULE=on \
 
 WORKDIR /app
 
-# Install dependencies
-RUN apk add --no-cache git \
-    && apk add --no-cache make
+RUN apk add --no-cache git make ca-certificates
 
 COPY go.mod go.sum ./
-
 RUN go mod download
 
 COPY . .
-
 RUN make build
+
+FROM scratch
+
+WORKDIR /app
+
+COPY --from=build /app/bin/main /app/bin/main
+
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 EXPOSE 8080
 
