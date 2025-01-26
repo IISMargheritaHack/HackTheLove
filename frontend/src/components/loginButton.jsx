@@ -1,12 +1,21 @@
 import { GoogleLogin } from '@react-oauth/google';
-import * as jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router';
+import { GetSignedJWT } from '../api/auth';
 
 export default function LoginButton() {
   const navigate = useNavigate();
 
   const handleRedirect = () => {
-    navigate('/introPage');
+    navigate('/introPage', {});
+  };
+
+  const handleLoginSuccess = async (CredentialResponse) => {
+    try {
+      await GetSignedJWT(CredentialResponse.credential);
+      handleRedirect();
+    } catch (error) {
+      console.error('Errore durante il login:', error);
+    }
   };
 
   return (
@@ -14,13 +23,7 @@ export default function LoginButton() {
       hosted_domain="iismargheritahackbaronissi.edu.it"
       shape="pill"
       width={'350px'}
-      onSuccess={(CredentialResponse) => {
-        const CredentialResponseDecoded = jwtDecode.jwtDecode(
-          CredentialResponse.credential
-        );
-        console.log(CredentialResponseDecoded);
-        handleRedirect();
-      }}
+      onSuccess={handleLoginSuccess}
       onError={() => {
         console.log('Login Failed');
       }}
