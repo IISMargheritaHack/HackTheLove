@@ -35,7 +35,13 @@ body {
   min-height: 100vh;
 }
 
-h1 {
+.logoPage {
+  align-items: center;
+  width: 200px;
+  height: 100px;
+  margin: 0 auto;
+}
+/*h1 {
   font-size: 3.2em;
   line-height: 2.2;
   width: 153px;

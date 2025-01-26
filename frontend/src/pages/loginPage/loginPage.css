@@ -1,8 +1,4 @@
-body {
-  font-family: 'Gilmer', sans-serif;
-}
-
-#h1 {
+#titleLoginPage {
   width: 153px;
   height: 26px;
 
@@ -18,7 +14,7 @@ body {
   color: #ffffff;
 }
 
-#p1 {
+#Subtitle {
   width: 333px;
   height: 14px;
 
@@ -34,7 +30,7 @@ body {
   color: #ffffff;
 }
 
-#p2 {
+#pLoginPage {
   width: 346px;
   height: 42px;
   gap: 0px;
@@ -49,7 +45,7 @@ body {
   color: #ffffff;
 }
 
-#button {
+#buttonLoginPage {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -57,11 +53,4 @@ body {
   width: 200px;
   margin: 0 auto;
   border-radius: 10px;
-}
-
-#logo {
-  align-items: center;
-  width: 200px;
-  height: 100px;
-  margin: 0 auto;
 }

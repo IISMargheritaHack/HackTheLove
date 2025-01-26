@@ -13,12 +13,12 @@ const isValidJWT = (token) => {
 };
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('jwt');
-  console.log(token);
-  console.log(isValidJWT(token));
-  if (!isValidJWT(token)) {
-    return <Navigate to="/login" replace />;
-  }
+  //const token = localStorage.getItem('jwt');
+  //console.log(token);
+  //console.log(isValidJWT(token));
+  //if (!isValidJWT(token)) {
+  // return <Navigate to="/login" replace />;
+  //}
 
   return children;
 };

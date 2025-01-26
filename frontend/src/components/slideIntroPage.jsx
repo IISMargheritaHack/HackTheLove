@@ -2,7 +2,7 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import ArrowRight from '@icons/arrowRight';
 import { getUser } from '@api/api';
-
+import { useNavigate } from 'react-router';
 const responsive = {
   tablet: {
     breakpoint: { max: 1024, min: 464 },
@@ -62,7 +62,9 @@ const items = [
 ];
 
 export default function SlideIntroPage() {
-  const ButtonGroup = ({ next }) => { // eslint-disable-line react/prop-types
+  const navigate = useNavigate();
+  const ButtonGroup = ({ next }) => {
+    // eslint-disable-line react/prop-types
     return (
       <div className="carousel-button-group">
         {' '}
@@ -86,6 +88,16 @@ export default function SlideIntroPage() {
     console.log(await getUser());
   })();
 
+  const handleAfterChange = (previousSlide, state) => {
+    //setCurrentSlide(state.currentSlide);
+    console.log(state);
+    // Se siamo all'ultima slide, reindirizza
+    if (state.currentSlide === 2) {
+      console.log('Reindirizzamento in corso...');
+      navigate('/bioPage'); // Cambia "/next-page" con il percorso della pagina desiderata
+    }
+  };
+
   return (
     <div className="w-[80vw]">
       <Carousel
@@ -97,6 +109,7 @@ export default function SlideIntroPage() {
         responsive={responsive}
         ssr={true}
         removeArrowOnDeviceType={['tablet', 'mobile']}
+        afterChange={handleAfterChange}
       >
         {items}
       </Carousel>

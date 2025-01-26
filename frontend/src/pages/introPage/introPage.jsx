@@ -6,7 +6,7 @@ function IntroPage() {
     <div id="main">
       <div id="header" className="mt-[28vh]">
         <div id="center" className="">
-          <img id="logo" src={'logo.svg'} alt="Logo" />
+          <img className="logoPage" src={'logo.svg'} alt="Logo" />
         </div>
         <div>
           <SlideIntroPage />
