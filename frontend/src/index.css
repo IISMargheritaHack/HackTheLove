@@ -1,98 +1,98 @@
 @import 'tailwindcss';
 
 @font-face {
-    font-family: 'Gilmer';
-    src: url('@fonts/Gilmer-Bold.otf') format('opentype');
-    font-weight: bold;
-    font-style: normal;
+  font-family: 'Gilmer';
+  src: url('@fonts/Gilmer-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: 'Gilmer';
-    src: url('@fonts/Gilmer-Regular.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'Gilmer';
+  src: url('@fonts/Gilmer-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
 }
 
 :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
 
-    color: #ffffff;
-    background: linear-gradient(180deg, #ff007a, #800040);
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  color: #ffffff;
+  background: linear-gradient(180deg, #ff007a, #800040);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-    margin: 0;
-    display: flex;
-    font-family: 'Gilmer', sans-serif;
-    min-width: 200px;
-    min-height: 100vh;
+  margin: 0;
+  display: flex;
+  font-family: 'Gilmer', sans-serif;
+  min-width: 200px;
+  min-height: 100vh;
 }
 
 h1 {
-    font-size: 3.2em;
-    line-height: 2.2;
-    width: 153px;
-    height: 26px;
+  font-size: 3.2em;
+  line-height: 2.2;
+  width: 153px;
+  height: 26px;
 
-    gap: 0px;
-    opacity: 0px;
-    font-family: Gilmer;
-    font-size: 20px;
-    font-weight: 'bold';
-    line-height: 26.4px;
-    text-align: center;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    color: #ffffff;
+  gap: 0px;
+  opacity: 0px;
+  font-family: Gilmer;
+  font-size: 20px;
+  font-weight: 'bold';
+  line-height: 26.4px;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #ffffff;
 }
 
 #p1 {
-    width: 333px;
-    height: 14px;
+  width: 333px;
+  height: 14px;
 
-    gap: 0px;
-    opacity: 0px;
-    font-family: Gilmer;
-    font-size: 12px;
-    font-weight: regular;
-    line-height: 14.4px;
-    text-align: center;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    color: #ffffff;
+  gap: 0px;
+  opacity: 0px;
+  font-family: Gilmer;
+  font-size: 12px;
+  font-weight: regular;
+  line-height: 14.4px;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #ffffff;
 }
 
 #p2 {
-    width: 346px;
-    height: 42px;
-    gap: 0px;
-    opacity: 0px;
-    font-family: Gilmer;
-    font-size: 12px;
-    font-weight: 'Regular';
-    line-height: 14.4px;
-    text-align: center;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    color: #ffffff;
+  width: 346px;
+  height: 42px;
+  gap: 0px;
+  opacity: 0px;
+  font-family: Gilmer;
+  font-size: 12px;
+  font-weight: 'Regular';
+  line-height: 14.4px;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #ffffff;
 }
 
 /*Css styled for carousel*/
 .react-multi-carousel-dot.react-multi-carousel-dot--active button {
-    background: #ff017d !important;
-    border-color: transparent !important;
+  background: #ff017d !important;
+  border-color: transparent !important;
 }
 
 .react-multi-carousel-dot button {
-    background: white !important;
-    border-color: transparent !important;
-    width: 8px !important;
-    height: 8px !important
+  background: white !important;
+  border-color: transparent !important;
+  width: 8px !important;
+  height: 8px !important;
 }

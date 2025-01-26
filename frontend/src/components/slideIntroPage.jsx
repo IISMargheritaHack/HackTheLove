@@ -37,8 +37,8 @@ const items = [
     <div className="mb-36">
       <p className="mt-2" id="p1-slide2">
         Se dovessi inserire foto che non riguardano te o dati personali non
-        congrui con le tue informazioni gli altri utenti si “insospettiranno”
-        e probabilmente non riceverai alcun match.
+        congrui con le tue informazioni gli altri utenti si “insospettiranno” e
+        probabilmente non riceverai alcun match.
       </p>
     </div>
   </div>,
@@ -52,9 +52,9 @@ const items = [
     <div className="mb-36">
       <p className="mt-2" id="p1-slide3">
         Una volta che i moderatori attiveranno l’app ti verrano mostrate dieci
-        potenziali match potrai scegliere tra “si” e “no”, dopo che
-        risponderai a tutte le proposte ti verrano ripresentati tutti i tuoi
-        “no” per poterli rivalutare
+        potenziali match potrai scegliere tra “si” e “no”, dopo che risponderai
+        a tutte le proposte ti verrano ripresentati tutti i tuoi “no” per
+        poterli rivalutare
       </p>
     </div>
   </div>,

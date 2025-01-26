@@ -1,20 +1,7 @@
-@font-face {
-  font-family: 'Gilmer';
-  src: url('../assets/fonts/Gilmer-Bold.otf') format('opentype');
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Gilmer';
-  src: url('../assets/fonts/Gilmer-Regular.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-}
-
 body {
   font-family: 'Gilmer', sans-serif;
 }
+
 #h1 {
   width: 153px;
   height: 26px;
