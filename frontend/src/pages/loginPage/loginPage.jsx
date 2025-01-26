@@ -29,7 +29,6 @@ function LoginPage() {
             <span className="underline">Coockies Policy.</span>
           </p>
         </div>
-
         <div id="buttonLoginPage" className="">
           <LoginButton></LoginButton>
         </div>
