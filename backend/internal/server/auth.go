@@ -10,16 +10,17 @@ import (
 )
 
 var jwtSecret = []byte(internal.GetEnv("SECRET_KEY", "secretkey"))
+var GoogleClientID = []byte(internal.GetEnv("GOOGLE_CLIENT_ID", "443648413060-db7g7i880qktvmlemmcnthg4qptclu2l.apps.googleusercontent.com"))
 
 type Claims struct {
-	Email string `json:"email" validate:"required,email"`
+	Email string `json:"email" validate:"required,email,email_host"`
 	jwt.RegisteredClaims
 }
 
 func ValidateJWT(tokenString string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Metodo di firma non valido")
+			return nil, fmt.Errorf("Sign method not valid")
 		}
 		return jwtSecret, nil
 	})
