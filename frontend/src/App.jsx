@@ -6,6 +6,7 @@ import { isMobile } from 'react-device-detect';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import IntroPage from '@pages/introPage/introPage.jsx';
 import ProtectedRoute from '@components/protectedRoutes';
+import BioPage from '@pages/bioPage/bioPage';
 // import { healCheck } from './api/api';
 
 function App() {
@@ -35,6 +36,14 @@ function App() {
           element={
             <ProtectedRoute>
               <IntroPage /> {/* Homepage */}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/bioPage"
+          element={
+            <ProtectedRoute>
+              <BioPage />
             </ProtectedRoute>
           }
         />

@@ -6,23 +6,23 @@ function LoginPage() {
     <div id="main">
       <div id="header" className="mt-[28vh]">
         <div id="center" className="">
-          <img id="logo" src={'logo.svg'} alt="Logo" />
+          <img className="logoPage" src={'logo.svg'} alt="Logo" />
         </div>
 
         <div id="Hack" className=" flex">
-          <h1 className="ms-auto me-auto" id="h1">
+          <h1 className="ms-auto me-auto" id="titleLoginPage">
             Hack The Love
           </h1>
         </div>
 
         <div className="mt-2">
-          <p id="p1">Scopri chi è la tua anima gemella nella scuola</p>
+          <p id="Subtitle">Scopri chi è la tua anima gemella nella scuola</p>
         </div>
       </div>
 
       <div id="container-footer" className="center mt-56">
         <div id="services">
-          <p id="p2">
+          <p id="pLoginPage">
             Cliccando Log in accetti automaticamente i nostri termini di
             servizio. Leggi come gestiamo i tuoi dati con la nostra <br></br>
             <span className="underline">Privacy Policy</span> e{' '}
@@ -30,7 +30,7 @@ function LoginPage() {
           </p>
         </div>
 
-        <div id="button" className="">
+        <div id="buttonLoginPage" className="">
           <LoginButton></LoginButton>
         </div>
       </div>
