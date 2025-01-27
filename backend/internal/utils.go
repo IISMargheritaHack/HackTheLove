@@ -35,3 +35,20 @@ func EmailHost(fl validator.FieldLevel) bool {
 
 	return false
 }
+
+func ValidateSanitazeResponse(response string) bool {
+	whiteList := "abcd"
+
+	if len(response) != 11 {
+		l.Warn().Msg("Response length not valid")
+		return false
+	}
+
+	for _, r := range response {
+		if !strings.Contains(whiteList, string(r)) {
+			l.Warn().Msg("Response not valid")
+			return false
+		}
+	}
+	return true
+}
