@@ -30,10 +30,17 @@
   left: 30px;
   gap: 0px;
   opacity: 0px;
-
+  
   background-color: white;
   color: black;
   border-radius: 8px;
   outline: none;
   padding: 8px;
+}
+
+#logoBioPage {
+  align-items: center;
+  width: 70px;
+  height: 60px;
+  margin: 0 auto;
 }
