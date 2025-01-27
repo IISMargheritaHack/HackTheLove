@@ -1,7 +1,5 @@
 package internal
 
-import "database/sql"
-
 type User struct {
 	Email      string `json:"email" validate:"required,email,email_host"`
 	FamilyName string `json:"family_name"  validate:"required"`
@@ -9,11 +7,11 @@ type User struct {
 }
 
 type UserInfo struct {
-	Phone   sql.NullString `json:"phone"  validate:"required,e164"`
-	Bio     sql.NullString `json:"bio"  validate:"required"`
-	Age     sql.NullInt16  `json:"age"  validate:"required"`
-	Section sql.NullString `json:"section"  validate:"required"`
-	Sex     sql.NullBool   `json:"sex"  validate:"required"`
+	Phone   string `json:"phone"  validate:"required,e164"`
+	Bio     string `json:"bio"  validate:"required"`
+	Age     int    `json:"age"  validate:"required"`
+	Section string `json:"section"  validate:"required"`
+	Sex     bool   `json:"sex"  validate:"required"`
 }
 
 type CompleteUser struct {
@@ -22,8 +20,8 @@ type CompleteUser struct {
 }
 
 type Survey struct {
-	IdSurvey int      `json:"id_survey"`
-	Response [11]byte `json:"response"`
+	IdSurvey string `json:"id_survey"`
+	Response string `json:"response" validate:"required"`
 }
 
 type Question struct {
