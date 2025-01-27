@@ -3,8 +3,11 @@ package server
 import (
 	"backend/internal"
 	"backend/internal/database"
+	"database/sql"
 	_ "embed"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -67,17 +70,7 @@ func (s *Server) healthHandler(c *gin.Context) {
 }
 
 func (s *Server) getUser(c *gin.Context) {
-	tokenString := c.GetHeader("Authorization")
-
-	if tokenString == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token missing"})
-		c.Abort()
-		return
-	}
-
-	claims, err := ValidateJWT(tokenString)
-
-	user, err := database.GetUser(claims.Email)
+	user, err := database.GetUser(GetEmail(c))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": 500})
 		l.Err(err).Msg("Error in the database")
@@ -87,9 +80,37 @@ func (s *Server) getUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func (s *Server) getSurvey(c *gin.Context) {}
+func (s *Server) getSurvey(c *gin.Context) {
+	var survey internal.Survey
 
-func (s *Server) getPhoto(c *gin.Context) {}
+	survey, err := database.GetSurvey(GetEmail(c))
+	if err != nil {
+		l.Debug().Err(err).Msg("Error during survey retrieval")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": 500})
+		return
+	}
+
+	c.JSON(http.StatusOK, survey)
+}
+
+func (s *Server) getPhoto(c *gin.Context) {
+
+	// Ottieni i dati del file
+	fileData, err := database.GetPhoto(GetEmail(c))
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Image not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve image"})
+		}
+		return
+	}
+
+	// Imposta gli header per il file
+	c.Header("Content-Type", "application/octet-stream")
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=image_%d", GetEmail(c)))
+	c.Data(http.StatusOK, "application/octet-stream", fileData)
+}
 
 func (s *Server) getQuestions(c *gin.Context) {
 	var questionsModel internal.Questions
@@ -139,21 +160,38 @@ func (s *Server) addUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "User created"})
 }
 
+/*
+Expected json:
+
+	{
+		"id_survey": "UUIDv4",
+		"response": "11 char lenght response",
+	}
+*/
 func (s *Server) addSurvey(c *gin.Context) {
 	var survey internal.Survey
 
 	if err := c.ShouldBindJSON(&survey); err != nil {
+		l.Debug().Err(err).Msg("Error during json binding")
 		c.JSON(http.StatusBadRequest, gin.H{"Error in the json bind probably json invalid": err.Error()})
 		return
 	}
 
+	if !internal.ValidateSanitazeResponse(survey.Response) {
+		l.Debug().Msg("Response not valid")
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Data invalid"})
+		return
+	}
+
 	if err := validate.Struct(survey); err != nil {
+		l.Debug().Err(err).Msg("Error during validation")
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Data invalid"})
 		l.Err(err).Msg("Validation failed")
 		return
 	}
 
 	if err := database.AddSurvey(survey, GetEmail(c)); err != nil {
+		l.Debug().Err(err).Msg("Error during survey insert")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": 500})
 		l.Err(err).Msg("Error in the database")
 		return
@@ -162,7 +200,48 @@ func (s *Server) addSurvey(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Survey created"})
 }
 
-func (s *Server) addPhoto(c *gin.Context) {}
+func (s *Server) addPhoto(c *gin.Context) {
+	form, err := c.MultipartForm()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid form submission"})
+		return
+	}
+
+	files := form.File["files"]
+	if len(files) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No files uploaded"})
+		return
+	}
+
+	// Colleziona i risultati
+	var results []map[string]string
+	for _, file := range files {
+		l.Debug().Str("name", file.Filename).Msg("Uploading file")
+
+		// Prova ad aprire il file
+		openedFile, err := file.Open()
+		if err != nil {
+			l.Error().Str("name", file.Filename).Err(err).Msg("Failed to open file")
+			results = append(results, map[string]string{"file": file.Filename, "status": "failed", "error": "Failed to open file"})
+			continue
+		}
+
+		// Aggiungi la foto al database
+		err = database.AddPhoto(GetEmail(c), openedFile)
+		openedFile.Close() // Chiudi immediatamente il file
+		if err != nil {
+			l.Error().Str("name", file.Filename).Err(err).Msg("Failed to upload file")
+			results = append(results, map[string]string{"file": file.Filename, "status": "failed", "error": err.Error()})
+			continue
+		}
+
+		l.Info().Str("name", file.Filename).Msg("File uploaded successfully")
+		results = append(results, map[string]string{"file": file.Filename, "status": "success"})
+	}
+
+	// Rispondi con i risultati aggregati
+	c.JSON(http.StatusOK, gin.H{"results": results})
+}
 
 /*
 Expected json:
@@ -191,7 +270,7 @@ func (s *Server) addUserInfo(c *gin.Context) {
 	}
 
 	if err := database.AddUserInfo(user, GetEmail(c)); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": 500})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": 402, "message": err.Error()})
 		l.Err(err).Msg("Error in the database")
 		return
 	}
