@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import IntroPage from '@pages/introPage/introPage.jsx';
 import ProtectedRoute from '@components/protectedRoutes';
 import BioPage from '@pages/bioPage/bioPage';
+import QuestionPage from '@pages/questionPage/questionPage';
 
 // import { healCheck } from './api/api';
 
@@ -45,6 +46,14 @@ function App() {
           element={
             <ProtectedRoute>
               <BioPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/questionPage"
+          element={
+            <ProtectedRoute>
+              <QuestionPage />
             </ProtectedRoute>
           }
         />

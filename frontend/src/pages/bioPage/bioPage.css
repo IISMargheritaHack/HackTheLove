@@ -7,13 +7,12 @@
   font-size: 19px;
 }
 
-.inputNS {
-  width: 162px;
+.input {
+  width: 80vw;
   height: 33px;
-  top: 154px;
+  top: 231px;
   left: 30px;
   gap: 0px;
-
   opacity: 0px;
 
   background-color: white;
@@ -23,14 +22,28 @@
   padding: 8px;
 }
 
-.inputTelephone {
-  width: 233px;
+.textBio {
+  width: 80vw;
+  top: 231px;
+  left: 30px;
+  gap: 0px;
+  opacity: 0px;
+
+  background-color: white;
+  color: black;
+  border-radius: 8px;
+  outline: none;
+  padding: 8px;
+}
+
+.select {
+  width: 40vw;
   height: 33px;
   top: 231px;
   left: 30px;
   gap: 0px;
   opacity: 0px;
-  
+
   background-color: white;
   color: black;
   border-radius: 8px;
