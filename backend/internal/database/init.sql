@@ -1,17 +1,19 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
 -- Table SurveysResponse
-CREATE TABLE IF NOT EXISTS surveys_response (
-    id_surveys SERIAL PRIMARY KEY, -- Primary key
-    response VARCHAR(11) NOT NULL, -- Response each letter i a response to a question
-    date_created TIMESTAMP DEFAULT NOW() -- Date of creation
+CREATE TABLE IF NOT EXISTS surveys (
+    id_survey UUID DEFAULT gen_random_uuid() PRIMARY KEY, -- Generazione automatica UUID
+    response VARCHAR(11) NOT NULL, -- Risposta, massimo 11 caratteri
+    date_created TIMESTAMP DEFAULT NOW() -- Data di creazione, default al momento attuale
 );
 
 -- Table Users
 CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) PRIMARY KEY, -- Primary key
-    id_surveys INTEGER REFERENCES surveys_response(id_surveys) ON DELETE SET NULL, -- Id of the survey
+    id_survey UUID REFERENCES surveys(id_survey) ON DELETE SET NULL, -- Id of the survey
     name VARCHAR(255) NOT NULL, -- Name
     surname VARCHAR(255) NOT NULL, -- Surname
-    phone VARCHAR(10), -- Phone
+    phone VARCHAR(20), -- Phone
     sex BOOLEAN, -- Sex
     bio TEXT, -- Biography
     age INTEGER, -- Age
