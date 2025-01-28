@@ -94,8 +94,8 @@ func (s *Server) getSurvey(c *gin.Context) {
 }
 
 func (s *Server) getPhoto(c *gin.Context) {
+	l.Debug().Msg("Getting photo")
 
-	// Ottieni i dati del file
 	fileData, err := database.GetPhoto(GetEmail(c))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -106,9 +106,8 @@ func (s *Server) getPhoto(c *gin.Context) {
 		return
 	}
 
-	// Imposta gli header per il file
 	c.Header("Content-Type", "application/octet-stream")
-	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=image_%d", GetEmail(c)))
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=image_%s", GetEmail(c)))
 	c.Data(http.StatusOK, "application/octet-stream", fileData)
 }
 
@@ -213,12 +212,10 @@ func (s *Server) addPhoto(c *gin.Context) {
 		return
 	}
 
-	// Colleziona i risultati
 	var results []map[string]string
 	for _, file := range files {
 		l.Debug().Str("name", file.Filename).Msg("Uploading file")
 
-		// Prova ad aprire il file
 		openedFile, err := file.Open()
 		if err != nil {
 			l.Error().Str("name", file.Filename).Err(err).Msg("Failed to open file")
@@ -226,9 +223,8 @@ func (s *Server) addPhoto(c *gin.Context) {
 			continue
 		}
 
-		// Aggiungi la foto al database
 		err = database.AddPhoto(GetEmail(c), openedFile)
-		openedFile.Close() // Chiudi immediatamente il file
+		openedFile.Close()
 		if err != nil {
 			l.Error().Str("name", file.Filename).Err(err).Msg("Failed to upload file")
 			results = append(results, map[string]string{"file": file.Filename, "status": "failed", "error": err.Error()})
@@ -239,7 +235,6 @@ func (s *Server) addPhoto(c *gin.Context) {
 		results = append(results, map[string]string{"file": file.Filename, "status": "success"})
 	}
 
-	// Rispondi con i risultati aggregati
 	c.JSON(http.StatusOK, gin.H{"results": results})
 }
 

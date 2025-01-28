@@ -298,20 +298,6 @@ func AddSurvey(survey internal.Survey, email string) error {
 	return nil
 }
 
-func CheckIfUserExists(email string) bool {
-	user, err := GetUser(email)
-
-	if err != nil {
-		return false
-	}
-
-	if user.User.Email == "" {
-		return false
-	}
-
-	return true
-}
-
 func AddPhoto(email string, imageFile io.Reader) error {
 
 	l.Debug().Str("Email", email).Msg("Email received")
@@ -331,21 +317,18 @@ func AddPhoto(email string, imageFile io.Reader) error {
 		}
 	}()
 
-	// Step 1: Creazione del Large Object
 	var loOID uint32
 	err = tx.QueryRow("SELECT lo_create(0)").Scan(&loOID)
 	if err != nil {
 		return fmt.Errorf("failed to create large object: %w", err)
 	}
 
-	// Step 2: Apertura del Large Object in modalità scrittura
 	var loFd int
 	err = tx.QueryRow("SELECT lo_open($1, $2)", loOID, 0x20000).Scan(&loFd) // 0x20000 = modalità scrittura
 	if err != nil {
 		return fmt.Errorf("failed to open large object: %w", err)
 	}
 
-	// Step 3: Scrittura dei dati nel Large Object
 	buf := make([]byte, 4096)
 	for {
 		n, readErr := imageFile.Read(buf)
@@ -363,18 +346,15 @@ func AddPhoto(email string, imageFile io.Reader) error {
 		}
 	}
 
-	// Step 4: Chiusura del Large Object
 	_, err = tx.Exec("SELECT lo_close($1)", loFd)
 	if err != nil {
 		return fmt.Errorf("failed to close large object: %w", err)
 	}
 
-	// Step 5: Inserimento nella tabella `images`
-	metadataJSON := `{"name": "image.jpg"}`
 	_, err = tx.Exec(`
-        INSERT INTO images (email_user, lo_oid, metadata)
-        VALUES ($1, $2, $3)
-    `, email, loOID, metadataJSON)
+        INSERT INTO images (email_user, lo_oid)
+        VALUES ($1, $2)
+    `, email, loOID)
 	if err != nil {
 		return fmt.Errorf("failed to insert image record: %w", err)
 	}
@@ -406,23 +386,28 @@ func GetImageIDByEmail(email string) (int, error) {
 }
 
 func GetPhoto(email string) ([]byte, error) {
-	// Inizia una transazione per lavorare con Large Object
 
 	imageID, err := GetImageIDByEmail(email)
 
+	l.Debug().Int("ImageID", imageID).Msg("ImageID received")
+
 	tx, err := dbInstance.db.Begin()
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to start transaction: %w", err)
 	}
-	defer func() {
+	defer func() ([]byte, error) {
 		if err != nil {
 			tx.Rollback()
 		} else {
-			err = tx.Commit()
+			commitErr := tx.Commit()
+			if commitErr != nil {
+				return nil, fmt.Errorf("failed to commit transaction: %w", commitErr)
+			}
 		}
+		return nil, nil
 	}()
 
-	// Recupera l'OID associato all'immagine
 	var loOID uint32
 	err = tx.QueryRow("SELECT lo_oid FROM images WHERE id_image = $1", imageID).Scan(&loOID)
 	if err != nil {
@@ -432,14 +417,14 @@ func GetPhoto(email string) ([]byte, error) {
 		return nil, fmt.Errorf("failed to retrieve lo_oid: %w", err)
 	}
 
-	// Apri il Large Object in modalità lettura
+	l.Debug().Uint32("loOID", loOID).Msg("loOID received")
+
 	var loFd int
 	err = tx.QueryRow("SELECT lo_open($1, $2)", loOID, 0x40000).Scan(&loFd) // 0x40000 = modalità lettura
 	if err != nil {
 		return nil, fmt.Errorf("failed to open large object: %w", err)
 	}
 
-	// Leggi i dati dal Large Object
 	var fileData []byte
 	for {
 		var chunk []byte
@@ -450,14 +435,29 @@ func GetPhoto(email string) ([]byte, error) {
 			}
 			return nil, fmt.Errorf("failed to read large object: %w", err)
 		}
+		if len(chunk) == 0 {
+			break
+		}
 		fileData = append(fileData, chunk...)
 	}
 
-	// Chiudi il Large Object
-	_, err = tx.Exec("SELECT lo_close($1)", loFd)
-	if err != nil {
-		return nil, fmt.Errorf("failed to close large object: %w", err)
-	}
+	defer func() {
+		_, closeErr := tx.Exec("SELECT lo_close($1)", loFd)
+		if closeErr != nil {
+			l.Error().Err(closeErr).Msg("failed to close large object")
+		}
+	}()
 
 	return fileData, nil
+}
+
+func CheckIfUserExists(email string) bool {
+	user, err := GetUser(email)
+	if err != nil {
+		return false
+	}
+	if user.User.Email == "" {
+		return false
+	}
+	return true
 }
