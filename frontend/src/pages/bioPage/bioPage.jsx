@@ -1,11 +1,13 @@
 import './bioPage.css';
 import ArrowRight from '@icons/arrowRight';
 import { useNavigate } from 'react-router';
+
 function BioPage() {
   const navigate = useNavigate();
+
   return (
-    <div className="">
-      <div className="-ml-[150px]" id="header">
+    <div className="max-w-[350px]">
+      <div className="ml-[21px]" id="header">
         <img id="logoBioPage" src={'logo.svg'} alt="Logo" />
       </div>
 
@@ -62,7 +64,7 @@ function BioPage() {
               >
                 Sesso
               </label>
-              <div className="px-33">
+              <div className="px-13">
                 <label
                   htmlFor="input-label"
                   className="block text-left font-medium mb-2 dark:text-white"
@@ -108,7 +110,7 @@ function BioPage() {
             </div>
           </div>
         </div>
-        <div className="-mt-[20px] mr-[40px]">
+        <div className="mt-[50px] ml-[34px]">
           <button
             className="w-[291px] h-[43px] rounded-[47px] bg-white  text-black mt-28 "
             onClick={() => navigate('/questionPage')}
