@@ -1,6 +1,7 @@
-package internal
+package utils
 
 import (
+	"backend/internal/logger"
 	"net/mail"
 	"os"
 	"strings"
@@ -8,7 +9,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-var l = GetLogger()
+var log = logger.GetLogger()
 
 func GetEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
@@ -40,13 +41,13 @@ func ValidateSanitazeResponse(response string) bool {
 	whiteList := "abcd"
 
 	if len(response) != 11 {
-		l.Warn().Msg("Response length not valid")
+		log.Warn().Msg("Response length not valid")
 		return false
 	}
 
 	for _, r := range response {
 		if !strings.Contains(whiteList, string(r)) {
-			l.Warn().Msg("Response not valid")
+			log.Warn().Msg("Response not valid")
 			return false
 		}
 	}

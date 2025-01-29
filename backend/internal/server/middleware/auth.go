@@ -1,16 +1,21 @@
-package server
+package middleware
 
 import (
-	"backend/internal"
+	"backend/config"
+	internal "backend/internal/utils"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtSecret = []byte(internal.GetEnv("SECRET_KEY", "secretkey"))
-var GoogleClientID = internal.GetEnv("GOOGLE_CLIENT_ID", "443648413060-db7g7i880qktvmlemmcnthg4qptclu2l.apps.googleusercontent.com")
+var Validate = validator.New()
+
+func init() {
+	Validate.RegisterValidation("email_host", internal.EmailHost)
+}
 
 type Claims struct {
 	Email string `json:"email" validate:"required,email,email_host"`
@@ -22,7 +27,7 @@ func ValidateJWT(tokenString string) (*Claims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Sign method not valid")
 		}
-		return jwtSecret, nil
+		return config.JwtSecret, nil
 	})
 
 	if err != nil {
