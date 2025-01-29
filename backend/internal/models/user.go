@@ -1,4 +1,4 @@
-package internal
+package models
 
 type User struct {
 	Email      string `json:"email" validate:"required,email,email_host"`
@@ -17,20 +17,4 @@ type UserInfo struct {
 type CompleteUser struct {
 	User     User     `json:"user"`
 	UserInfo UserInfo `json:"user_info"`
-}
-
-type Survey struct {
-	IdSurvey string `json:"id_survey"`
-	Response string `json:"response" validate:"required"`
-}
-
-type Question struct {
-	ID       int        `json:"id"`
-	Question string     `json:"question"`
-	Options  [][]string `json:"options"`
-	Weight   float64    `json:"weight"`
-}
-
-type Questions struct {
-	Questions []Question `json:"questions"`
 }
