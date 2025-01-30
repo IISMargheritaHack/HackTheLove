@@ -17,7 +17,7 @@ import (
 
 type Server struct {
 	port int
-	db   database.Service
+	db   database.Database
 	http *http.Server
 }
 
@@ -31,15 +31,15 @@ func NewServer() *Server {
 
 	db := database.New()
 	log.Info().Msg("Initializing database tables")
-	database.InitTable(db)
+	db.InitTables()
 
-	router := routes.InitRoutes(database.Service(db))
+	router := routes.InitRoutes(*db)
 
 	server := &Server{
 		port: port,
-		db:   db,
+		db:   *db,
 		http: &http.Server{
-			Addr:         fmt.Sprintf(":%d", port),
+			Addr:         fmt.Sprintf("0.0.0.0:%d", port),
 			Handler:      router,
 			IdleTimeout:  time.Minute,
 			ReadTimeout:  10 * time.Second,
