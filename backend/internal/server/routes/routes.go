@@ -11,7 +11,7 @@ import (
 
 var log = logger.GetLogger()
 
-func InitRoutes(db database.Service) *gin.Engine {
+func InitRoutes(db database.Database) *gin.Engine {
 	r := gin.Default()
 	h := NewHandler(db)
 
@@ -25,7 +25,7 @@ func InitRoutes(db database.Service) *gin.Engine {
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true,
-	}))
+	}), middleware.RateLimiterMiddleware())
 
 	registerPublicRoutes(r, h)
 
