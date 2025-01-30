@@ -2,14 +2,23 @@ package routes
 
 import (
 	"backend/internal/database"
+	"backend/internal/database/repository"
 )
 
-// Handler contiene il riferimento al database per gli handler
 type Handler struct {
-	DB database.Service
+	DB         database.Database
+	UserRepo   *repository.UserRepository
+	SurveyRepo *repository.SurveyRepository
+	PhotoRepo  *repository.PhotoRepository
 }
 
-// NewHandler inizializza la struttura handler
-func NewHandler(db database.Service) *Handler {
-	return &Handler{DB: db}
+func NewHandler(db database.Database) *Handler {
+	sqlDB := db.GetDB()
+
+	return &Handler{
+		DB:         db,
+		UserRepo:   repository.NewUserRepository(sqlDB),
+		SurveyRepo: repository.NewSurveyRepository(sqlDB),
+		PhotoRepo:  repository.NewPhotoRepository(sqlDB),
+	}
 }
