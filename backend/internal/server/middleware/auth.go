@@ -3,6 +3,7 @@ package middleware
 import (
 	"backend/config"
 	internal "backend/internal/utils"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -30,7 +31,11 @@ func ValidateJWT(tokenString string) (*Claims, error) {
 		return config.JwtSecret, nil
 	})
 
+	// **Fix: Controlliamo esplicitamente se il token è scaduto**
 	if err != nil {
+		if errors.Is(err, jwt.ErrTokenExpired) {
+			return nil, fmt.Errorf("Token expired")
+		}
 		return nil, err
 	}
 
@@ -44,15 +49,13 @@ func ValidateJWT(tokenString string) (*Claims, error) {
 func JWTAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
-		if tokenString == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token missing"})
-			c.Abort()
-			return
-		}
-
 		claims, err := ValidateJWT(tokenString)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token not valid: " + err.Error()})
+			if err.Error() == "Token expired" {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "Token expired"})
+			} else {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			}
 			c.Abort()
 			return
 		}
@@ -63,21 +66,10 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 }
 
 func GetEmail(c *gin.Context) string {
-	tokenString := c.GetHeader("Authorization")
-
-	if tokenString == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token missing"})
-		c.Abort()
+	email, exists := c.Get("email")
+	if !exists {
+		log.Warn().Msg("Email not found in context")
 		return ""
 	}
-
-	claims, err := ValidateJWT(tokenString)
-
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token not valid: " + err.Error()})
-		c.Abort()
-		return ""
-	}
-
-	return claims.Email
+	return email.(string)
 }
