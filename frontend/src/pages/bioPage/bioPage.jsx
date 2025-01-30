@@ -56,7 +56,7 @@ function BioPage() {
             className=" input py-3 px-4 block w-full border-gray-200 rounded-lg text-sm placeholder:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
             placeholder="+39"
           />
-          <div className="mt-7">
+          <div className="mt-7 w-[37vh]">
             <div className="flex">
               <label
                 htmlFor="input-label"
@@ -64,7 +64,7 @@ function BioPage() {
               >
                 Sesso
               </label>
-              <div className="px-13">
+              <div className="px-34">
                 <label
                   htmlFor="input-label"
                   className="block text-left font-medium mb-2 dark:text-white"
@@ -73,12 +73,12 @@ function BioPage() {
                 </label>
               </div>
             </div>
-            <div className="flex pr-10">
+            <div className="flex gap-x-4">
               <select className=" select py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
                 <option selected=""></option>
                 <option>Maschio</option>
                 <option>Donna</option>
-                <option>Viscardi</option>
+                <option>Altro</option>
               </select>
 
               <select className=" select py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
@@ -110,10 +110,31 @@ function BioPage() {
             </div>
           </div>
         </div>
-        <div className="mt-[50px] ml-[34px]">
+        <div className="w-[40vh] mt-10">
+          <form>
+            <label className="block">
+              <span className="sr-only"></span>
+              <input
+                type="file"
+                className="block w-full text-sm text-white
+        file:me-4 file:py-2 file:px-4
+        file:rounded-lg file:border-0
+        file:text-sm 
+        file:bg-white-600 file:text-black
+        hover:file:bg-blue-700
+        file:disabled:opacity-50 file:disabled:pointer-events-none
+        dark:text-white
+        dark:file:bg-white
+        dark:hover:file:bg-blue-400
+      "
+              />
+            </label>
+          </form>
+        </div>
+        <div className="-mt-[50px] ml-[34px]">
           <button
             className="w-[291px] h-[43px] rounded-[47px] bg-white  text-black mt-28 "
-            onClick={() => navigate('/questionPage')}
+            onClick={() => navigate('/surveyPage')}
           >
             <div className="flex items-center">
               <span className="ml-[120px] font-bold">Avanti</span>
