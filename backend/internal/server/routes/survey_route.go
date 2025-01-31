@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetSurvey recupera il sondaggio di un utente
 func (h *Handler) GetSurvey(c *gin.Context) {
 	email := middleware.GetEmail(c)
 	survey, err := h.SurveyRepo.GetSurvey(email)

@@ -41,7 +41,7 @@ func (r *UserRepository) GetUser(email string) (*models.CompleteUser, error) {
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			log.Warn().Str("email", email).Msg("User not found")
-			return nil, nil
+			return nil, fmt.Errorf("User not found")
 		}
 		log.Error().Err(err).Str("email", email).Msg("Error querying user")
 		return nil, err
@@ -57,16 +57,10 @@ func (r *UserRepository) AddUser(user *models.User) error {
 		VALUES ($1, $2, $3)
 		ON CONFLICT (email) DO NOTHING;
 	`
-	result, err := r.db.Exec(query, user.Email, user.GivenName, user.FamilyName)
+	_, err := r.db.Exec(query, user.Email, user.GivenName, user.FamilyName)
 	if err != nil {
 		log.Error().Err(err).Str("email", user.Email).Msg("Error inserting user")
 		return fmt.Errorf("error inserting user: %w", err)
-	}
-
-	rowsAffected, _ := result.RowsAffected()
-	if rowsAffected == 0 {
-		log.Warn().Str("email", user.Email).Msg("User already exists, skipping insert")
-		return fmt.Errorf("User already exists, skipping insert")
 	}
 
 	log.Info().Str("email", user.Email).Msg("User added successfully")

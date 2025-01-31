@@ -14,7 +14,7 @@ import (
 
 func registerPublicRoutes(r *gin.Engine, h *Handler) {
 	public := r.Group("/")
-	public.POST("/verifyGoogleJWT", VerifyGoogleToken)
+	public.POST("/verifyGoogleJWT", h.VerifyGoogleToken)
 	public.GET("/", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"YES I AM UP <3!": 200}) })
 	public.GET("/health", h.HealthHandler)
 	public.GET("/getQuestions", GetQuestions)
@@ -37,7 +37,8 @@ func (h *Handler) HealthHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, h.DB.Health())
 }
 
-func VerifyGoogleToken(c *gin.Context) {
+func (h *Handler) VerifyGoogleToken(c *gin.Context) {
+	var user models.User
 	var body struct {
 		IDToken string `json:"idToken"`
 	}
@@ -48,7 +49,7 @@ func VerifyGoogleToken(c *gin.Context) {
 		return
 	}
 
-	log.Debug().Str("token", body.IDToken).Msg("Verifying Google token")
+	log.Debug().Str("token", body.IDToken[:40]+"...").Msg("Verifying Google token")
 
 	validator, err := idtoken.Validate(c, body.IDToken, config.GoogleClientID)
 	if err != nil {
@@ -65,6 +66,21 @@ func VerifyGoogleToken(c *gin.Context) {
 		log.Warn().Msg("Missing required claims in Google JWT")
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Google JWT payload"})
 		return
+	}
+
+	user.Email = email
+	user.FamilyName = familyName
+	user.GivenName = givenName
+
+	existingUser, errCheck := h.UserRepo.GetUser(user.Email)
+	if errCheck != nil && existingUser == nil {
+		if err := h.UserRepo.AddUser(&user); err != nil {
+			log.Error().Err(err).Str("email", user.Email).Msg("Database error while adding user")
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error adding user"})
+			return
+		}
+	} else {
+		log.Info().Str("email", user.Email).Msg("User already exists skipping creation")
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

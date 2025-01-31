@@ -29,44 +29,6 @@ func (h *Handler) GetUser(c *gin.Context) {
 Expected JSON:
 
 	{
-		"email": "xxxxx@iismargheritahackbaronissi.edu.it",
-		"family_name": "name",
-		"given_name": "surname"
-	}
-*/
-func (h *Handler) AddUser(c *gin.Context) {
-	var user models.User
-
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON format", "details": err.Error()})
-		return
-	}
-
-	if err := middleware.Validate.Struct(user); err != nil {
-		log.Warn().Err(err).Msg("Validation failed")
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid data"})
-		return
-	}
-
-	if err := h.UserRepo.AddUser(&user); err != nil {
-		existingUser, errCheck := h.UserRepo.GetUser(user.Email)
-		if errCheck == nil && existingUser.User.Email != "" {
-			c.JSON(http.StatusConflict, gin.H{"message": "User already exists"})
-			return
-		}
-		log.Error().Err(err).Str("email", user.Email).Msg("Database error while adding user")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error adding user"})
-		return
-	}
-
-	log.Info().Str("email", user.Email).Msg("User created successfully")
-	c.JSON(http.StatusCreated, gin.H{"message": "User created"})
-}
-
-/*
-Expected JSON:
-
-	{
 		"phone": "",
 		"bio": "",
 		"age": 0,

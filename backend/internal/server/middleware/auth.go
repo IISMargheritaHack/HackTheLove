@@ -31,7 +31,6 @@ func ValidateJWT(tokenString string) (*Claims, error) {
 		return config.JwtSecret, nil
 	})
 
-	// **Fix: Controlliamo esplicitamente se il token è scaduto**
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
 			return nil, fmt.Errorf("Token expired")

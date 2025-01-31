@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 )
 
-// SurveyRepository gestisce le operazioni sui sondaggi
 type SurveyRepository struct {
 	db *sql.DB
 }
@@ -104,4 +104,32 @@ func (s *SurveyRepository) AddSurvey(survey models.Survey, email string) error {
 
 	log.Info().Str("email", email).Str("surveyID", fmt.Sprint(surveyID)).Msg("Survey successfully linked to user")
 	return nil
+}
+
+func (r *SurveyRepository) GetAllUserSurveyResponse() ([]models.Response, error) {
+	query := `
+	SELECT users.email, surveys.response, users.sex
+	FROM surveys
+	INNER JOIN users ON surveys.id_survey = users.id_survey;`
+	rows, err := r.db.Query(query)
+	if err != nil {
+		log.Error().Err(err).Msg("Error querying all survey responses")
+		return nil, fmt.Errorf("error querying all survey responses: %w", err)
+	}
+	defer rows.Close()
+
+	var responses []models.Response
+	for rows.Next() {
+		var response models.Response
+		var responseStr string
+		if err := rows.Scan(&response.Email, &responseStr, &response.Sex); err != nil {
+			log.Error().Err(err).Msg("Error scanning survey response")
+			return nil, fmt.Errorf("error scanning survey response: %w", err)
+		}
+		response.Response = strings.Split(responseStr, "")
+		responses = append(responses, response)
+	}
+
+	log.Debug().Msg("All survey responses retrieved successfully")
+	return responses, nil
 }
