@@ -54,5 +54,6 @@ frontend/*.sln
 frontend/*.sw?
 
 
-# Algo
+# Other
 algo
+.venv
