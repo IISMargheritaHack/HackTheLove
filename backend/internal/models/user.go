@@ -7,11 +7,11 @@ type User struct {
 }
 
 type UserInfo struct {
-	Phone   string `json:"phone"  validate:"required,e164"`
-	Bio     string `json:"bio"  validate:"required"`
-	Age     int    `json:"age"  validate:"required"`
-	Section string `json:"section"  validate:"required"`
-	Sex     bool   `json:"sex"  validate:"required"`
+	Phone   *string `json:"phone"  validate:"required,e164"`
+	Bio     *string `json:"bio"  validate:"required"`
+	Age     *int    `json:"age"  validate:"required"`
+	Section *string `json:"section"  validate:"required"`
+	Sex     *bool   `json:"sex"  validate:"required"`
 }
 
 type CompleteUser struct {
