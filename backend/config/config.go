@@ -3,11 +3,16 @@ package config
 import (
 	"backend/internal/utils"
 	_ "embed"
+	"time"
 )
 
 // App
 var LogLevel = utils.GetEnv("LOG_LEVEL", "debug")
 var LogFile = utils.GetEnv("LOG_FILE", "")
+var ScheduleTime = time.Now().Add(5 * time.Second)
+
+const MIN_VALUE_COMPATIBILITY = 40
+const BATCH_SIZE = 1000
 
 // Security configuration
 var JwtSecret = []byte(utils.GetEnv("SECRET_KEY", "secretkey"))
