@@ -66,7 +66,7 @@ func (r *PhotoRepository) AddPhoto(email string, imageFile io.Reader) error {
 	}
 
 	var loFd int
-	err = tx.QueryRow("SELECT lo_open($1, $2)", loOID, 0x20000).Scan(&loFd) // 0x20000 = modalità scrittura
+	err = tx.QueryRow("SELECT lo_open($1, $2)", loOID, 0x20000).Scan(&loFd) // 0x20000 = write only
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to open Large Object")
 		return fmt.Errorf("failed to open Large Object: %w", err)
