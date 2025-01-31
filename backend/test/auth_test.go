@@ -11,7 +11,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Test JWT valido
 func TestJWTAuthMiddleware_ValidToken(t *testing.T) {
 	token := GenerateTestJWT("francesco.memoli@iismargheritahackbaronissi.edu.it")
 	c, w := CreateTestContext("GET", "/getUser", nil, token)
@@ -22,7 +21,6 @@ func TestJWTAuthMiddleware_ValidToken(t *testing.T) {
 	assert.Equal(t, "francesco.memoli@iismargheritahackbaronissi.edu.it", c.GetString("email"))
 }
 
-// Test JWT mancante
 func TestJWTAuthMiddleware_MissingToken(t *testing.T) {
 	c, w := CreateTestContext("GET", "/getUser", nil, "")
 
@@ -31,7 +29,6 @@ func TestJWTAuthMiddleware_MissingToken(t *testing.T) {
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 }
 
-// Test JWT non valido
 func TestJWTAuthMiddleware_InvalidToken(t *testing.T) {
 	c, w := CreateTestContext("GET", "/getUser", nil, "invalid.token.here")
 
@@ -40,9 +37,7 @@ func TestJWTAuthMiddleware_InvalidToken(t *testing.T) {
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 }
 
-// **Test JWT Scaduto**
 func TestJWTAuthMiddleware_ExpiredToken(t *testing.T) {
-	// Creiamo un token scaduto
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email": "francesco.memoli@iismargheritahackbaronissi.edu.it",
 		"exp":   time.Now().Add(-time.Hour).Unix(), // ⏳ Scaduto un'ora fa
@@ -57,7 +52,6 @@ func TestJWTAuthMiddleware_ExpiredToken(t *testing.T) {
 	assert.Contains(t, w.Body.String(), "expired") // Messaggio di errore
 }
 
-// **Test JWT con firma modificata**
 func TestJWTAuthMiddleware_TamperedSignature(t *testing.T) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email": "francesco.memoli@iismargheritahackbaronissi.edu.it",
@@ -72,7 +66,6 @@ func TestJWTAuthMiddleware_TamperedSignature(t *testing.T) {
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 }
 
-// **Test JWT senza email nel payload**
 func TestJWTAuthMiddleware_MissingEmail(t *testing.T) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"exp": time.Now().Add(time.Hour).Unix(),
@@ -86,7 +79,6 @@ func TestJWTAuthMiddleware_MissingEmail(t *testing.T) {
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 }
 
-// **Test JWT con algoritmo non valido**
 func TestJWTAuthMiddleware_InvalidAlgorithm(t *testing.T) {
 	token := jwt.NewWithClaims(jwt.SigningMethodNone, jwt.MapClaims{ // ❌ Algoritmo errato
 		"email": "francesco.memoli@iismargheritahackbaronissi.edu.it",
