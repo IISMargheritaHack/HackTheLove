@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
     id_survey UUID REFERENCES surveys(id_survey) ON DELETE SET NULL, -- Id of the survey
     name VARCHAR(255) NOT NULL, -- Name
     surname VARCHAR(255) NOT NULL, -- Surname
-    phone VARCHAR(20), -- Phone
+    phone VARCHAR(15), -- Phone
     sex BOOLEAN, -- Sex
     bio TEXT, -- Biography
     age INTEGER, -- Age
@@ -28,4 +28,13 @@ CREATE TABLE IF NOT EXISTS images (
     lo_oid OID NOT NULL, -- File reference
     uploaded_at TIMESTAMP DEFAULT NOW(), -- Date of upload
     metadata JSONB -- Extra information
+);
+
+
+CREATE TABLE IF NOT EXISTS matches (
+    email_user1 VARCHAR(100) REFERENCES users(email) ON DELETE CASCADE, -- Primo utente
+    email_user2 VARCHAR(100) REFERENCES users(email) ON DELETE CASCADE, -- Secondo utente
+    compatibility FLOAT NOT NULL, -- Compatibilità tra
+    date_created TIMESTAMP DEFAULT NOW(), -- Data di creazione
+    PRIMARY KEY (email_user1, email_user2) -- Chiave primaria composta
 );

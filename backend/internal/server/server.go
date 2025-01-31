@@ -13,6 +13,7 @@ import (
 	"backend/internal/database"
 	"backend/internal/logger"
 	"backend/internal/server/routes"
+	"backend/internal/services"
 )
 
 type Server struct {
@@ -51,8 +52,28 @@ func NewServer() *Server {
 	return server
 }
 
+func scheduleMatching(runAt time.Time, task func()) {
+	delay := time.Until(runAt)
+	if delay <= 0 {
+		log.Info().Msg("Task already expired")
+		return
+	}
+
+	log.Info().Msgf("Task scheduled for: %v", runAt)
+	time.AfterFunc(delay, task)
+}
+
 func (s *Server) Run() error {
 	log.Info().Msg("Starting HTTP server")
+
+	surveyService := services.NewSurveyService(s.db.GetDB())
+	matchService := services.NewMatchService(s.db.GetDB())
+	scheduleMatching(config.ScheduleTime, func() {
+		if err := surveyService.StartMatching(matchService); err != nil {
+			log.Error().Err(err).Msg("Error starting matching")
+		}
+	})
+
 	return s.http.ListenAndServe()
 }
 
