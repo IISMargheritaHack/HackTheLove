@@ -1,9 +1,44 @@
 import './bioPage.css';
 import ArrowRight from '@icons/arrowRight';
 import { useNavigate } from 'react-router';
+import { showToast } from '../../components/toast';
+import 'toastify-js/src/toastify.css';
 
 function BioPage() {
   const navigate = useNavigate();
+
+ 
+
+  // Funzione di validazione
+  const validateForm = () => {
+    const nome = document.getElementById('input-nome').value.trim();
+    const cognome = document.getElementById('input-cognome').value.trim();
+    const telefono = document.getElementById('input-telefono').value.trim();
+    const sesso = document.getElementById('input-sesso').value;
+    const sezione = document.getElementById('input-sezione').value;
+    const bio = document.getElementById('input-bio').value.trim();
+
+    // Controllo campi vuoti
+    if (!nome || !cognome || !telefono || !sesso || !sezione || !bio) {
+      showToast('⚠️ Tutti i campi sono obbligatori!', 'error');
+      return false;
+    }
+
+    const phoneRegex = /^[0-9]{10,}$/;
+    if (!phoneRegex.test(telefono)) {
+      showToast('⚠️ numero di telefono almeno 10 cifre!', 'error');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      showToast('✅ Informazioni salvate con successo!', 'success');
+      navigate('/surveyPage');
+    }
+  };
 
   return (
     <div className="max-w-[350px]">
@@ -16,130 +51,95 @@ function BioPage() {
       </div>
 
       <div id="input-nome/cognome" className="mt-12 mr-32 max-w-sm">
-        <label
-          htmlFor="input-label"
-          className="block text-left font-medium mb-2 dark:text-white"
-        >
+        <label className="block text-left font-medium mb-2 dark:text-white">
           Nome
         </label>
         <input
           type="text"
-          id="input-label"
-          className=" input py-3 px-4 block w-full border-gray-200 rounded-lg text-sm placeholder:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-pink-600 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+          id="input-nome"
+          className="input py-3 px-4 block w-full"
           placeholder="Mario"
         />
 
         <div className="mt-5">
-          <label
-            htmlFor="input-label"
-            className="block text-left font-medium mb-2 dark:text-white"
-          >
+          <label className="block text-left font-medium mb-2 dark:text-white">
             Cognome
           </label>
           <input
             type="text"
-            id="input-label"
-            className=" input text-pink-600 py-3 px-4 block w-full border-gray-200 rounded-lg text-sm placeholder:opacity-50  disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-pink-600 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+            id="input-cognome"
+            className="input py-3 px-4 block w-full"
             placeholder="Rossi"
           />
         </div>
+
         <div className="mt-5">
-          <label
-            htmlFor="input-label"
-            className="block text-left font-medium mb-2 dark:text-white"
-          >
+          <label className="block text-left font-medium mb-2 dark:text-white">
             Numero di telefono
           </label>
           <input
             type="number"
-            id="input-label"
-            className=" input py-3 px-4 block w-full border-gray-200 rounded-lg text-sm placeholder:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+            id="input-telefono"
+            className="input py-3 px-4 block w-full"
             placeholder="+39"
           />
-          <div className="mt-7 w-[37vh]">
-            <div className="flex">
-              <label
-                htmlFor="input-label"
-                className="block text-left font-medium mb-2 dark:text-white"
-              >
-                Sesso
-              </label>
-              <div className="px-34">
-                <label
-                  htmlFor="input-label"
-                  className="block text-left font-medium mb-2 dark:text-white"
-                >
-                  Sezione
-                </label>
-              </div>
-            </div>
-            <div className="flex gap-x-4">
-              <select className=" select py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                <option selected=""></option>
-                <option>Maschio</option>
-                <option>Donna</option>
-                <option>Altro</option>
-              </select>
+        </div>
 
-              <select className=" select py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                <option selected=""></option>
-                <option>A</option>
-                <option>B</option>
-                <option>C</option>
-                <option>D</option>
-                <option>E</option>
-                <option>F</option>
-                <option>G</option>
-                <option>H</option>
-              </select>
-            </div>
+        <div className="mt-5 flex gap-x-4">
+          <div>
+            <label className="block text-left font-medium mb-2 dark:text-white">
+              Sesso
+            </label>
+            <select id="input-sesso" className="select py-3 px-4 block w-full">
+              <option value="">Seleziona...</option>
+              <option>Maschio</option>
+              <option>Donna</option>
+            </select>
           </div>
-          <div className="mt-5">
-            <label
-              htmlFor="input-label"
-              className="block text-left font-medium mb-2 dark:text-white"
+
+          <div>
+            <label className="block text-left font-medium mb-2 dark:text-white">
+              Sezione
+            </label>
+            <select
+              id="input-sezione"
+              className="select py-3 px-4 block w-full"
             >
-              Bio
-            </label>
-            <div className="max-w-sm space-y-3">
-              <textarea
-                className="textBio py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                rows="3"
-                placeholder="Mi piace il calcio"
-              ></textarea>
-            </div>
+              <option value="">Seleziona...</option>
+              <option>A</option>
+              <option>B</option>
+              <option>C</option>
+              <option>D</option>
+              <option>E</option>
+              <option>F</option>
+              <option>G</option>
+              <option>H</option>
+              <option>I</option>
+            </select>
           </div>
         </div>
-        <div className="w-[40vh] mt-10">
-          <form>
-            <label className="block">
-              <span className="sr-only"></span>
-              <input
-                type="file"
-                className="block w-full text-sm text-white
-        file:me-4 file:py-2 file:px-4
-        file:rounded-lg file:border-0
-        file:text-sm 
-        file:bg-white-600 file:text-black
-        hover:file:bg-blue-700
-        file:disabled:opacity-50 file:disabled:pointer-events-none
-        dark:text-white
-        dark:file:bg-white
-        dark:hover:file:bg-blue-400
-      "
-              />
-            </label>
-          </form>
+
+        <div className="mt-5">
+          <label className="block text-left font-medium mb-2 dark:text-white">
+            Bio
+          </label>
+          <textarea
+            id="input-bio"
+            className="textBio py-3 px-4 block w-full"
+            rows="3"
+            placeholder="Mi piace il calcio"
+          ></textarea>
         </div>
-        <div className="-mt-[50px] ml-[34px]">
+
+        <div className="w-[40vh] mt-10">
           <button
-            className="w-[291px] h-[43px] rounded-[47px] bg-white  text-black mt-28 "
-            onClick={() => navigate('/surveyPage')}
+            className="w-[291px] h-[43px] rounded-[47px] bg-white text-black mt-28"
+            onClick={handleSubmit}
           >
             <div className="flex items-center">
               <span className="ml-[120px] font-bold">Avanti</span>
               <div className="ml-auto">
-                <ArrowRight className="text-8xl " />
+                <ArrowRight className="text-8xl" />
               </div>
             </div>
           </button>
