@@ -2,9 +2,9 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Table SurveysResponse
 CREATE TABLE IF NOT EXISTS surveys (
-    id_survey UUID DEFAULT gen_random_uuid() PRIMARY KEY, -- Generazione automatica UUID
+    id_survey UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     response VARCHAR(11) NOT NULL, -- Risposta, massimo 11 caratteri
-    date_created TIMESTAMP DEFAULT NOW() -- Data di creazione, default al momento attuale
+    date_created TIMESTAMP DEFAULT NOW()
 );
 
 -- Table Users
@@ -32,9 +32,11 @@ CREATE TABLE IF NOT EXISTS images (
 
 
 CREATE TABLE IF NOT EXISTS matches (
-    email_user1 VARCHAR(100) REFERENCES users(email) ON DELETE CASCADE, -- Primo utente
-    email_user2 VARCHAR(100) REFERENCES users(email) ON DELETE CASCADE, -- Secondo utente
-    compatibility FLOAT NOT NULL, -- Compatibilità tra
-    date_created TIMESTAMP DEFAULT NOW(), -- Data di creazione
-    PRIMARY KEY (email_user1, email_user2) -- Chiave primaria composta
+    email_user1 VARCHAR(100) REFERENCES users(email) ON DELETE CASCADE,
+    email_user2 VARCHAR(100) REFERENCES users(email) ON DELETE CASCADE,
+    like_user1 BOOLEAN NOT NUll DEFAULT FALSE, -- True like - False dislike
+    like_user2 BOOLEAN  NOT NUll DEFAULT FALSE, -- True like - False dislike
+    compatibility FLOAT NOT NULL,
+    date_created TIMESTAMP DEFAULT NOW(),
+    PRIMARY KEY (email_user1, email_user2)
 );

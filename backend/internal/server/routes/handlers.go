@@ -10,6 +10,7 @@ type Handler struct {
 	UserRepo   *repository.UserRepository
 	SurveyRepo *repository.SurveyRepository
 	PhotoRepo  *repository.PhotoRepository
+	MatchRepo  *repository.MatchRepository
 }
 
 func NewHandler(db database.Database) *Handler {
@@ -20,5 +21,6 @@ func NewHandler(db database.Database) *Handler {
 		UserRepo:   repository.NewUserRepository(sqlDB),
 		SurveyRepo: repository.NewSurveyRepository(sqlDB),
 		PhotoRepo:  repository.NewPhotoRepository(sqlDB),
+		MatchRepo:  repository.NewMatchRepository(sqlDB),
 	}
 }

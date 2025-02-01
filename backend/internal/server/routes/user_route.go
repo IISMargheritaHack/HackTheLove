@@ -60,3 +60,42 @@ func (h *Handler) AddUserInfo(c *gin.Context) {
 	log.Info().Str("email", email).Msg("User info updated successfully")
 	c.JSON(http.StatusCreated, gin.H{"message": "User info updated"})
 }
+
+func (h *Handler) GetMatches(c *gin.Context) {
+	email := middleware.GetEmail(c)
+	matches, err := h.MatchRepo.GetMatches(email)
+	if err != nil {
+		log.Error().Err(err).Str("email", email).Msg("Database error while fetching matches")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching matches"})
+		return
+	}
+
+	c.JSON(http.StatusOK, matches)
+}
+
+func (h *Handler) SetLike(c *gin.Context) {
+	email := middleware.GetEmail(c)
+
+	var body struct {
+		EmailMatched string `json:"email_matched" binding:"required"`
+		ValueLike    bool   `json:"value_like"`
+	}
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		log.Error().Err(err).Str("email", email).Msg("Invalid request body")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	log.Debug().Str("email", email).Msg("Setting like")
+	log.Debug().Msgf("Request body: %+v", body)
+
+	err := h.MatchRepo.SetLike(email, body.EmailMatched, body.ValueLike)
+	if err != nil {
+		log.Error().Err(err).Str("email", email).Msg("Database error while setting like")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error setting like"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Like set"})
+}

@@ -71,15 +71,15 @@ func CalculateMatch(answersMatrix []models.Response, weights []float32) []models
 
 				if compatibility > config.MIN_VALUE_COMPATIBILITY {
 					localMatches = append(localMatches, models.Match{
-						UserEmail:        email1,
-						UserEmailMatched: email2,
-						Compatibility:    compatibility,
+						UserEmail1:    email1,
+						UserEmail2:    email2,
+						Compatibility: compatibility,
 					})
 				}
 			}
 
 			for _, match := range localMatches {
-				matchMap.Store(match.UserEmail+"-"+match.UserEmailMatched, match)
+				matchMap.Store(match.UserEmail1+"-"+match.UserEmail2, match)
 			}
 		}(indexUserMain)
 	}
