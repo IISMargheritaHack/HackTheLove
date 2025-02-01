@@ -110,7 +110,8 @@ func (r *SurveyRepository) GetAllUserSurveyResponse() ([]models.Response, error)
 	query := `
 	SELECT users.email, surveys.response, users.sex
 	FROM surveys
-	INNER JOIN users ON surveys.id_survey = users.id_survey;`
+	INNER JOIN users ON surveys.id_survey = users.id_survey
+	WHERE users.sex IS NOT NULL;`
 	rows, err := r.db.Query(query)
 	if err != nil {
 		log.Error().Err(err).Msg("Error querying all survey responses")
