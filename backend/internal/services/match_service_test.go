@@ -22,7 +22,7 @@ func TestMatchAlgo_Success(t *testing.T) {
 
 	for i := 0; i < len(allMatches); i++ {
 		match := allMatches[i]
-		t.Logf("Match %s with %s: %.2f%%\n", match.UserEmail, match.UserEmailMatched, match.Compatibility)
+		t.Logf("Match %s with %s: %.2f%%\n", match.UserEmail1, match.UserEmail2, match.Compatibility)
 	}
 
 	assert.Equal(t, true, true)
@@ -49,7 +49,7 @@ func TestCalcMatch_Success(t *testing.T) {
 	allMatches := CalculateMatch(responses, weights)
 	for i := 0; i < len(allMatches); i++ {
 		match := allMatches[i]
-		t.Logf("Match %s with %s: %.2f%%\n", match.UserEmail, match.UserEmailMatched, match.Compatibility)
+		t.Logf("Match %s with %s: %.2f%%\n", match.UserEmail1, match.UserEmail2, match.Compatibility)
 	}
 	elapsed_time := time.Since(start_time)
 	t.Logf("Elapsed time for complete task with print: %v", elapsed_time)
