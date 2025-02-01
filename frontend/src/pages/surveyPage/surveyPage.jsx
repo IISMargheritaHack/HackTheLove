@@ -1,8 +1,10 @@
 import './surveyPage.css';
 import ArrowRight from '@icons/arrowRight';
-import Toastify from 'toastify-js';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { showToast } from '../../components/toast';
+import 'toastify-js/src/toastify.css';
+
 function SurveyPage() {
   const questions = [
     {
@@ -28,29 +30,16 @@ function SurveyPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
 
-  const tostifyCustomClose = (el) => {
-    const parent = el.closest('.toastify');
-    const close = parent.querySelector('.toast-close');
-    close.click();
-  };
-
   const handleNext = () => {
     if (!answers[questions[currentQuestion].id]) {
-      Toastify({
-        text: 'Devi rispondere alla domanda prima di passare alla successiva.',
-        className:
-          'hs-toastify-on:opacity-100 opacity-0 fixed -top-[150px] right-[20px] z-[90] transition-all duration-300 w-[320px] bg-red-600 text-white text-sm border border-red-400 rounded-xl shadow-lg',
-        duration: 3000,
-        close: true,
-        escapeMarkup: false,
-      }).showToast();
+      showToast('⚠️ Devi rispondere prima di andare avanti!', 'error');
       return;
     }
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       console.log('Risposte utente:', answers);
-      alert('Survey completato! Grazie per aver partecipato 🎉');
+      showToast('✅ Survey completato! 🎉', 'success');
     }
   };
 
@@ -64,7 +53,7 @@ function SurveyPage() {
         <img id="logoBioPage" src={'logo.svg'} alt="Logo" />
       </div>
       <div className="mt-6 ml-1" id="title">
-        <h1 className="question  text-nowrap text-[25px]" id="">
+        <h1 className="question text-nowrap text-[25px]">
           La tua &quot;zona di interesse&quot;
         </h1>
       </div>
@@ -79,7 +68,7 @@ function SurveyPage() {
             transition={{ duration: 0.3 }}
           >
             <div className="w-[35vh]">
-              <h1 className="question  text-left text-[18px]  ml-1 text-nowrap">
+              <h1 className="question text-left text-[18px] ml-1 text-nowrap">
                 {questions[currentQuestion].id}.{' '}
                 {questions[currentQuestion].question}
               </h1>
@@ -89,7 +78,7 @@ function SurveyPage() {
               <div key={index} className="mt-8 ml-2 flex items-start w-[vh]">
                 <input
                   type="checkbox"
-                  className="accent-pink-800 size-[20px] shrink-0  mt-0.5 border-gray-200 appearance-none rounded disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:border-neutral-800 dark:checked:bg-pink-800"
+                  className="accent-pink-800 size-[20px] shrink-0 mt-0.5 border-gray-200 appearance-none rounded disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:border-neutral-800 dark:checked:bg-pink-800"
                   id={`option-${index}`}
                   onChange={() => handleSelect(option)}
                   checked={answers[questions[currentQuestion].id] === option}
@@ -97,7 +86,7 @@ function SurveyPage() {
 
                 <label
                   htmlFor={`option-${index}`}
-                  className=" text-white text-left ms-3 text-[12px] text-nowrap"
+                  className="text-white text-left ms-3 text-[12px] text-nowrap"
                 >
                   {option}
                 </label>
@@ -109,14 +98,13 @@ function SurveyPage() {
 
       <div className="mt-[13vh] ml-[vh]">
         <button
-          className="w-[291px] h-[43px] rounded-[47px] bg-white  text-black mt-28 "
+          className="w-[291px] h-[43px] rounded-[47px] bg-white text-black mt-28"
           onClick={handleNext}
-          disabled={!answers[questions[currentQuestion].id]}
         >
           <div className="flex items-center">
             <span className="ml-[120px] font-bold">Avanti</span>
             <div className="ml-auto">
-              <ArrowRight className="text-8xl " />
+              <ArrowRight className="text-8xl" />
             </div>
           </div>
         </button>
