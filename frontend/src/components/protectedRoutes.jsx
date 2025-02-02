@@ -7,17 +7,17 @@ const isValidJWT = (token) => {
     const isExpired = payload.exp * 1000 < Date.now();
     return !isExpired;
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return false;
   }
 };
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('jwt');
+  /*const token = localStorage.getItem('jwt');
   if (!isValidJWT(token)) {
     return <Navigate to="/login" replace />;
   }
-
+  */
   return children;
 };
 
