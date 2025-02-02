@@ -26,15 +26,17 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        }
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
         />{' '}
         <Route path="/login" element={<LoginPage />} />
         <Route
-          path="/introPage"
+          path="/intro"
           element={
             <ProtectedRoute>
               <IntroPage /> {/* Homepage */}
@@ -42,7 +44,7 @@ function App() {
           }
         />
         <Route
-          path="/bioPage"
+          path="/bio"
           element={
             <ProtectedRoute>
               <BioPage />
@@ -50,14 +52,14 @@ function App() {
           }
         />
         <Route
-          path="/surveyPage"
+          path="/survey"
           element={
             <ProtectedRoute>
               <SurveyPage />
             </ProtectedRoute>
           }
         />
-        <Route path='*' element={<Page404 />} />
+        <Route path="*" element={<Page404 />} />
       </Routes>
     </BrowserRouter>
   );
