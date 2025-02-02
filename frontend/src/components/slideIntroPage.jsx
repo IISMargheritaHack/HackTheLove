@@ -1,7 +1,7 @@
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import ArrowRight from '@icons/arrowRight';
-import { getUser } from '@api/api';
+// import { getUser, getSurvey, getMatches } from '@api/api';
 import { useNavigate } from 'react-router';
 const responsive = {
   tablet: {
@@ -61,10 +61,17 @@ const items = [
   </div>,
 ];
 
+
+async function testCall() {
+  // console.log(await getUser())
+  // console.log(await getSurvey())
+  // console.log(await getMatches())
+}
+
 export default function SlideIntroPage() {
   const navigate = useNavigate();
-  const ButtonGroup = ({ next }) => {
-    // eslint-disable-line react/prop-types
+  const ButtonGroup = ({ next }) => {    // eslint-disable-line react/prop-types
+
     return (
       <div className="carousel-button-group">
         {' '}
@@ -84,9 +91,7 @@ export default function SlideIntroPage() {
     );
   };
 
-  (async () => {
-    console.log(await getUser());
-  })();
+  testCall();
 
   const handleAfterChange = (previousSlide, state) => {
     //setCurrentSlide(state.currentSlide);
