@@ -1,8 +1,8 @@
-export default function ArrowRight() {
+export default function ArrowRight({ width, height }) {
   return (
     <svg
-      width="100"
-      height="30"
+      width={width}
+      height={height}
       viewBox="0 0 15 15"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

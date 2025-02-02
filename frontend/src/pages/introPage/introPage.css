@@ -1,111 +1,94 @@
-@font-face {
-  font-family: 'Gilmer';
-  src: url('../assets/fonts/Gilmer-Bold.otf') format('opentype');
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Gilmer';
-  src: url('../assets/fonts/Gilmer-Regular.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-body {
-  font-family: 'Gilmer', sans-serif;
-}
 #h1-slide1 {
-  width: 153px;
-  height: 26px;
+    width: 153px;
+    height: 26px;
 
-  gap: 0px;
-  opacity: 0px;
-  font-family: Gilmer;
-  font-size: 20px;
-  font-weight: 'bold';
-  line-height: 26.4px;
-  text-align: center;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  color: #ffffff;
+    gap: 0px;
+    opacity: 0px;
+    font-family: Gilmer;
+    font-size: 20px;
+    font-weight: 'bold';
+    line-height: 26.4px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #ffffff;
 }
 
 #p1-slide1 {
-  width: 333px;
-  height: 14px;
+    width: 333px;
+    height: 14px;
 
-  gap: 0px;
-  opacity: 0px;
-  font-family: Gilmer;
-  font-size: 12px;
-  font-weight: regular;
-  line-height: 14.4px;
-  text-align: center;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  color: #ffffff;
+    gap: 0px;
+    opacity: 0px;
+    font-family: Gilmer;
+    font-size: 12px;
+    font-weight: regular;
+    line-height: 14.4px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #ffffff;
 }
 
 #h1-slide2 {
-  width: 277px;
-  height: 26px;
-  gap: 0px;
-  opacity: 0px;
-  font-family: Gilmer;
-  font-size: 22px;
-  font-weight: 'Regular';
-  line-height: 26.4px;
-  text-align: center;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  color: #ffffff;
+    width: 277px;
+    height: 26px;
+    gap: 0px;
+    opacity: 0px;
+    font-family: Gilmer;
+    font-size: 22px;
+    font-weight: 'Regular';
+    line-height: 26.4px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #ffffff;
 }
 
 #p1-slide2 {
-  width: 346px;
-  height: 56px;
-  top: 453px;
-  left: 24px;
-  gap: 0px;
-  opacity: 0px;
-  font-family: Gilmer;
-  font-size: 12px;
-  font-weight: regular;
-  line-height: 14.4px;
-  text-align: center;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
+    width: 346px;
+    height: 56px;
+    top: 453px;
+    left: 24px;
+    gap: 0px;
+    opacity: 0px;
+    font-family: Gilmer;
+    font-size: 12px;
+    font-weight: regular;
+    line-height: 14.4px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
 }
 
 #h1-slide3 {
-  width: 328px;
-  height: 26px;
-  top: 414px;
-  left: 33px;
-  gap: 0px;
-  opacity: 0px;
-  font-family: Gilmer;
-  font-size: 22px;
-  font-weight: 'bold';
-  line-height: 26.4px;
-  text-align: center;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
+    width: 328px;
+    height: 26px;
+    top: 414px;
+    left: 33px;
+    gap: 0px;
+    opacity: 0px;
+    font-family: Gilmer;
+    font-size: 22px;
+    font-weight: 'bold';
+    line-height: 26.4px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
 }
 
 #p1-slide3 {
-  width: 346px;
-  height: 56px;
-  top: 453px;
-  left: 24px;
-  gap: 0px;
-  opacity: 0px;
-  font-family: Gilmer;
-  font-size: 12px;
-  font-weight: 'Regular';
-  line-height: 14.4px;
-  text-align: center;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
+    width: 346px;
+    height: 56px;
+    top: 453px;
+    left: 24px;
+    gap: 0px;
+    opacity: 0px;
+    font-family: Gilmer;
+    font-size: 12px;
+    font-weight: 'Regular';
+    line-height: 14.4px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
 }
