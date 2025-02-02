@@ -113,6 +113,28 @@ function BioPage() {
             ></textarea>
           </div>
 
+          <div className="max-w-[40vh] mt-10">
+            <form>
+              <label className="block">
+                <span className="sr-only">Choose profile photo</span>
+                <input
+                  type="file"
+                  className="block w-full text-sm text-gray-500
+                  file:me-4 file:py-2 file:px-4
+                  file:rounded-lg file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-white-600 file:text-black
+                  hover:file:bg-blue-700
+                  file:disabled:opacity-50 file:disabled:pointer-events-none
+                  dark:text-neutral-500
+                  dark:file:bg-white
+                  dark:hover:file:bg-blue-400
+                "
+                />
+              </label>
+            </form>
+          </div>
+
           <div className="w-full mt-10 flex justify-center">
             <button
               className="w-[80vw] h-[43px] rounded-4xl bg-white text-black flex items-center justify-center gap-2 shadow-md"
