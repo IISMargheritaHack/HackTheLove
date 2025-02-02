@@ -9,10 +9,11 @@ import (
 // App
 var LogLevel = utils.GetEnv("LOG_LEVEL", "debug")
 var LogFile = utils.GetEnv("LOG_FILE", "")
-var ScheduleTime = time.Now().Add(5 * time.Second)
+var ScheduleTime = time.Now().Add(20 * time.Second)
 
 const MIN_VALUE_COMPATIBILITY = 40
 const BATCH_SIZE = 1000
+const MAX_PHOTO_NUMBER = 5
 
 // Security configuration
 var JwtSecret = []byte(utils.GetEnv("SECRET_KEY", "secretkey"))
