@@ -14,6 +14,7 @@ export const showToast = (message, type) => {
       borderRadius: '8px',
       padding: '12px',
       fontWeight: 'bold',
+      width: '80vw',
     },
   }).showToast();
 };
