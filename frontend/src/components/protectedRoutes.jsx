@@ -1,4 +1,3 @@
-/* This components is not a REAL valid protection but a simple, the real auths are maded in the backend */
 import { Navigate } from 'react-router';
 
 const isValidJWT = (token) => {
@@ -8,17 +7,16 @@ const isValidJWT = (token) => {
     const isExpired = payload.exp * 1000 < Date.now();
     return !isExpired;
   } catch (error) {
+    console.error(error)
     return false;
   }
 };
 
 const ProtectedRoute = ({ children }) => {
-  //const token = localStorage.getItem('jwt');
-  //console.log(token);
-  //console.log(isValidJWT(token));
-  //if (!isValidJWT(token)) {
-  // return <Navigate to="/login" replace />;
-  //}
+  const token = localStorage.getItem('jwt');
+  if (!isValidJWT(token)) {
+    return <Navigate to="/login" replace />;
+  }
 
   return children;
 };

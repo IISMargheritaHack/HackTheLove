@@ -5,10 +5,8 @@ async function GetSignedJWT(googleToken) {
     const response = await api.post(
       '/verifyGoogleJWT',
       { idToken: googleToken },
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
     );
+    console.debug(response.data.token)
     localStorage.setItem('jwt', response.data.token);
   } catch (error) {
     console.error('Errore durante la richiesta:', error);

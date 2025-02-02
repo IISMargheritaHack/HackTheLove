@@ -141,7 +141,7 @@ func (r *PhotoRepository) GetNumberPhoto(email string) (int, error) {
 	var photoNumber int
 
 	query := `
-		SELECT COALESCE(SUM(lo_oid::int), 0)
+		SELECT COALESCE(COUNT(lo_oid::int), 0)
 		FROM images
 		WHERE email_user = $1;
 	`

@@ -32,7 +32,10 @@ func NewServer() *Server {
 
 	db := database.New()
 	log.Info().Msg("Initializing database tables")
-	db.InitTables()
+	err = db.InitTables()
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to initialize database tables")
+	}
 
 	router := routes.InitRoutes(*db)
 

@@ -19,14 +19,151 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+
+// GETS
+
 async function getUser() {
   try {
     const response = await api.get('/getUser');
     return response.data;
   } catch (error) {
     console.error('Errore durante la richiesta:', error);
+    return error.response.data;
   }
 }
+
+async function getSurvey() {
+  try {
+    const response = await api.get('/getSurvey');
+    return response.data;
+  } catch (error) {
+    console.error('Errore durante la richiesta:', error);
+    return error.response.data;
+  }
+}
+
+async function getMatches() {
+  try {
+    const response = await api.get('/getMatches');
+    return response;
+  } catch (error) {
+    console.error('Errore durante la richiesta:', error);
+    return error.response.data;
+  }
+}
+
+async function getPhotos() {
+  try {
+    const response = await api.get('/getPhoto', {
+      responseType: 'json',
+    });
+    return response.data.images;
+  } catch (error) {
+    console.error('Errore durante la richiesta:', error);
+    return [];
+  }
+}
+
+
+// POST
+
+async function addSurvey(surveyResponse) {
+
+  if (surveyResponse.length !== 11) {
+    return { error: 'Error: response not valid' }
+  };
+
+  if (surveyResponse.some(response => !['a', 'b', 'c', 'd'].includes(response.toLowerCase()))) {
+    return { error: 'Error: response not valid' };
+  }
+
+  try {
+    const response = await api.post('/postSurvey', { "response": surveyResponse });
+    return response.data;
+  } catch (error) {
+    console.error('Errore durante la richiesta:', error);
+    return error.response.data;
+  }
+}
+
+/*
+Example of userInfo object:
+{
+  "phone": "+393391859180",
+  "bio": "Pippo baudo",
+  "age": 18,
+  "section": "E",
+  "sex": true
+}
+*/
+async function addUserInfo(userInfo) {
+
+  if (!validateUserData(userInfo).valid) {
+    return { error: 'Error: response not valid' }
+  }
+
+  try {
+    const response = await api.post('/addUserInfo', userInfo);
+    return response.data;
+  } catch (error) {
+    console.error('Errore durante la richiesta:', error);
+    return error.response.data;
+  }
+}
+
+async function addPhotos(files) {
+  try {
+    const allowedMimeTypes = {
+      'image/png': true,
+      'image/jpeg': true,
+      'image/gif': true,
+    };
+    const maxFileSize = 10 * 1024 * 1024; // 10 MB in byte
+
+    if (files.length > 5) {
+      return { error: 'Puoi caricare un massimo di 5 foto.' };
+    }
+
+    for (let file of files) {
+      if (!allowedMimeTypes[file.type]) {
+        return { error: `Il file "${file.name}" non è in un formato supportato. (Solo PNG, JPEG, GIF)` };
+      }
+
+      if (file.size > maxFileSize) {
+        return { error: `Il file "${file.name}" supera la dimensione massima di 10 MB.` };
+      }
+    }
+
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
+    }
+
+    const response = await api.post('/addPhoto', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Errore durante la richiesta:', error);
+    return error.response?.data || { error: 'Errore sconosciuto' };
+  }
+}
+
+async function setLike(email_matched, value_like) {
+  try {
+    const response = await api.post('/setLike', { "email_matched": email_matched, "value_like": value_like });
+    return response.data;
+  } catch (error) {
+    console.error('Errore durante la richiesta:', error);
+    return error.response.data;
+  }
+}
+
+
+// OTHER
 
 async function healCheck() {
   try {
@@ -34,7 +171,41 @@ async function healCheck() {
     return response.data;
   } catch (error) {
     console.error('Errore durante la richiesta:', error);
+    return error.response.data;
   }
 }
 
-export { api, getUser, healCheck };
+export { api, getUser, getSurvey, getMatches, getPhotos, healCheck, setLike, addSurvey, addUserInfo, addPhotos };
+
+
+function validateUserData(data) {
+  const errors = [];
+
+  const phoneRegex = /^\+\d{1,3}\d{6,14}$/;
+  if (!phoneRegex.test(data.phone)) {
+    errors.push("Invalid phone number. It should start with +39 and contain 9-15 digits.");
+  }
+
+  if (typeof data.bio !== 'string' || data.bio.length > 500) {
+    errors.push("Invalid bio. It should be a non-empty string with a maximum of 500 characters.");
+  }
+
+  if (typeof data.age !== 'number' || data.age < 13 || data.age > 99) {
+    errors.push("Invalid age. It should be a number between 13 and 99.");
+  }
+
+  const sectionRegex = /^[A-Z]$/;
+  if (!sectionRegex.test(data.section)) {
+    errors.push("Invalid section. It should be a single uppercase letter (A-Z).");
+  }
+
+  if (typeof data.sex !== 'boolean') {
+    errors.push("Invalid sex. It should be a boolean value (true or false).");
+  }
+
+  if (errors.length > 0) {
+    return { valid: false, errors };
+  }
+
+  return { valid: true, message: "Data is valid." };
+}
