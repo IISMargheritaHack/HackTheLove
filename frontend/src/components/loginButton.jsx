@@ -7,8 +7,6 @@ import 'toastify-js/src/toastify.css';
 export default function LoginButton() {
   const navigate = useNavigate();
 
-  
-
   const handleRedirect = () => {
     navigate('/introPage', {});
   };
