@@ -1,8 +1,8 @@
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import ArrowRight from '@icons/arrowRight';
-// import { getUser, getSurvey, getMatches } from '@api/api';
 import { useNavigate } from 'react-router';
+
 const responsive = {
   tablet: {
     breakpoint: { max: 1024, min: 464 },
@@ -62,12 +62,6 @@ const items = [
 ];
 
 
-async function testCall() {
-  // console.log(await getUser())
-  // console.log(await getSurvey())
-  // console.log(await getMatches())
-}
-
 export default function SlideIntroPage() {
   const navigate = useNavigate();
   const ButtonGroup = ({ next }) => {    // eslint-disable-line react/prop-types
@@ -91,15 +85,9 @@ export default function SlideIntroPage() {
     );
   };
 
-  testCall();
-
   const handleAfterChange = (previousSlide, state) => {
-    //setCurrentSlide(state.currentSlide);
-    console.log(state);
-    // Se siamo all'ultima slide, reindirizza
     if (state.currentSlide === 2) {
-      console.log('Reindirizzamento in corso...');
-      navigate('/bioPage'); // Cambia "/next-page" con il percorso della pagina desiderata
+      navigate('/bioPage');
     }
   };
 
