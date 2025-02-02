@@ -1,18 +1,16 @@
 package routes
 
 import (
+	"backend/config"
 	"backend/internal/server/middleware"
 	"database/sql"
 	"encoding/base64"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
-
-const MAX_PHOTO_NUMBER = 5
 
 var allowedMimeTypes = map[string]bool{
 	"image/png":  true,
@@ -33,13 +31,6 @@ func (h *Handler) GetPhoto(c *gin.Context) {
 		}
 		log.Error().Err(err).Str("email", email).Msg("Database error while fetching photos")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve images"})
-		return
-	}
-
-	if len(photos) == 1 {
-		c.Header("Content-Type", "image/jpeg")
-		c.Header("Content-Disposition", fmt.Sprintf("inline; filename=image_%s.jpg", email))
-		c.Data(http.StatusOK, "image/jpeg", photos[0])
 		return
 	}
 
@@ -71,7 +62,9 @@ func (h *Handler) AddPhoto(c *gin.Context) {
 		return
 	}
 
-	if len(files) > MAX_PHOTO_NUMBER {
+	log.Debug().Int("number file uploaded", len(files)).Msg("File uploaded")
+
+	if len(files) > config.MAX_PHOTO_NUMBER {
 		log.Warn().Str("email", email).Msg("Too many files uploaded")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Too many files uploaded"})
 		return
@@ -84,13 +77,14 @@ func (h *Handler) AddPhoto(c *gin.Context) {
 	}
 
 	photoNumber, err := h.PhotoRepo.GetNumberPhoto(email)
+	log.Debug().Int("photo number", photoNumber).Msg("Photo number")
 	if err != nil {
 		log.Error().Str("email", email).Err(err).Msg("Failed to retrieve user photo number")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user photo number"})
 		return
 	}
 
-	if photoNumber > MAX_PHOTO_NUMBER {
+	if photoNumber > config.MAX_PHOTO_NUMBER {
 		log.Warn().Str("email", email).Err(err).Msg("User does not have enough space")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User does not have enough space"})
 		return

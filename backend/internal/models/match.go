@@ -1,15 +1,15 @@
 package models
 
 type Match struct {
-	UserEmail1    string
-	UserEmail2    string
-	LikeUser1     bool
-	LikeUser2     bool
-	Compatibility float64
+	UserEmail1    string  `json:"user_email1"`
+	UserEmail2    string  `json:"user_email2"`
+	LikeUser1     int     `json:"like_user1"`
+	LikeUser2     int     `json:"like_user2"`
+	Compatibility float64 `json:"compatibility"`
 }
 
 type Response struct {
-	Email    string
-	Response []string
-	Sex      bool
+	Email    string   `json:"email"`
+	Response []string `json:"response"`
+	Sex      bool     `json:"sex"`
 }
