@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+
+@theme screens: {
+    --sm: 320px;
+    --md: 375px;
+    --lg: 414px;
+}
+
 @font-face {
     font-family: 'Gilmer';
     src: url('@fonts/Gilmer-Bold.otf') format('opentype');
@@ -14,12 +21,20 @@
     font-style: normal;
 }
 
+html {
+    margin: 0px;
+    padding: 0px;
+    max-width: 100vw;
+    max-height: 100vh;
+    color: #ffffff;
+}
+
 :root {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
-
-    color: #ffffff;
+    max-width: 100vw;
+    max-height: 100vh;
     background: linear-gradient(180deg, #ff007a, #800040);
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -29,66 +44,10 @@
 
 body {
     margin: 0;
-    display: flex;
+    font-family: Gilmer;
     font-family: 'Gilmer', sans-serif;
-    min-width: 200px;
+    min-width: 100vw;
     min-height: 100vh;
-}
-
-.logoPage {
-    align-items: center;
-    width: 200px;
-    height: 100px;
-    margin: 0 auto;
-}
-
-/*h1 {
-  font-size: 3.2em;
-  line-height: 2.2;
-  width: 153px;
-  height: 26px;
-
-  gap: 0px;
-  opacity: 0px;
-  font-family: Gilmer;
-  font-size: 20px;
-  font-weight: 'bold';
-  line-height: 26.4px;
-  text-align: center;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  color: #ffffff;
-}
-
-#p1 {
-  width: 333px;
-  height: 14px;
-
-  gap: 0px;
-  opacity: 0px;
-  font-family: Gilmer;
-  font-size: 12px;
-  font-weight: regular;
-  line-height: 14.4px;
-  text-align: center;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  color: #ffffff;
-}
-
-#p2 {
-  width: 346px;
-  height: 42px;
-  gap: 0px;
-  opacity: 0px;
-  font-family: Gilmer;
-  font-size: 12px;
-  font-weight: 'Regular';
-  line-height: 14.4px;
-  text-align: center;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  color: #ffffff;
 }
 
 /*Css styled for carousel*/
