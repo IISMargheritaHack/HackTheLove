@@ -8,6 +8,7 @@ import IntroPage from '@pages/introPage/introPage.jsx';
 import ProtectedRoute from '@components/protectedRoutes';
 import BioPage from '@pages/bioPage/bioPage';
 import SurveyPage from '@pages/surveyPage/surveyPage';
+import HomePage from './pages/homePage/homePage';
 
 // import { healCheck } from './api/api';
 
@@ -30,7 +31,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginPage />} />{' '}
+        <Route path="/" element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        }
+        />{' '}
         {/* To remove and add homepage */}
         <Route path="/login" element={<LoginPage />} />
         <Route
