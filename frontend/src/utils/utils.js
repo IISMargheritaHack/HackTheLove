@@ -4,7 +4,7 @@ import { getPhotos } from '@api/api';
 
 async function readImage(arrayBuffer) {
   try {
-    const blob = new Blob([arrayBuffer], { type: 'image/jpeg' }); // Cambia il tipo se necessario
+    const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
     const imageUrl = URL.createObjectURL(blob);
 
     const img = document.createElement('img');

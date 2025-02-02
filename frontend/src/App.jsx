@@ -9,6 +9,7 @@ import ProtectedRoute from '@components/protectedRoutes';
 import BioPage from '@pages/bioPage/bioPage';
 import SurveyPage from '@pages/surveyPage/surveyPage';
 import HomePage from './pages/homePage/homePage';
+import Page404 from './pages/404Page';
 
 // import { healCheck } from './api/api';
 
@@ -24,10 +25,6 @@ function App() {
     }
   }, []);
 
-  // (async () => {
-  //   console.log(await healCheck())
-  // })();
-
   return (
     <BrowserRouter>
       <Routes>
@@ -37,7 +34,6 @@ function App() {
           </ProtectedRoute>
         }
         />{' '}
-        {/* To remove and add homepage */}
         <Route path="/login" element={<LoginPage />} />
         <Route
           path="/introPage"
@@ -63,6 +59,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path='*' element={<Page404 />} />
       </Routes>
     </BrowserRouter>
   );
