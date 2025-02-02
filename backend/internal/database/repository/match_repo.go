@@ -136,7 +136,7 @@ func (r *MatchRepository) GetMatches(email string) ([]models.Match, error) {
 	return matches, nil
 }
 
-func (r *MatchRepository) SetLike(emailMain, emailMatch string, valueLike bool) error {
+func (r *MatchRepository) SetLike(emailMain, emailMatch string, valueLike int) error {
 	var match models.Match
 
 	queryGetMatch := `
@@ -185,7 +185,7 @@ func (r *MatchRepository) SetLike(emailMain, emailMatch string, valueLike bool) 
 		return fmt.Errorf("no match updated for %s", emailMain)
 	}
 
-	log.Info().Str("email_main", emailMain).Str("like_field", emailToUpdate).Bool("value", valueLike).Msg("Like updated successfully")
+	log.Info().Str("email_main", emailMain).Str("like_field", emailToUpdate).Int("value", valueLike).Msg("Like updated successfully")
 
 	return nil
 }

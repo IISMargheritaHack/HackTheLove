@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS images (
 CREATE TABLE IF NOT EXISTS matches (
     email_user1 VARCHAR(100) REFERENCES users(email) ON DELETE CASCADE,
     email_user2 VARCHAR(100) REFERENCES users(email) ON DELETE CASCADE,
-    like_user1 BOOLEAN NOT NUll DEFAULT FALSE, -- True like - False dislike
-    like_user2 BOOLEAN  NOT NUll DEFAULT FALSE, -- True like - False dislike
+    like_user1 INTEGER NOT NUll DEFAULT -1 CHECK (like_user1 BETWEEN -1 AND 1), -- 1 like - 0 dislike
+    like_user2 INTEGER  NOT NUll DEFAULT -1 CHECK (like_user2 BETWEEN -1 AND 1), -- 1 like - 0 dislike
     compatibility FLOAT NOT NULL,
     date_created TIMESTAMP DEFAULT NOW(),
     PRIMARY KEY (email_user1, email_user2)

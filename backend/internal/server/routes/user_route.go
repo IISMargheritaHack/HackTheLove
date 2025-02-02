@@ -78,7 +78,7 @@ func (h *Handler) SetLike(c *gin.Context) {
 
 	var body struct {
 		EmailMatched string `json:"email_matched" binding:"required"`
-		ValueLike    bool   `json:"value_like"`
+		ValueLike    int    `json:"value_like"`
 	}
 
 	if err := c.ShouldBindJSON(&body); err != nil {
