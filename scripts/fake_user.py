@@ -2,6 +2,7 @@ import psycopg2
 from faker import Faker
 import random
 import uuid
+import re
 
 fake = Faker()
 
@@ -21,16 +22,23 @@ def connect_db():
         print(f"❌ Database connection error: {e}")
         return None
 
+# ✅ Clean phone number
+def generate_clean_phone():
+    phone = fake.unique.phone_number()
+    phone = re.sub(r'\D', '', phone)  # Remove all non-digit characters
+    return phone[:15]  # Ensure it's within 15 digits
+
 def generate_fake_user():
     return {
         "email": fake.unique.email()[:255],
         "name": fake.first_name()[:255],
         "surname": fake.last_name()[:255],
-        "phone": fake.phone_number()[:15],
+        "phone": generate_clean_phone(),  # Use cleaned phone
         "sex": random.choice([True, False]),
         "bio": fake.text(max_nb_chars=200),
-        "age": random.randint(13, 21),
-        "section": random.choice(["A", "B", "C", "D", "E"])
+        "age": random.randint(10, 100),  # Expanded range
+        "section": random.choice(["A", "B", "C", "D", "E"]),
+        "classe": random.randint(1, 5)   # Ensure integer type
     }
 
 def generate_survey_response():
@@ -45,8 +53,8 @@ def add_users_with_surveys(n):
     cursor = conn.cursor()
 
     user_insert_query = """
-        INSERT INTO users (email, name, surname, phone, sex, bio, age, section, id_survey)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO users (email, name, surname, phone, sex, bio, age, section, id_survey, classe)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT (email) DO NOTHING;
     """
 
@@ -68,7 +76,8 @@ def add_users_with_surveys(n):
 
             users.append((
                 user["email"], user["name"], user["surname"], user["phone"],
-                user["sex"], user["bio"], user["age"], user["section"], inserted_survey_id
+                user["sex"], user["bio"], user["age"], user["section"], inserted_survey_id,
+                user["classe"]
             ))
         except Exception as e:
             print(f"⚠️ Error inserting survey: {e}")
