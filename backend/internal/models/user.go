@@ -12,6 +12,7 @@ type UserInfo struct {
 	Age     *int    `json:"age"  validate:"required"`
 	Section *string `json:"section"  validate:"required"`
 	Sex     *bool   `json:"sex"  validate:"required"`
+	Classe  *int    `json:"classe"  validate:"required"`
 }
 
 type CompleteUser struct {
