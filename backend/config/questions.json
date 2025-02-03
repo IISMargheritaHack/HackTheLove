@@ -4,22 +4,16 @@
       "id": 1,
       "question": "Come preferisci passare il tempo libero?",
       "options": [
-        [
-          "Relax a casa (film, libri, videogiochi)",
-          "a"
-        ],
-        [
-          "Attività all’aperto (sport, passeggiate, escursioni)",
-          "b"
-        ],
-        [
-          "Uscire con gli amici (cene, eventi sociali)",
-          "c"
-        ],
-        [
-          "Viaggiare o esplorare posti nuovi",
-          "d"
-        ]
+        "Relax a casa (film, libri, videogiochi)",
+        "Attività all’aperto (sport, passeggiate, escursioni)",
+        "Uscire con gli amici (cene, eventi sociali)",
+        "Viaggiare o esplorare posti nuovi"
+      ],
+      "values": [
+        "a",
+        "b",
+        "c",
+        "d"
       ],
       "weight": 0.3
     },
@@ -27,22 +21,16 @@
       "id": 2,
       "question": "Come descriveresti il tuo approccio alla vita?",
       "options": [
-        [
-          "Pragmatico e razionale",
-          "a"
-        ],
-        [
-          "Creativo e spontaneo",
-          "b"
-        ],
-        [
-          "Rilassato e senza fretta",
-          "c"
-        ],
-        [
-          "Ambizioso e orientato agli obiettivi",
-          "d"
-        ]
+        "Pragmatico e razionale",
+        "Creativo e spontaneo",
+        "Rilassato e senza fretta",
+        "Ambizioso e orientato agli obiettivi"
+      ],
+      "values": [
+        "a",
+        "b",
+        "c",
+        "d"
       ],
       "weight": 0.5
     },
@@ -50,22 +38,16 @@
       "id": 3,
       "question": "Qual è la tua idea di una serata perfetta?",
       "options": [
-        [
-          "Una cena intima a casa o al ristorante",
-          "a"
-        ],
-        [
-          "Divertimento con un gruppo di amici",
-          "b"
-        ],
-        [
-          "Un’attività avventurosa o insolita",
-          "c"
-        ],
-        [
-          "Una serata tranquilla dedicata ai propri hobby",
-          "d"
-        ]
+        "Una cena intima a casa o al ristorante",
+        "Divertimento con un gruppo di amici",
+        "Un’attività avventurosa o insolita",
+        "Una serata tranquilla dedicata ai propri hobby"
+      ],
+      "values": [
+        "a",
+        "b",
+        "c",
+        "d"
       ],
       "weight": 0.3
     },
@@ -73,22 +55,16 @@
       "id": 4,
       "question": "Quali sono le tue priorità nella vita?",
       "options": [
-        [
-          "Famiglia e relazioni",
-          "a"
-        ],
-        [
-          "Carriera e successo professionale",
-          "b"
-        ],
-        [
-          "Esperienze e avventure",
-          "c"
-        ],
-        [
-          "Crescita personale e spirituale",
-          "d"
-        ]
+        "Famiglia e relazioni",
+        "Carriera e successo professionale",
+        "Esperienze e avventure",
+        "Crescita personale e spirituale"
+      ],
+      "values": [
+        "a",
+        "b",
+        "c",
+        "d"
       ],
       "weight": 1
     },
@@ -96,22 +72,16 @@
       "id": 5,
       "question": "Come gestisci i conflitti?",
       "options": [
-        [
-          "Preferisco affrontarli subito e risolverli",
-          "a"
-        ],
-        [
-          "Mi prendo il tempo per riflettere prima di parlarne",
-          "b"
-        ],
-        [
-          "Cerco di evitare lo scontro il più possibile",
-          "c"
-        ],
-        [
-          "Dipende dal tipo di conflitto",
-          "d"
-        ]
+        "Preferisco affrontarli subito e risolverli",
+        "Mi prendo il tempo per riflettere prima di parlarne",
+        "Cerco di evitare lo scontro il più possibile",
+        "Dipende dal tipo di conflitto"
+      ],
+      "values": [
+        "a",
+        "b",
+        "c",
+        "d"
       ],
       "weight": 0.8
     },
@@ -119,22 +89,16 @@
       "id": 6,
       "question": "Quanto sei organizzato nella vita quotidiana?",
       "options": [
-        [
-          "Molto organizzato, pianifico tutto nei dettagli",
-          "a"
-        ],
-        [
-          "Abbastanza organizzato, ma lascio spazio alla flessibilità",
-          "b"
-        ],
-        [
-          "Non molto organizzato, vivo alla giornata",
-          "c"
-        ],
-        [
-          "Preferisco delegare o affidarmi al caso",
-          "d"
-        ]
+        "Molto organizzato, pianifico tutto nei dettagli",
+        "Abbastanza organizzato, ma lascio spazio alla flessibilità",
+        "Non molto organizzato, vivo alla giornata",
+        "Preferisco delegare o affidarmi al caso"
+      ],
+      "values": [
+        "a",
+        "b",
+        "c",
+        "d"
       ],
       "weight": 0.4
     },
@@ -142,22 +106,16 @@
       "id": 7,
       "question": "Che ruolo ha l’umorismo in una relazione per te?",
       "options": [
-        [
-          "È fondamentale, devo poter ridere spesso con il partner",
-          "a"
-        ],
-        [
-          "È importante, ma non essenziale",
-          "b"
-        ],
-        [
-          "Lo apprezzo, ma preferisco conversazioni serie",
-          "c"
-        ],
-        [
-          "Non è una priorità, ognuno ha il proprio modo di essere",
-          "d"
-        ]
+        "È fondamentale, devo poter ridere spesso con il partner",
+        "È importante, ma non essenziale",
+        "Lo apprezzo, ma preferisco conversazioni serie",
+        "Non è una priorità, ognuno ha il proprio modo di essere"
+      ],
+      "values": [
+        "a",
+        "b",
+        "c",
+        "d"
       ],
       "weight": 0.6
     },
@@ -165,22 +123,16 @@
       "id": 8,
       "question": "Quale sarebbe il tuo approccio a un viaggio?",
       "options": [
-        [
-          "Pianificare ogni dettaglio in anticipo",
-          "a"
-        ],
-        [
-          "Lasciare spazio all’improvvisazione",
-          "b"
-        ],
-        [
-          "Seguire una guida ma senza troppi vincoli",
-          "c"
-        ],
-        [
-          "Non amo viaggiare molto",
-          "d"
-        ]
+        "Pianificare ogni dettaglio in anticipo",
+        "Lasciare spazio all’improvvisazione",
+        "Seguire una guida ma senza troppi vincoli",
+        "Non amo viaggiare molto"
+      ],
+      "values": [
+        "a",
+        "b",
+        "c",
+        "d"
       ],
       "weight": 0.1
     },
@@ -188,22 +140,16 @@
       "id": 9,
       "question": "Quanto sei aperto a cambiare abitudini per una relazione?",
       "options": [
-        [
-          "Sono molto aperto, se serve per migliorare la relazione",
-          "a"
-        ],
-        [
-          "Sono disposto a cambiare alcune cose, ma non tutto",
-          "b"
-        ],
-        [
-          "Preferisco che entrambi manteniamo i nostri spazi e abitudini",
-          "c"
-        ],
-        [
-          "Non credo sia necessario cambiare per qualcun altro",
-          "d"
-        ]
+        "Sono molto aperto, se serve per migliorare la relazione",
+        "Sono disposto a cambiare alcune cose, ma non tutto",
+        "Preferisco che entrambi manteniamo i nostri spazi e abitudini",
+        "Non credo sia necessario cambiare per qualcun altro"
+      ],
+      "values": [
+        "a",
+        "b",
+        "c",
+        "d"
       ],
       "weight": 0.8
     },
@@ -211,22 +157,16 @@
       "id": 10,
       "question": "Cosa significa per te il successo?",
       "options": [
-        [
-          "Avere stabilità finanziaria e una carriera di successo",
-          "a"
-        ],
-        [
-          "Coltivare relazioni profonde e appaganti",
-          "b"
-        ],
-        [
-          "Vivere esperienze memorabili e avventurose",
-          "c"
-        ],
-        [
-          "Sentirsi felici e soddisfatti con ciò che si ha",
-          "d"
-        ]
+        "Avere stabilità finanziaria e una carriera di successo",
+        "Coltivare relazioni profonde e appaganti",
+        "Vivere esperienze memorabili e avventurose",
+        "Sentirsi felici e soddisfatti con ciò che si ha"
+      ],
+      "values": [
+        "a",
+        "b",
+        "c",
+        "d"
       ],
       "weight": 0.5
     },
@@ -234,14 +174,12 @@
       "id": 11,
       "question": "Ti piacciono le olive?",
       "options": [
-        [
-          "Si",
-          "a"
-        ],
-        [
-          "No",
-          "b"
-        ]
+        "Si",
+        "No"
+      ],
+      "values": [
+        "a",
+        "b"
       ],
       "weight": 1
     }

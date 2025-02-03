@@ -86,8 +86,9 @@ export default function SlideIntroPage() {
   };
 
   const handleAfterChange = (previousSlide, state) => {
+    localStorage.setItem('introEnded', true);
     if (state.currentSlide === 2) {
-      navigate('/bioPage');
+      navigate('/bio');
     }
   };
 

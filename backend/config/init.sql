@@ -13,11 +13,12 @@ CREATE TABLE IF NOT EXISTS users (
     id_survey UUID REFERENCES surveys(id_survey) ON DELETE SET NULL, -- Id of the survey
     name VARCHAR(255) NOT NULL, -- Name
     surname VARCHAR(255) NOT NULL, -- Surname
-    phone VARCHAR(15), -- Phone
-    sex BOOLEAN, -- Sex
-    bio TEXT, -- Biography
-    age INTEGER, -- Age
-    section VARCHAR(1), -- Section
+    phone VARCHAR(20) UNIQUE, -- Phone
+    sex BOOLEAN DEFAULT NULL, -- Sex
+    bio TEXT CHECK (char_length(bio) <= 1000), -- Biography
+    classe INTEGER CHECK (classe BETWEEN 1 AND 5), -- Class
+    age INTEGER CHECK (age BETWEEN 10 AND 100), -- Age
+    section CHAR(1) CHECK (section IN ('A','B','C','D','E','F','G','H','I')), -- Section
     date_created TIMESTAMP DEFAULT NOW() -- Date of creation
 );
 
