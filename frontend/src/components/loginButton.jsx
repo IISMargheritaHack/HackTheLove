@@ -8,7 +8,13 @@ export default function LoginButton() {
   const navigate = useNavigate();
 
   const handleRedirect = () => {
-    navigate('/introPage', {});
+
+    if (localStorage.getItem('introEnded') === 'true') {
+      navigate('/bio', {});
+      return;
+    }
+
+    navigate('/intro', {});
   };
 
   const handleLoginSuccess = async (CredentialResponse) => {

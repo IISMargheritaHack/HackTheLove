@@ -64,22 +64,31 @@ async function getPhotos() {
   }
 }
 
+async function getQuestions() {
+  try {
+    const response = await api.get('/getQuestions');
+    return response.data;
+  } catch (error) {
+    console.error('Errore durante la richiesta:', error);
+    return error.response.data;
+  }
+}
+
 
 // POST
 
 async function addSurvey(surveyResponse) {
-
   if (surveyResponse.length !== 11) {
     return { error: 'Error: response not valid' }
   };
 
-  if (surveyResponse.some(response => !['a', 'b', 'c', 'd'].includes(response.toLowerCase()))) {
+
+  if (surveyResponse.split("").some(response => !['a', 'b', 'c', 'd'].includes(response.toLowerCase()))) {
     return { error: 'Error: response not valid' };
   }
 
   try {
-    const response = await api.post('/postSurvey', { "response": surveyResponse });
-    return response.data;
+    await api.post('/addSurvey', { "response": surveyResponse });
   } catch (error) {
     console.error('Errore durante la richiesta:', error);
     return error.response.data;
@@ -98,13 +107,14 @@ Example of userInfo object:
 */
 async function addUserInfo(userInfo) {
 
-  if (!validateUserData(userInfo).valid) {
-    return { error: 'Error: response not valid' }
+  let result = validateUserData(userInfo);
+
+  if (!result.valid) {
+    return { error: result.message }
   }
 
   try {
-    const response = await api.post('/addUserInfo', userInfo);
-    return response.data;
+    await api.post('/addUserInfo', userInfo);
   } catch (error) {
     console.error('Errore durante la richiesta:', error);
     return error.response.data;
@@ -175,15 +185,25 @@ async function healCheck() {
   }
 }
 
-export { api, getUser, getSurvey, getMatches, getPhotos, healCheck, setLike, addSurvey, addUserInfo, addPhotos };
+export { api, getUser, getSurvey, getMatches, getPhotos, getQuestions, healCheck, setLike, addSurvey, addUserInfo, addPhotos };
 
 
 function validateUserData(data) {
   const errors = [];
 
+  if (!data.phone?.startsWith('+')) {
+    data.phone = `+39${data.phone}`;
+  }
+
+  console.log(data);
+
   const phoneRegex = /^\+\d{1,3}\d{6,14}$/;
   if (!phoneRegex.test(data.phone)) {
-    errors.push("Invalid phone number. It should start with +39 and contain 9-15 digits.");
+    errors.push("Invalid phone number. It should start with a prefix and contain 9-15 digits.");
+  }
+
+  if (typeof data.classe !== 'number' || isNaN(data.classe)) {
+    errors.push("Invalid class. It should be a non-empty number.");
   }
 
   if (typeof data.bio !== 'string' || data.bio.length > 500) {
@@ -194,9 +214,9 @@ function validateUserData(data) {
     errors.push("Invalid age. It should be a number between 13 and 99.");
   }
 
-  const sectionRegex = /^[A-Z]$/;
+  const sectionRegex = /^[A-I]$/;
   if (!sectionRegex.test(data.section)) {
-    errors.push("Invalid section. It should be a single uppercase letter (A-Z).");
+    errors.push("Invalid section. It should be a single uppercase letter (A-I).");
   }
 
   if (typeof data.sex !== 'boolean') {
@@ -204,7 +224,7 @@ function validateUserData(data) {
   }
 
   if (errors.length > 0) {
-    return { valid: false, errors };
+    return { valid: false, message: errors };
   }
 
   return { valid: true, message: "Data is valid." };

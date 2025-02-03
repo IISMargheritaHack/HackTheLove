@@ -1,4 +1,5 @@
 import { Navigate } from 'react-router';
+import PropTypes from 'prop-types';
 
 const isValidJWT = (token) => {
   if (!token) return false;
@@ -11,14 +12,18 @@ const isValidJWT = (token) => {
     return false;
   }
 };
-
 const ProtectedRoute = ({ children }) => {
-  /*const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem('jwt');
   if (!isValidJWT(token)) {
     return <Navigate to="/login" replace />;
   }
-  */
+
   return children;
+};
+
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default ProtectedRoute;

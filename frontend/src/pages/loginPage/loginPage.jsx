@@ -5,8 +5,8 @@ function LoginPage() {
   return (
     <div id="main" className="flex flex-col min-h-screen px-4 py-6 text-[1rem] justify-evenly mt-[10vh] md:text-[1.2rem] lg:text-[1.5rem]">
       <div id="header" className="flex flex-col items-center text-center">
-        <Logo />
-        <div id="Hack" className="flex mt-4">
+        <Logo width={6} />
+        <div id="Hack" className="flex">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-6" id="titleLoginPage">
             Hack The Love
           </h1>
