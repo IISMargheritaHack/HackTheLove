@@ -22,7 +22,7 @@ func (r *UserRepository) GetUser(email string) (*models.CompleteUser, error) {
 	var user models.CompleteUser
 
 	query := `
-		SELECT email, name, surname, phone, bio, age, sex, section
+		SELECT email, name, surname, phone, bio, age, sex, section, classe
 		FROM users
 		WHERE email = $1;
 	`
@@ -36,6 +36,7 @@ func (r *UserRepository) GetUser(email string) (*models.CompleteUser, error) {
 		&user.UserInfo.Age,
 		&user.UserInfo.Sex,
 		&user.UserInfo.Section,
+		&user.UserInfo.Classe,
 	)
 
 	if err != nil {
@@ -74,10 +75,10 @@ func (r *UserRepository) AddUserInfo(user models.UserInfo, email string) error {
 
 	query := `
 		UPDATE users
-		SET phone = $1, bio = $2, age = $3, section = $4, sex = $5
+		SET phone = $1, bio = $2, age = $3, section = $4, sex = $5, classe = $6
 		WHERE email = $6;
 	`
-	result, err := r.db.Exec(query, user.Phone, user.Bio, user.Age, user.Section, user.Sex, email)
+	result, err := r.db.Exec(query, user.Phone, user.Bio, user.Age, user.Section, user.Sex, user.Classe, email)
 	if err != nil {
 		log.Error().Err(err).Str("email", email).Msg("Error updating user info")
 		return fmt.Errorf("error updating user info for email %s: %w", email, err)
