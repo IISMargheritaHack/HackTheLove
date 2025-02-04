@@ -17,7 +17,7 @@ const responsive = {
 const items = [
   <div key={0}>
     <div className="">
-      <h1 className="ms-auto me-auto" id="h1-slide1">
+      <h1 className="ms-auto me-auto font-bold" id="h1-slide1">
         Tutte le info!
       </h1>
     </div>
