@@ -13,11 +13,11 @@ const isValidJWT = (token) => {
   }
 };
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('jwt');
+ /* const token = localStorage.getItem('jwt');
   if (!isValidJWT(token)) {
     return <Navigate to="/login" replace />;
   }
-
+*/
   return children;
 };
 

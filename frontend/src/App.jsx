@@ -8,9 +8,9 @@ import IntroPage from '@pages/introPage/introPage.jsx';
 import ProtectedRoute from '@components/protectedRoutes';
 import BioPage from '@pages/bioPage/bioPage';
 import SurveyPage from '@pages/surveyPage/surveyPage';
-import HomePage from './pages/homePage/homePage';
-import Page404 from './pages/404Page';
-
+import HomePage from '@pages/homePage/homePage';
+import Page404 from '@pages/404Page';
+import ProfilePage from '@pages/profilePage/profilePage';
 function App() {
   const AlertMessageDesktop =
     'ATTENTO Il sito è disponibile solo da cellulare!';
@@ -60,6 +60,14 @@ function App() {
           }
         />
         <Route path="*" element={<Page404 />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
