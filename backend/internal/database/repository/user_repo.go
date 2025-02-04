@@ -78,6 +78,7 @@ func (r *UserRepository) AddUserInfo(user models.UserInfo, email string) error {
 		SET phone = $1, bio = $2, age = $3, section = $4, sex = $5, classe = $6
 		WHERE email = $7;
 	`
+
 	result, err := r.db.Exec(query, user.Phone, user.Bio, user.Age, user.Section, user.Sex, user.Classe, email)
 	if err != nil {
 		log.Error().Err(err).Str("email", email).Msg("Error updating user info")
