@@ -8,8 +8,10 @@ import (
 
 func registerProtectedRoutes(r *gin.RouterGroup, h *Handler) {
 	r.GET("/getUser", h.GetUser)
+	r.GET("/getUserByParams", h.GetUserByParams)
 	r.GET("/getSurvey", h.GetSurvey)
 	r.GET("/getPhoto", h.GetPhoto)
+	r.GET("/getPhotoByParams", h.GetPhotoByParams)
 	r.GET("/getMatches", h.GetMatches)
 
 	r.POST("/addSurvey", middleware.TimeRestrictionMiddleware(), h.AddSurvey)
