@@ -4,16 +4,33 @@ import { useNavigate } from 'react-router';
 import { showToast } from '@components/toast';
 import 'toastify-js/src/toastify.css';
 import { useEffect, useState } from 'react';
-import { addUserInfo } from '@api/api';
+import { addUserInfo, addPhotos } from '@api/api';
 
 function BioPage() {
   const navigate = useNavigate();
+  const [files, setFiles] = useState([]);
   const [age, setEta] = useState(14); // Età iniziale
+
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    if (selectedFiles.length > 5) {
+      showToast("Puoi caricare un massimo di 5 foto!", 'error');
+      e.target.value = "";
+      return;
+    }
+    setFiles(selectedFiles)
+  };
+
+  const removeImage = (index) => {
+    setFiles(files.filter((_, i) => i !== index));
+  };
+
   useEffect(() => {
     if (localStorage.getItem('bioCompleted') === 'true') {
       navigate('/survey');
     }
   }, [navigate]);
+
 
 
   const validateForm = () => {
@@ -53,7 +70,13 @@ function BioPage() {
       classe: parseInt(classe)
     };
 
-    const error = await addUserInfo(data);
+    let error = await addUserInfo(data);
+    if (error) {
+      console.error('Errore durante la richiesta:', error);
+      return error.response?.data || { error: 'Errore sconosciuto' };
+    }
+
+    error = await addPhotos(files);
     if (error) {
       console.error('Errore durante la richiesta:', error);
       return error.response?.data || { error: 'Errore sconosciuto' };
@@ -181,23 +204,44 @@ function BioPage() {
         <div className="max-w-[40vh] mt-10">
           <form>
             <label className="block">
-              <span className="sr-only">Choose profile photo</span>
+              <span className="sr-only">Scegli le foto del profilo</span>
               <input
                 type="file"
+                multiple
+                max={5}
+                accept="image/png, image/jpeg, image/jpg, image/gif"
+                onChange={handleFileChange}
                 className="block w-full text-sm text-white
-                  file:me-4 file:py-2 file:px-4
-                  file:rounded-lg file:border-0
-                  file:text-sm file:font-semibold
-                  file:bg-white-600 file:text-black
-                  hover:file:bg-pink-700
-                  file:disabled:opacity-50 file:disabled:pointer-events-none
-                  dark:text-neutral-500
-                  dark:file:bg-white
-                  dark:hover:file:bg-blue-400
-                "
+                      file:me-4 file:py-2 file:px-4
+                      file:rounded-lg file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-white file:text-black
+                      hover:file:bg-pink-700
+                      file:disabled:opacity-50 file:disabled:pointer-events-none
+                      dark:text-neutral-500
+                      dark:file:bg-white
+                      dark:hover:file:bg-blue-400"
               />
             </label>
           </form>
+
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            {files.map((file, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={`preview-${index}`}
+                  className="w-full h-24 object-cover rounded-lg"
+                />
+                <button
+                  onClick={() => removeImage(index)}
+                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full px-1 text-xs"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="w-full mt-10 flex justify-center">
