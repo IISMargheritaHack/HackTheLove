@@ -32,6 +32,20 @@ async function getUser() {
   }
 }
 
+async function getUserByParams(email) {
+  try {
+    const response = await api.get('/getUserByParams', {
+      params: { email }  // ✅ Invia l'email come query string
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Errore durante la richiesta:', error);
+    return error.response ? error.response.data : { error: 'Errore di rete' };
+  }
+}
+
+
+
 async function getSurvey() {
   try {
     const response = await api.get('/getSurvey');
@@ -45,7 +59,7 @@ async function getSurvey() {
 async function getMatches() {
   try {
     const response = await api.get('/getMatches');
-    return response;
+    return response.data;
   } catch (error) {
     console.error('Errore durante la richiesta:', error);
     return error.response.data;
@@ -55,6 +69,18 @@ async function getMatches() {
 async function getPhotos() {
   try {
     const response = await api.get('/getPhoto', {
+      responseType: 'json',
+    });
+    return response.data.images;
+  } catch (error) {
+    console.error('Errore durante la richiesta:', error);
+    return [];
+  }
+}
+
+async function getPhotosByParams(email) {
+  try {
+    const response = await api.get('/getPhotoByParams', {
       responseType: 'json',
     });
     return response.data.images;
@@ -184,7 +210,7 @@ async function healCheck() {
   }
 }
 
-export { api, getUser, getSurvey, getMatches, getPhotos, getQuestions, healCheck, setLike, addSurvey, addUserInfo, addPhotos };
+export { api, getUser, getSurvey, getMatches, getPhotos, getQuestions, healCheck, setLike, addSurvey, addUserInfo, addPhotos, getUserByParams, getPhotosByParams };
 
 
 function validateUserData(data) {
