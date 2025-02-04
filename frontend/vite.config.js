@@ -5,6 +5,9 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // server: {
+  //   allowedHosts: true,
+  // },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     "alias": {
@@ -16,5 +19,6 @@ export default defineConfig({
       '@fonts': '/src/assets/fonts',
       '@api': '/src/api/',
     }
-  }
+  },
+
 })
