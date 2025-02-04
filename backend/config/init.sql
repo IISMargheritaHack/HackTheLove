@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- Table SurveysResponse
 CREATE TABLE IF NOT EXISTS surveys (
     id_survey UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    response VARCHAR(11) NOT NULL, -- Risposta, massimo 11 caratteri
+    response VARCHAR(11) NOT NULL , -- Risposta, massimo 11 caratteri
     date_created TIMESTAMP DEFAULT NOW()
 );
 
@@ -41,3 +41,23 @@ CREATE TABLE IF NOT EXISTS matches (
     date_created TIMESTAMP DEFAULT NOW(),
     PRIMARY KEY (email_user1, email_user2)
 );
+
+
+-- Trigger
+
+CREATE OR REPLACE FUNCTION prevent_id_survey_update()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF OLD.id_survey IS NOT NULL AND NEW.id_survey IS DISTINCT FROM OLD.id_survey THEN
+        RAISE EXCEPTION 'id_survey può essere aggiornato solo una volta da NULL a un valore non NULL.';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_prevent_id_survey_update ON users;
+
+CREATE TRIGGER trigger_prevent_id_survey_update
+BEFORE UPDATE OF id_survey ON users
+FOR EACH ROW
+EXECUTE FUNCTION prevent_id_survey_update();
