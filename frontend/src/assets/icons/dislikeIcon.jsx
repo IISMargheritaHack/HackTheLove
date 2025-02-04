@@ -1,11 +1,9 @@
 export default function DislikeIcon({ width, height }) {
-
-
   return (
-    <svg
-      width={width}
-      height={height}
-      transform="rotate(180)"
-      xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" > <path fill="#ff0000" d="M256 73.825a182.177 182.177 0 0 0-182.179 182.18c0 100.608 81.563 182.17 182.179 182.17 100.61 0 182.18-81.562 182.18-182.17A182.182 182.182 0 0 0 256 73.825zm-44.63 231.1a17.811 17.811 0 1 1-35.623 0v-75.93a17.811 17.811 0 1 1 35.623 0zm125.806-1.275c0 13.913-8.13 18.897-22.051 18.897h-64.047a25.198 25.198 0 0 1-25.198-25.198v-63s-1.248-10.477 10.354-20.33a104.718 104.718 0 0 0 23.097-29.11c13.517-25.628 21.603-33.09 27.773-31.086 22.808 7.382 11.4 41.202 4.043 55.327h20.83a25.203 25.203 0 0 1 25.199 25.198v69.302z" data-name="Like" /></svg >
+    <svg width="71" height="71" viewBox="0 0 71 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="71" height="71" rx="35.5" fill="#871A1A" />
+      <path d="M21 20L52.5 51.5" stroke="white" strokeWidth="9" />
+      <path d="M51.5 20L20 51.5" stroke="white" strokeWidth="9" />
+    </svg>
   );
 }

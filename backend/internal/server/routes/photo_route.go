@@ -42,6 +42,30 @@ func (h *Handler) GetPhoto(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"images": encodedImages})
 }
 
+func (h *Handler) GetPhotoByParams(c *gin.Context) {
+	email := c.Query("email")
+	log.Debug().Str("email", email).Msg("Fetching photos")
+
+	photos, err := h.PhotoRepo.GetPhoto(email)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			log.Warn().Str("email", email).Msg("No images found")
+			c.JSON(http.StatusNotFound, gin.H{"error": "No images found"})
+			return
+		}
+		log.Error().Err(err).Str("email", email).Msg("Database error while fetching photos")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve images"})
+		return
+	}
+
+	var encodedImages []string
+	for _, imgData := range photos {
+		encodedImages = append(encodedImages, base64.StdEncoding.EncodeToString(imgData))
+	}
+
+	c.JSON(http.StatusOK, gin.H{"images": encodedImages})
+}
+
 /*
 Endpoint per caricare immagini via Multipart Form
 */

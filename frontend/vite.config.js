@@ -18,6 +18,7 @@ export default defineConfig({
       '@pages': '/src/pages',
       '@fonts': '/src/assets/fonts',
       '@api': '/src/api/',
+      '@provider': '/src/provider'
     }
   },
 

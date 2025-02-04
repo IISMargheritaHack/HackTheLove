@@ -25,6 +25,23 @@ func (h *Handler) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+func (h *Handler) GetUserByParams(c *gin.Context) {
+	email := c.Query("email")
+	user, err := h.UserRepo.GetUser(email)
+	if err != nil {
+		log.Error().Err(err).Str("email", email).Msg("Database error while fetching user")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching user"})
+		return
+	}
+
+	if user == nil || user.User.Email == "" {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
 /*
 Expected JSON:
 

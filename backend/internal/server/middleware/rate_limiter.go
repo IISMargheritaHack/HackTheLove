@@ -11,7 +11,7 @@ import (
 
 var log = logger.GetLogger()
 
-const requestsPerSecond = 5
+const requestsPerSecond = 50
 
 type clientLimiter struct {
 	limiter  *rate.Limiter

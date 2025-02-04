@@ -4,6 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "dependencies": {
+    "@heroui/button": "^2.2.10",
+    "@heroui/dropdown": "^2.3.10",
+    "@heroui/system": "^2.4.7",
+    "@heroui/theme": "^2.4.6",
     "@react-oauth/google": "^0.12.1",
     "@tailwindcss/vite": "^4.0.0",
     "axios": "^1.7.9",
