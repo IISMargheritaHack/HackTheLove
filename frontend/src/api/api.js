@@ -122,44 +122,43 @@ async function addUserInfo(userInfo) {
 }
 
 async function addPhotos(files) {
-  try {
-    const allowedMimeTypes = {
-      'image/png': true,
-      'image/jpeg': true,
-      'image/gif': true,
-    };
-    const maxFileSize = 10 * 1024 * 1024; // 10 MB in byte
 
-    if (files.length > 5) {
-      return { error: 'Puoi caricare un massimo di 5 foto.' };
-    }
+  const allowedMimeTypes = {
+    'image/png': true,
+    'image/jpeg': true,
+    'image/gif': true,
+  };
+  const maxFileSize = 10 * 1024 * 1024; // 10 MB in byte
 
-    for (let file of files) {
-      if (!allowedMimeTypes[file.type]) {
-        return { error: `Il file "${file.name}" non è in un formato supportato. (Solo PNG, JPEG, GIF)` };
-      }
-
-      if (file.size > maxFileSize) {
-        return { error: `Il file "${file.name}" supera la dimensione massima di 10 MB.` };
-      }
-    }
-
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i]);
-    }
-
-    const response = await api.post('/addPhoto', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error('Errore durante la richiesta:', error);
-    return error.response?.data || { error: 'Errore sconosciuto' };
+  if (files.length > 5) {
+    return { error: 'Puoi caricare un massimo di 5 foto.' };
   }
+
+  for (let file of files) {
+    if (!allowedMimeTypes[file.type]) {
+      return { error: `Il file "${file.name}" non è in un formato supportato. (Solo PNG, JPEG, GIF)` };
+    }
+
+    if (file.size > maxFileSize) {
+      return { error: `Il file "${file.name}" supera la dimensione massima di 10 MB.` };
+    }
+  }
+
+  const formData = new FormData();
+  for (let i = 0; i < files.length; i++) {
+    formData.append('files', files[i]);
+  }
+
+  const error = await api.post('/addPhoto', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+  if (error) {
+    return { error: error.data };
+  }
+
 }
 
 async function setLike(email_matched, value_like) {

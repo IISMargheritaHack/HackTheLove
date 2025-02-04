@@ -38,8 +38,9 @@ function BioPage() {
     const sesso = document.getElementById('input-sex').value;
     const sezione = document.getElementById('input-section').value;
     const bio = document.getElementById('input-bio').value.trim();
+    const classe = document.getElementById('input-class').value.trim();
 
-    if (!telefono || !sesso || !sezione || !bio) {
+    if (!telefono || !sesso || !sezione || !bio || !classe || files.length === 0) {
       showToast('⚠️ Tutti i campi sono obbligatori!', 'error');
       return false;
     }
