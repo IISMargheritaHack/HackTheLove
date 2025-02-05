@@ -107,9 +107,9 @@ func (r *MatchRepository) GetMatchAverage() (float64, error) {
 func (r *MatchRepository) GetMatches(email string) ([]models.Match, error) {
 	var matches []models.Match
 	query := `
-		SELECT email_user1, email_user2, compatibility, like_user1, like_user2
-		FROM matches JOIN users ON email = email_user1 OR email = email_user2
-		WHERE email = $1;
+	SELECT email_user1, email_user2, compatibility, like_user1, like_user2
+	FROM matches
+	WHERE (email_user1 = $1 AND like_user1 = -1) OR (email_user2 = $1 AND like_user2 = -1);
 	`
 
 	rows, err := r.db.Query(query, email)

@@ -3,6 +3,7 @@ from faker import Faker
 import random
 import uuid
 import re
+import io
 
 fake = Faker()
 
@@ -13,6 +14,9 @@ DB_CONFIG = {
     "host": "localhost",
     "port": "5432",
 }
+
+possible_images = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg']
+
 
 def connect_db():
     try:
@@ -33,16 +37,25 @@ def generate_fake_user():
         "email": fake.unique.email()[:255],
         "name": fake.first_name()[:255],
         "surname": fake.last_name()[:255],
-        "phone": generate_clean_phone(),  # Use cleaned phone
+        "phone": generate_clean_phone(),
         "sex": random.choice([True, False]),
         "bio": fake.text(max_nb_chars=200),
-        "age": random.randint(10, 100),  # Expanded range
+        "age": random.randint(10, 100),
         "section": random.choice(["A", "B", "C", "D", "E"]),
-        "classe": random.randint(1, 5)   # Ensure integer type
+        "classe": random.randint(1, 5)
     }
 
 def generate_survey_response():
     return ''.join(random.choices(["a", "b", "c", "d"], k=11))
+
+def fetch_random_image():
+    try:
+        image_filename = random.choice(possible_images)
+        with open("./images/" + image_filename, 'rb') as img_file:
+            return io.BytesIO(img_file.read())
+    except Exception as e:
+        print(f"⚠️ Error loading image: {e}")
+        return None
 
 def add_users_with_surveys(n):
     conn = connect_db()
@@ -64,39 +77,53 @@ def add_users_with_surveys(n):
         RETURNING id_survey;
     """
 
-    users = []
+    image_insert_query = """
+        INSERT INTO images (email_user, lo_oid, metadata)
+        VALUES (%s, %s, %s);
+    """
+
     for _ in range(n):
         user = generate_fake_user()
         survey_id = str(uuid.uuid4())
         response = generate_survey_response()
 
         try:
+            # Inserisci survey e ottieni l'ID
             cursor.execute(survey_insert_query, (survey_id, response))
             inserted_survey_id = cursor.fetchone()[0]
 
-            users.append((
+            # Inserisci utente
+            cursor.execute(user_insert_query, (
                 user["email"], user["name"], user["surname"], user["phone"],
-                user["sex"], user["bio"], user["age"], user["section"], inserted_survey_id,
-                user["classe"]
+                user["sex"], user["bio"], user["age"], user["section"],
+                inserted_survey_id, user["classe"]
             ))
+
+            # Inserisci immagine
+            img_data = fetch_random_image()
+            if img_data:
+                lobj = conn.lobject(0, 'w', 0)
+                lobj.write(img_data.read())
+                lobj.close()
+
+                cursor.execute(image_insert_query, (user["email"], lobj.oid, '{"description": "Random stock image"}'))
+
+            conn.commit()  # ✅ Commit per ogni utente
+
         except Exception as e:
-            print(f"⚠️ Error inserting survey: {e}")
+            print(f"⚠️ Error inserting data: {e}")
             conn.rollback()
 
-    try:
-        cursor.executemany(user_insert_query, users)
-        conn.commit()
-        print(f"✅ Inserted {cursor.rowcount} users and surveys into the database!")
-    except Exception as e:
-        print(f"❌ Error inserting users: {e}")
-        conn.rollback()
-    finally:
-        cursor.close()
-        conn.close()
+    cursor.close()
+    conn.close()
+    print(f"✅ Inserted {n} users, surveys, and images into the database!")
 
 def main():
-    num_users = int(input("How many users do you want to generate? "))
-    add_users_with_surveys(num_users)
+    try:
+        num_users = int(input("How many users do you want to generate? "))
+        add_users_with_surveys(num_users)
+    except ValueError:
+        print("❌ Invalid input. Please enter a valid number.")
 
 if __name__ == "__main__":
     main()
