@@ -4,7 +4,6 @@ import random
 import uuid
 import re
 import io
-from PIL import Image
 
 fake = Faker()
 
@@ -15,6 +14,9 @@ DB_CONFIG = {
     "host": "localhost",
     "port": "5432",
 }
+
+possible_images = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg']
+
 
 def connect_db():
     try:
@@ -46,13 +48,14 @@ def generate_fake_user():
 def generate_survey_response():
     return ''.join(random.choices(["a", "b", "c", "d"], k=11))
 
-# ✅ Generazione di un'immagine fake
-def generate_fake_image():
-    img = Image.new('RGB', (100, 100), color=(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
-    buffer = io.BytesIO()
-    img.save(buffer, format="PNG")
-    buffer.seek(0)
-    return buffer
+def fetch_random_image():
+    try:
+        image_filename = random.choice(possible_images)
+        with open("./images/" + image_filename, 'rb') as img_file:
+            return io.BytesIO(img_file.read())
+    except Exception as e:
+        print(f"⚠️ Error loading image: {e}")
+        return None
 
 def add_users_with_surveys(n):
     conn = connect_db()
@@ -97,12 +100,13 @@ def add_users_with_surveys(n):
             ))
 
             # Inserisci immagine
-            img_data = generate_fake_image()
-            lobj = conn.lobject(0, 'w', 0)
-            lobj.write(img_data.read())
-            lobj.close()
+            img_data = fetch_random_image()
+            if img_data:
+                lobj = conn.lobject(0, 'w', 0)
+                lobj.write(img_data.read())
+                lobj.close()
 
-            cursor.execute(image_insert_query, (user["email"], lobj.oid, '{"description": "Fake image"}'))
+                cursor.execute(image_insert_query, (user["email"], lobj.oid, '{"description": "Random stock image"}'))
 
             conn.commit()  # ✅ Commit per ogni utente
 
