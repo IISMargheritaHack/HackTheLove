@@ -19,7 +19,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-
 // GETS
 
 async function getUser() {
@@ -35,7 +34,7 @@ async function getUser() {
 async function getUserByParams(email) {
   try {
     const response = await api.get('/getUserByParams', {
-      params: { email }  // ✅ Invia l'email come query string
+      params: { email }, // ✅ Invia l'email come query string
     });
     return response.data;
   } catch (error) {
@@ -43,8 +42,6 @@ async function getUserByParams(email) {
     return error.response ? error.response.data : { error: 'Errore di rete' };
   }
 }
-
-
 
 async function getSurvey() {
   try {
@@ -66,23 +63,23 @@ async function getMatches() {
   }
 }
 
-async function getPhotos() {
+const getPhotos = () =>
+  handleRequest(() => api.get('/getPhoto', { responseType: 'json' }));
+
+const handleRequest = async (callback) => {
   try {
-    const response = await api.get('/getPhoto', {
-      responseType: 'json',
-    });
-    return response.data.images;
+    const response = await callback();
+    return response.data;
   } catch (error) {
-    console.error('Errore durante la richiesta:', error);
-    return [];
+    return error;
   }
-}
+};
 
 async function getPhotosByParams(email) {
   try {
     const response = await api.get('/getPhotoByParams', {
       responseType: 'json',
-      params: { email }
+      params: { email },
     });
     return response.data.images;
   } catch (error) {
@@ -101,21 +98,25 @@ async function getQuestions() {
   }
 }
 
-
 // POST
 
 async function addSurvey(surveyResponse) {
   if (surveyResponse.length !== 11) {
-    return { error: 'Error: response not valid' }
-  };
+    return { error: 'Error: response not valid' };
+  }
 
-
-  if (surveyResponse.split("").some(response => !['a', 'b', 'c', 'd'].includes(response.toLowerCase()))) {
+  if (
+    surveyResponse
+      .split('')
+      .some(
+        (response) => !['a', 'b', 'c', 'd'].includes(response.toLowerCase())
+      )
+  ) {
     return { error: 'Error: response not valid' };
   }
 
   try {
-    await api.post('/addSurvey', { "response": surveyResponse });
+    await api.post('/addSurvey', { response: surveyResponse });
   } catch (error) {
     console.error('Errore durante la richiesta:', error);
     return error.response.data;
@@ -133,11 +134,10 @@ Example of userInfo object:
 }
 */
 async function addUserInfo(userInfo) {
-
   let result = validateUserData(userInfo);
 
   if (!result.valid) {
-    return { error: result.message }
+    return { error: result.message };
   }
 
   try {
@@ -149,7 +149,6 @@ async function addUserInfo(userInfo) {
 }
 
 async function addPhotos(files) {
-
   const allowedMimeTypes = {
     'image/png': true,
     'image/jpeg': true,
@@ -163,11 +162,15 @@ async function addPhotos(files) {
 
   for (let file of files) {
     if (!allowedMimeTypes[file.type]) {
-      return { error: `Il file "${file.name}" non è in un formato supportato. (Solo PNG, JPEG, GIF)` };
+      return {
+        error: `Il file "${file.name}" non è in un formato supportato. (Solo PNG, JPEG, GIF)`,
+      };
     }
 
     if (file.size > maxFileSize) {
-      return { error: `Il file "${file.name}" supera la dimensione massima di 10 MB.` };
+      return {
+        error: `Il file "${file.name}" supera la dimensione massima di 10 MB.`,
+      };
     }
   }
 
@@ -185,20 +188,20 @@ async function addPhotos(files) {
   if (error.data.results[0].status !== 'success') {
     return { error: error.data };
   }
-
-
 }
 
 async function setLike(email_matched, value_like) {
   try {
-    const response = await api.post('/setLike', { "email_matched": email_matched, "value_like": value_like });
+    const response = await api.post('/setLike', {
+      email_matched: email_matched,
+      value_like: value_like,
+    });
     return response.data;
   } catch (error) {
     console.error('Errore durante la richiesta:', error);
     return error.response.data;
   }
 }
-
 
 // OTHER
 
@@ -212,8 +215,21 @@ async function healCheck() {
   }
 }
 
-export { api, getUser, getSurvey, getMatches, getPhotos, getQuestions, healCheck, setLike, addSurvey, addUserInfo, addPhotos, getUserByParams, getPhotosByParams };
-
+export {
+  api,
+  getUser,
+  getSurvey,
+  getMatches,
+  getPhotos,
+  getQuestions,
+  healCheck,
+  setLike,
+  addSurvey,
+  addUserInfo,
+  addPhotos,
+  getUserByParams,
+  getPhotosByParams,
+};
 
 function validateUserData(data) {
   const errors = [];
@@ -226,33 +242,39 @@ function validateUserData(data) {
 
   const phoneRegex = /^\+\d{1,3}\d{6,14}$/;
   if (!phoneRegex.test(data.phone)) {
-    errors.push("Invalid phone number. It should start with a prefix and contain 9-15 digits.");
+    errors.push(
+      'Invalid phone number. It should start with a prefix and contain 9-15 digits.'
+    );
   }
 
   if (typeof data.classe !== 'number' || isNaN(data.classe)) {
-    errors.push("Invalid class. It should be a non-empty number.");
+    errors.push('Invalid class. It should be a non-empty number.');
   }
 
   if (typeof data.bio !== 'string' || data.bio.length > 500) {
-    errors.push("Invalid bio. It should be a non-empty string with a maximum of 500 characters.");
+    errors.push(
+      'Invalid bio. It should be a non-empty string with a maximum of 500 characters.'
+    );
   }
 
   if (typeof data.age !== 'number' || data.age < 13 || data.age > 99) {
-    errors.push("Invalid age. It should be a number between 13 and 99.");
+    errors.push('Invalid age. It should be a number between 13 and 99.');
   }
 
   const sectionRegex = /^[A-I]$/;
   if (!sectionRegex.test(data.section)) {
-    errors.push("Invalid section. It should be a single uppercase letter (A-I).");
+    errors.push(
+      'Invalid section. It should be a single uppercase letter (A-I).'
+    );
   }
 
   if (typeof data.sex !== 'boolean') {
-    errors.push("Invalid sex. It should be a boolean value (true or false).");
+    errors.push('Invalid sex. It should be a boolean value (true or false).');
   }
 
   if (errors.length > 0) {
     return { valid: false, message: errors };
   }
 
-  return { valid: true, message: "Data is valid." };
+  return { valid: true, message: 'Data is valid.' };
 }
