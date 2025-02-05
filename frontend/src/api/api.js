@@ -82,6 +82,7 @@ async function getPhotosByParams(email) {
   try {
     const response = await api.get('/getPhotoByParams', {
       responseType: 'json',
+      params: { email }
     });
     return response.data.images;
   } catch (error) {
@@ -181,9 +182,10 @@ async function addPhotos(files) {
     },
   });
 
-  if (error) {
+  if (error.data.results[0].status !== 'success') {
     return { error: error.data };
   }
+
 
 }
 
