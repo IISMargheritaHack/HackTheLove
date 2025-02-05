@@ -2,6 +2,7 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import ArrowRight from '@icons/arrowRight';
 import { useNavigate } from 'react-router';
+import { useState } from 'react';
 
 const responsive = {
   tablet: {
@@ -31,7 +32,7 @@ const items = [
 
   <div key={1}>
     <div className="">
-      <h1 className="ms-auto me-auto" id="h1-slide2">
+      <h1 className="ms-auto me-auto font-bold" id="h1-slide2">
         Attento alla compilazione!
       </h1>
     </div>
@@ -46,7 +47,7 @@ const items = [
 
   <div key={2}>
     <div className="">
-      <h1 className="ms-auto me-auto" id="h1-slide3">
+      <h1 className="ms-auto me-auto font-bold" id="h1-slide3">
         La selezione è a tuo vantaggio
       </h1>
     </div>
@@ -61,23 +62,34 @@ const items = [
   </div>,
 ];
 
-
 export default function SlideIntroPage() {
   const navigate = useNavigate();
-  const ButtonGroup = ({ next }) => {    // eslint-disable-line react/prop-types
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const ButtonGroup = ({ next }) => {
+    const isLastSlide = currentSlide === items.length - 1;
+
+    const handleClick = () => {
+      if (isLastSlide) {
+        localStorage.setItem('introEnded', true);
+        navigate('/bio');
+      } else {
+        next();
+      }
+    };
 
     return (
       <div className="carousel-button-group">
-        {' '}
         <button
-          className="w-[291px] h-[43px] rounded-[47px] bg-white  text-black mt-28 "
-          onClick={() => next()}
+          className="w-[291px] h-[43px] rounded-[47px] bg-white text-black mt-28"
+          onClick={handleClick}
         >
-          {' '}
           <div className="flex items-center">
-            <span className="ml-[120px] font-bold">Avanti</span>
+            <span className="ml-[120px] font-bold">
+              {isLastSlide ? 'Fine' : 'Avanti'}
+            </span>
             <div className="ml-auto">
-              <ArrowRight className="text-8xl " />
+              <ArrowRight className="text-8xl" />
             </div>
           </div>
         </button>
@@ -86,10 +98,7 @@ export default function SlideIntroPage() {
   };
 
   const handleAfterChange = (previousSlide, state) => {
-    localStorage.setItem('introEnded', true);
-    if (state.currentSlide === 2) {
-      navigate('/bio');
-    }
+    setCurrentSlide(state.currentSlide);
   };
 
   return (
