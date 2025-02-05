@@ -23,10 +23,8 @@ const ProtectedRoute = ({ children }) => {
 
     if (isValidJWT(token)) {
       const email = JSON.parse(atob(token.split('.')[1])).email;
-      console.log("TOKEN VALIDO - EMAIL:", email);
       setUser({ email });
     } else {
-      console.log("TOKEN NON VALIDO - Reset user a null");
       setUser(null);
     }
   }, [setUser]);
