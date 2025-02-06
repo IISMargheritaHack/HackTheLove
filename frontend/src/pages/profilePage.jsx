@@ -9,7 +9,6 @@ export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [urls, setUrls] = useState([]);
-  const [private, setPrivate] = useState(true);
   const query = new URLSearchParams(useLocation().search);
   const email = query.get("email");
 
@@ -20,7 +19,6 @@ export default function ProfilePage() {
         if (email == null && email !== '' && typeof email != 'string') {
           data = await getUser();
         } else {
-          setPrivate(false);
           data = await getUserByParams(atob(email));
 
         }
@@ -37,7 +35,6 @@ export default function ProfilePage() {
         if (email == null && email !== '' && typeof email != 'string') {
           photos = await getPhotos();
         } else {
-          setPrivate(false);
           photos = await getPhotosByParams(atob(email));
         }
         const imageUrls = photos.images.map((image) =>
@@ -81,7 +78,6 @@ export default function ProfilePage() {
           PROFILO
         </h2>
 
-        {/* Immagine profilo */}
         <div className="relative mx-auto w-24 h-24 bg-gray-200 rounded-full overflow-hidden border-4 border-pink-700">
           <img
             src={urls[0]}
@@ -99,7 +95,6 @@ export default function ProfilePage() {
           </p>
         </div>
 
-        {/* Info utente */}
         <div className="flex justify-between mt-6 px-10 text-black">
           <div className="text-center">
             <p className="text-sm font-bold">ETÁ</p>

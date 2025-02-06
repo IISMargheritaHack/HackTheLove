@@ -2,7 +2,7 @@ import ArrowRight from '@icons/arrowRight';
 import Logo from '@components/logo';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { showToast } from '../../components/toast';
+import { showToast } from '@components/toast';
 import 'toastify-js/src/toastify.css';
 import { useNavigate } from 'react-router';
 import { addSurvey, getQuestions } from '@api/api';
