@@ -1,7 +1,7 @@
-import { Navigate } from 'react-router';
-import PropTypes from 'prop-types';
 import UserContext from '@provider/userContext';
+import PropTypes from 'prop-types';
 import { useContext, useEffect } from 'react';
+import { Navigate, Outlet } from 'react-router';
 
 const isValidJWT = (token) => {
   if (!token) return false;
@@ -16,7 +16,7 @@ const isValidJWT = (token) => {
 };
 
 const ProtectedRoute = ({ children }) => {
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
 
   useEffect(() => {
     const token = localStorage.getItem('jwt');
@@ -29,18 +29,17 @@ const ProtectedRoute = ({ children }) => {
     }
   }, [setUser]);
 
-
   const token = localStorage.getItem('jwt');
 
   if (!isValidJWT(token)) {
     return <Navigate to="/login" replace />;
   }
 
-  return children;
+  return children ? children : <Outlet />;
 };
 
 ProtectedRoute.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
 };
 
 export default ProtectedRoute;
