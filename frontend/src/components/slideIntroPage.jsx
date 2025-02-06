@@ -1,29 +1,23 @@
+import ArrowRight from '@icons/arrowRight';
+import { useState } from 'react';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import ArrowRight from '@icons/arrowRight';
 import { useNavigate } from 'react-router';
-import { useState } from 'react';
 
 const responsive = {
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-  },
+  tablet: { breakpoint: { max: 1024, min: 464 }, items: 1 },
+  mobile: { breakpoint: { max: 464, min: 0 }, items: 1 },
 };
 
 const items = [
   <div key={0}>
     <div className="">
-      <h1 className="ms-auto me-auto font-bold" id="h1-slide1">
+      <h1 className="ms-auto me-auto font-bold">
         Tutte le info!
       </h1>
     </div>
     <div className="mb-36">
-      <p className="mt-2" id="p1-slide1">
+      <p className="mt-2">
         Per poter far lavorare il nostro algoritmo e far funzionare il sito
         abbiamo bisogno di alcune informazioni su di te
       </p>
@@ -32,12 +26,12 @@ const items = [
 
   <div key={1}>
     <div className="">
-      <h1 className="ms-auto me-auto font-bold" id="h1-slide2">
+      <h1 className="ms-auto me-auto font-bold">
         Attento alla compilazione!
       </h1>
     </div>
     <div className="mb-36">
-      <p className="mt-2" id="p1-slide2">
+      <p className="mt-2">
         Se dovessi inserire foto che non riguardano te o dati personali non
         congrui con le tue informazioni gli altri utenti si “insospettiranno” e
         probabilmente non riceverai alcun match.
@@ -47,12 +41,12 @@ const items = [
 
   <div key={2}>
     <div className="">
-      <h1 className="ms-auto me-auto font-bold" id="h1-slide3">
+      <h1 className="ms-auto me-auto font-bold">
         La selezione è a tuo vantaggio
       </h1>
     </div>
     <div className="mb-36">
-      <p className="mt-2" id="p1-slide3">
+      <p className="mt-2">
         Una volta che i moderatori attiveranno l’app ti verrano mostrate dieci
         potenziali match potrai scegliere tra “si” e “no”, dopo che risponderai
         a tutte le proposte ti verrano ripresentati tutti i tuoi “no” per
@@ -88,8 +82,8 @@ export default function SlideIntroPage() {
             <span className="ml-[120px] font-bold">
               {isLastSlide ? 'Fine' : 'Avanti'}
             </span>
-            <div className="ml-auto">
-              <ArrowRight className="text-8xl" />
+            <div className="ml-2">
+              <ArrowRight width={24} height={24} className="text-8xl" />
             </div>
           </div>
         </button>
@@ -97,7 +91,7 @@ export default function SlideIntroPage() {
     );
   };
 
-  const handleAfterChange = (previousSlide, state) => {
+  const handleAfterChange = (state) => {
     setCurrentSlide(state.currentSlide);
   };
 
@@ -107,7 +101,7 @@ export default function SlideIntroPage() {
         customButtonGroup={<ButtonGroup />}
         renderButtonGroupOutside={true}
         swipeable={false}
-        draggable={false}
+        draggable={true}
         showDots={true}
         responsive={responsive}
         ssr={true}
