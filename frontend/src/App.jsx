@@ -2,12 +2,12 @@ import './App.css';
 
 import ProtectedRoute from '@components/protectedRoutes';
 import Page404 from '@pages/404Page';
-import BioPage from '@pages/bioPage/bioPage';
-import HomePage from '@pages/homePage/homePage';
-import IntroPage from '@pages/introPage/introPage.jsx';
-import LoginPage from '@pages/loginPage/loginPage';
-import ProfilePage from '@pages/profilePage/profilePage';
-import SurveyPage from '@pages/surveyPage/surveyPage';
+import BioPage from '@pages/bioPage';
+import HomePage from '@pages/homePage';
+import IntroPage from '@pages/introPage.jsx';
+import LoginPage from '@pages/loginPage';
+import ProfilePage from '@pages/profilePage';
+import SurveyPage from '@pages/surveyPage';
 import PaginaWaiting from '@pages/paginaWaiting';
 import React from 'react';
 import { isMobile } from 'react-device-detect';
