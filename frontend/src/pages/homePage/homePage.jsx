@@ -23,10 +23,10 @@ function HomePage() {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
-  async function createCards(newMatches, numbers) {
-    const count = numbers !== undefined ? numbers : 3;
-    const initialCards = newMatches.slice(cards.length, cards.length + count);
-    console.log(initialCards);
+  async function createCards(newMatches, numbers = 3) {
+    if (!newMatches || newMatches.length === 0) return;
+
+    const initialCards = newMatches.slice(cards.length, cards.length + numbers);
 
     try {
       const enrichedCards = await Promise.all(
@@ -39,13 +39,11 @@ function HomePage() {
               getPhotosByParams(emailToGet)
             ]);
 
-            console.log(`Cognome: ${userMatchData.user.family_name}, Nome: ${userMatchData.user.given_name}, Età: ${userMatchData.user_info.age}`);
-
             return {
               ...card,
               user: userMatchData,
               id: uuidv4(),
-              image: photos.images[0],
+              image: photos.images[0] || '',
             };
           } catch (error) {
             console.error('Error while retrieving user data:', error);
@@ -54,13 +52,15 @@ function HomePage() {
         })
       );
 
-      setCards((prevCards) => [...prevCards, ...enrichedCards.filter(Boolean)]);
+      setCards((prevCards) => {
+        const uniqueCards = [...new Set([...prevCards, ...enrichedCards.filter(Boolean)])];
+        return uniqueCards;
+      });
+
     } catch (error) {
       console.error('Error during the creation of card:', error);
     }
   }
-
-
 
   async function handleMatch() {
     try {
@@ -73,7 +73,6 @@ function HomePage() {
 
       setMatches(response);
       await createCards(response, 5);
-
     } catch (error) {
       showToast('Si è verificato un errore imprevisto', 'error');
       console.error('Errore:', error);
@@ -87,7 +86,7 @@ function HomePage() {
       if (matches.length > updatedCards.length) {
         const nextCard = matches[updatedCards.length];
         if (nextCard) {
-          updatedCards.push(nextCard);
+          createCards(matches, 1);
         }
       }
 
@@ -96,17 +95,26 @@ function HomePage() {
   }, [matches]);
 
   function updateCard() {
-    createCards(matches, 1)
-    setCards((prevCards) => prevCards.slice(1));
-    console.log(cards.length)
+    setCards((prevCards) => {
+      const newCards = prevCards.slice(1);
+      createCards(matches, 1);
+      return newCards;
+    });
+
+    setMatches((prevMatches) => {
+      if (prevMatches.length > 0) {
+        return prevMatches.slice(1);
+      }
+      return prevMatches;
+    });
   }
 
-
   useEffect(() => {
-    if (user?.email) {
+    if (user?.email && matches.length === 0) {
       handleMatch();
     }
-  }, [user]);
+  }, [user.email]);
+
 
   return (
     <div className="container relative w-full h-screen flex justify-center items-center bg-pink-600">

@@ -18,7 +18,7 @@ export default function ProfilePage() {
       try {
         console.log('Chiamata API in corso...');
         console.log('Email:', email);
-        if (email != null && email !== '' && typeof email != 'string') {
+        if (email == null && email !== '' && typeof email != 'string') {
           data = await getUser();
         } else {
           data = await getUserByParams(atob(email));
@@ -35,14 +35,11 @@ export default function ProfilePage() {
     async function fetchPhotos() {
       try {
         let photos = null;
-        console.log('Email:', email);
-        if (email != null && email !== '' && typeof email != 'string') {
+        if (email == null && email !== '' && typeof email != 'string') {
           photos = await getPhotos();
         } else {
           photos = await getPhotosByParams(atob(email));
         }
-        console.log('Foto ricevute:', photos);
-
         const imageUrls = photos.images.map((image) =>
           image.startsWith('data:image')
             ? image
