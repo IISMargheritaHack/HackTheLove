@@ -1,3 +1,4 @@
+
 import Logo from '@components/logo';
 import { showToast } from '@components/toast';
 import { useEffect, useState, useCallback } from 'react';
@@ -14,31 +15,51 @@ import { Button } from '@heroui/button';
 import Card from '@components/card';
 import { useContext } from 'react';
 import UserContext from '@provider/userContext';
+import { useNavigate } from 'react-router';
 
 function HomePage() {
   const [matches, setMatches] = useState([]);
   const [cards, setCards] = useState([]);
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
   async function createCards(newMatches, numbers) {
-    const initialCards = newMatches.slice(cards.length, cards.length + numbers || cards.length + 3);
+    const count = numbers !== undefined ? numbers : 3;
+    const initialCards = newMatches.slice(cards.length, cards.length + count);
+    console.log(initialCards);
 
-    for (const card of initialCards) {
-      let emailToGet = card.user_email1 === user.email ? card.user_email2 : card.user_email1;
+    try {
+      const enrichedCards = await Promise.all(
+        initialCards.map(async (card) => {
+          const emailToGet = card.user_email1 === user.email ? card.user_email2 : card.user_email1;
 
-      try {
-        const userMatchData = await getUserByParams(emailToGet);
-        card.user = userMatchData;
-        card.id = uuidv4();
-        const photos = await getPhotosByParams(emailToGet);
-        card.image = photos[0];
-      } catch (error) {
-        console.error('Errore durante il recupero dei dati utente:', error);
-      }
+          try {
+            const [userMatchData, photos] = await Promise.all([
+              getUserByParams(emailToGet),
+              getPhotosByParams(emailToGet)
+            ]);
+
+            console.log(`Cognome: ${userMatchData.user.family_name}, Nome: ${userMatchData.user.given_name}, Età: ${userMatchData.user_info.age}`);
+
+            return {
+              ...card,
+              user: userMatchData,
+              id: uuidv4(),
+              image: photos.images[0],
+            };
+          } catch (error) {
+            console.error('Error while retrieving user data:', error);
+            return null;
+          }
+        })
+      );
+
+      setCards((prevCards) => [...prevCards, ...enrichedCards.filter(Boolean)]);
+    } catch (error) {
+      console.error('Error during the creation of card:', error);
     }
-
-    setCards((prevCards) => [...prevCards, ...initialCards]);
   }
+
 
 
   async function handleMatch() {
@@ -75,8 +96,9 @@ function HomePage() {
   }, [matches]);
 
   function updateCard() {
-    console.log("CIAO")
     createCards(matches, 1)
+    setCards((prevCards) => prevCards.slice(1));
+    console.log(cards.length)
   }
 
 
@@ -94,12 +116,12 @@ function HomePage() {
         <Dropdown>
           <DropdownTrigger>
             <Button isIconOnly variant="bordered" className='rounded-lg'>
-              <MenuHamburger width={"50px"} height={"50px"} />
+              <MenuHamburger width={50} height={50} />
             </Button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">
-            <DropdownItem key="new" className='text-white bg-[#DD016D] rounded-lg'>Profilo</DropdownItem>
-            <DropdownItem key="new" className='text-white bg-[#DD016D] rounded-lg'>Modifica bio</DropdownItem>
+            <DropdownItem key="new" className='text-white bg-[#DD016D] rounded-lg' onPress={() => navigate('/profile')}>Profilo</DropdownItem>
+            <DropdownItem key="new" className='text-white bg-[#DD016D] rounded-lg' onPress={() => navigate('/bio')}>Modifica bio</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </div>
@@ -116,8 +138,8 @@ function HomePage() {
           />
         ))}
       </div>
-      <h1>Sembra siano finiti i match</h1>
-    </div>
+      <h1 className='absolute z-0 font-bold text-xl p-12 w-screen text-center'>Sembra siano finiti i match attendi i risultati!</h1>
+    </div >
   );
 }
 
