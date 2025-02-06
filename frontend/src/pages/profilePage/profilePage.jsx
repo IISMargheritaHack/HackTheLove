@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import ArrowRight from '@icons/arrowRight';
 import Logo from '@components/logo';
 import { getUser, getPhotos } from '@api/api';
+import { useNavigate } from 'react-router';
 
 export default function ProfilePage() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [urls, setUrls] = useState([]);
@@ -124,7 +126,10 @@ export default function ProfilePage() {
         </div>
 
         <div className="w-full mt-10 flex justify-center">
-          <button className="w-[80%] h-[43px] rounded-3xl bg-pink-700 text-white flex items-center justify-center gap-2 shadow-md">
+          <button
+            onClick={() => navigate('/bio')}
+            className="w-[80%] h-[43px] rounded-3xl bg-pink-700 text-white flex items-center justify-center gap-2 shadow-md"
+          >
             <span className="font-bold">Modifica</span>
             <ArrowRight className="text-xl" width="30" height="25" />
           </button>
