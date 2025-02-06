@@ -9,6 +9,7 @@ export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [urls, setUrls] = useState([]);
+  const [private, setPrivate] = useState(true);
   const query = new URLSearchParams(useLocation().search);
   const email = query.get("email");
 
@@ -16,18 +17,16 @@ export default function ProfilePage() {
     async function fetchUser() {
       let data = null;
       try {
-        console.log('Chiamata API in corso...');
-        console.log('Email:', email);
         if (email == null && email !== '' && typeof email != 'string') {
           data = await getUser();
         } else {
+          setPrivate(false);
           data = await getUserByParams(atob(email));
-        }
 
-        console.log('Dati ricevuti:', data);
+        }
         setUser(data);
       } catch (error) {
-        console.error("Errore nel recupero dell'utente:", error);
+        console.error("Error in the fetch of data:", error);
       } finally {
         setLoading(false);
       }
@@ -38,6 +37,7 @@ export default function ProfilePage() {
         if (email == null && email !== '' && typeof email != 'string') {
           photos = await getPhotos();
         } else {
+          setPrivate(false);
           photos = await getPhotosByParams(atob(email));
         }
         const imageUrls = photos.images.map((image) =>
@@ -137,6 +137,8 @@ export default function ProfilePage() {
             )}
           </div>
         </div>
+
+
 
         <div className="w-full mt-10 flex justify-center">
           <button
