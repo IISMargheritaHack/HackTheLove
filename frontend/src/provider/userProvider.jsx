@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
-import UserContext from "@provider/userContext"
+import PropTypes from "prop-types";
+import UserContext from "@provider/userContext";
 
 export default function UserProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   useEffect(() => {
-    console.log("User stato aggiornato:", user);  // 👀 Monitoraggio globale dello stato utente
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
   }, [user]);
 
   return (
@@ -14,3 +22,7 @@ export default function UserProvider({ children }) {
     </UserContext.Provider>
   );
 }
+
+UserProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
