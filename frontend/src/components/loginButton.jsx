@@ -6,14 +6,11 @@ import 'toastify-js/src/toastify.css';
 
 export default function LoginButton() {
   const navigate = useNavigate();
-
   const handleRedirect = () => {
-
     if (localStorage.getItem('introEnded') === 'true') {
       navigate('/bio', {});
       return;
     }
-
     navigate('/intro', {});
   };
 
