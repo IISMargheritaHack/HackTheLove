@@ -189,3 +189,40 @@ func (r *MatchRepository) SetLike(emailMain, emailMatch string, valueLike int) e
 
 	return nil
 }
+
+func (r *MatchRepository) GetLikesMatches(email string) ([]string, error) {
+	var email_matches []string
+
+	query := `
+		SELECT
+				CASE
+					WHEN email_user1 = $1 THEN email_user2
+					ELSE email_user1
+				END AS matched_email
+			FROM matches
+			WHERE (email_user1 = $1 OR email_user2 = $1)
+			  AND like_user1 = 1
+			  AND like_user2 = 1;
+	`
+
+	rows, err := r.db.Query(query, email)
+	if err != nil {
+		log.Error().Err(err).Str("email", email).Msg("Database error while fetching matches")
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var email_match string
+		if err := rows.Scan(&email_match); err != nil {
+			log.Error().Err(err).Str("email", email).Msg("Error scanning match row")
+			return nil, err
+		}
+		email_matches = append(email_matches, email_match)
+	}
+
+	log.Info().Str("email", email).Msg("Matches fetched successfully")
+	log.Info().Int("matches", len(email_matches)).Msg("Number of matches fetched")
+
+	return email_matches, nil
+}

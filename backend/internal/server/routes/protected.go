@@ -13,6 +13,7 @@ func registerProtectedRoutes(r *gin.RouterGroup, h *Handler) {
 	r.GET("/getPhoto", h.GetPhoto)
 	r.GET("/getPhotoByParams", h.GetPhotoByParams)
 	r.GET("/getMatches", h.GetMatches)
+	r.GET("/getLikesMatches", h.GetLikesMatches)
 
 	r.POST("/addSurvey", middleware.TimeRestrictionMiddleware(), h.AddSurvey)
 	r.POST("/addPhoto", middleware.TimeRestrictionMiddleware(), h.AddPhoto)

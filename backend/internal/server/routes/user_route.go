@@ -90,6 +90,18 @@ func (h *Handler) GetMatches(c *gin.Context) {
 	c.JSON(http.StatusOK, matches)
 }
 
+func (h *Handler) GetLikesMatches(c *gin.Context) {
+	email := middleware.GetEmail(c)
+	matches, err := h.MatchRepo.GetLikesMatches(email)
+	if err != nil {
+		log.Error().Err(err).Str("email", email).Msg("Database error while fetching matches")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching matches"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"likes_by": matches})
+}
+
 func (h *Handler) SetLike(c *gin.Context) {
 	email := middleware.GetEmail(c)
 
