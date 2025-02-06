@@ -1,8 +1,16 @@
 import { getPhotos } from '@api/api';
 
+function base64ToArrayBuffer(base64) {
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
 
-
-async function readImage(arrayBuffer) {
+async function readImage(arrayBuffer, containerId = 'image-container') {
   try {
     const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
     const imageUrl = URL.createObjectURL(blob);
@@ -11,21 +19,33 @@ async function readImage(arrayBuffer) {
     img.src = imageUrl;
     img.style.margin = '10px';
 
-    let div = document.getElementsByTagName('div');
-    div[0].appendChild(img);
+    const container = document.getElementById(containerId);
+    if (!container) {
+      console.error(`Container with ID '${containerId}' not found.`);
+      return;
+    }
+
+    container.appendChild(img);
+
+    img.onload = () => URL.revokeObjectURL(imageUrl);
   } catch (error) {
-    console.error('Errore nella visualizzazione dell\'immagine:', error);
+    console.error("Error displaying image:", error);
   }
 }
 
-
-async function getImages() {
-  const images = await getPhotos();
-  if (images.length > 0) {
-    for (const image of images) {
-      const binaryData = Uint8Array.from(atob(image), c => c.charCodeAt(0)).buffer;
-      await readImage(binaryData);
+async function getImages(containerId = 'image-container') {
+  try {
+    const images = await getPhotos();
+    if (!images || images.length === 0) {
+      console.warn('No images found.');
+      return;
     }
+
+    const imageBuffers = images.map(image => base64ToArrayBuffer(image));
+
+    await Promise.all(imageBuffers.map(buffer => readImage(buffer, containerId)));
+  } catch (error) {
+    console.error("Error fetching images:", error);
   }
 }
 
