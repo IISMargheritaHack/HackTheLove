@@ -1,6 +1,8 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext } from 'react';
 
-// Crea il contesto
-const UserContext = createContext();
+const UserContext = createContext({
+  user: null,
+  setUser: () => { },
+});
 
-export default UserContext
+export default UserContext;
