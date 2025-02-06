@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import ArrowRight from '@icons/arrowRight';
-import Logo from '@components/logo';
+import Header from '@components/header';
 import { getUser, getPhotos, getUserByParams, getPhotosByParams } from '@api/api';
 import { useNavigate, useLocation } from 'react-router';
+import { Spacer } from '@heroui/spacer';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -16,11 +17,10 @@ export default function ProfilePage() {
     async function fetchUser() {
       let data = null;
       try {
-        if (email == null && email !== '' && typeof email != 'string') {
+        if (email == null || email === '' || typeof email != 'string') {
           data = await getUser();
         } else {
           data = await getUserByParams(atob(email));
-
         }
         setUser(data);
       } catch (error) {
@@ -32,7 +32,7 @@ export default function ProfilePage() {
     async function fetchPhotos() {
       try {
         let photos = null;
-        if (email == null && email !== '' && typeof email != 'string') {
+        if (email == null || email === '' || typeof email != 'string') {
           photos = await getPhotos();
         } else {
           photos = await getPhotosByParams(atob(email));
@@ -52,7 +52,7 @@ export default function ProfilePage() {
 
     fetchPhotos();
     fetchUser();
-  }, []);
+  }, [email]);
 
   if (loading) {
     return (
@@ -72,7 +72,8 @@ export default function ProfilePage() {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-pink-700 p-4">
-      <Logo width={60} />
+      <Header />
+      <Spacer y={20} />
       <div className="mt-10 bg-white w-full max-w-md rounded-2xl p-6 shadow-lg">
         <h2 className="text-center text-3xl font-bold text-black mb-5">
           PROFILO
@@ -133,17 +134,17 @@ export default function ProfilePage() {
           </div>
         </div>
 
-
-
-        <div className="w-full mt-10 flex justify-center">
-          <button
-            onClick={() => navigate('/bio')}
-            className="w-[80%] h-[43px] rounded-3xl bg-pink-700 text-white flex items-center justify-center gap-2 shadow-md"
-          >
-            <span className="font-bold">Modifica</span>
-            <ArrowRight className="text-xl" width="30" height="25" />
-          </button>
-        </div>
+        {email == null && (
+          <div className="w-full mt-10 flex justify-center">
+            <button
+              onClick={() => navigate('/bio')}
+              className="w-[80%] h-[43px] rounded-3xl bg-pink-700 text-white flex items-center justify-center gap-2 shadow-md"
+            >
+              <span className="font-bold">Modifica</span>
+              <ArrowRight className="text-xl" width="30" height="25" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -16,7 +16,11 @@ export default function Card({ callBack, image, index, totalCards, userInfo }) {
 
   useEffect(() => {
     if (typeof image === 'string') {
-      setImageUrl(image.startsWith('data:image') ? image : `data:image/jpeg;base64,${image}`);
+      setImageUrl(
+        image.startsWith('data:image')
+          ? image
+          : `data:image/jpeg;base64,${image}`
+      );
     } else if (image instanceof Uint8Array || image instanceof ArrayBuffer) {
       const blob = new Blob([image], { type: 'image/jpeg' });
       const url = URL.createObjectURL(blob);
@@ -44,10 +48,9 @@ export default function Card({ callBack, image, index, totalCards, userInfo }) {
           damping: 20,
           duration: 0.3,
         },
-      })
-      .then(() => {
+      }).then(() => {
         setLike(userInfo.user.email, direction === 1 ? 1 : 0);
-        callBack();
+        callBack(direction);
         setHasSwiped(false);
       });
   };
@@ -72,10 +75,17 @@ export default function Card({ callBack, image, index, totalCards, userInfo }) {
     const swipeThreshold = 100;
     const velocityThreshold = 500;
 
-    if (Math.abs(offset.x) > swipeThreshold || Math.abs(velocity.x) > velocityThreshold) {
+    if (
+      Math.abs(offset.x) > swipeThreshold ||
+      Math.abs(velocity.x) > velocityThreshold
+    ) {
       triggerSwipe(offset.x > 0 ? 1 : -1);
     } else {
-      animControls.start({ x: 0, rotate: 0, transition: { type: 'spring', stiffness: 300, damping: 20 } });
+      animControls.start({
+        x: 0,
+        rotate: 0,
+        transition: { type: 'spring', stiffness: 300, damping: 20 },
+      });
     }
   };
 
@@ -93,28 +103,34 @@ export default function Card({ callBack, image, index, totalCards, userInfo }) {
     >
       <div className="flex flex-col rounded-lg justify-end max-w-md h-full p-6 bg-gradient-to-t from-black/70 via-transparent to-transparent text-white select-none pointer-events-none">
         <div className="mb-4">
-          <h2 className="text-2xl font-semibold pointer-events-auto" onClick={() => navigate('/profile?email=' + btoa(userInfo?.user.email))}>
-            {userInfo?.user.family_name} {userInfo.user.given_name} {userInfo?.user_info.age}
+          <h2
+            className="text-2xl font-semibold pointer-events-auto"
+            onClick={() =>
+              navigate('/profile?email=' + btoa(userInfo?.user.email))
+            }
+          >
+            {userInfo?.user.family_name} {userInfo.user.given_name}{' '}
+            {userInfo?.user_info.age}
           </h2>
           <p className="text-sm">{userInfo.user_info.bio}</p>
         </div>
         <div className="flex items-center w-full justify-center gap-20 mb-4 mt-6">
-          <Button isIconOnly className="z-50 w-[75px] h-[75px] pointer-events-auto" onPress={() => triggerSwipe(-1)}>
+          <Button
+            isIconOnly
+            className="z-50 w-[75px] h-[75px] pointer-events-auto"
+            onPress={() => triggerSwipe(-1)}
+          >
             <DislikeIcon />
           </Button>
-          <Button isIconOnly className="z-50 w-[75px] h-[75px] pointer-events-auto" onPress={() => triggerSwipe(1)}>
+          <Button
+            isIconOnly
+            className="z-50 w-[75px] h-[75px] pointer-events-auto"
+            onPress={() => triggerSwipe(1)}
+          >
             <LikeIcon />
           </Button>
         </div>
       </div>
-      <div
-        className="z-49 absolute top-0 w-full h-[10vh] bg-gradient-to-b from-black to-transparent"
-        style={{ background: 'linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)' }}
-      ></div>
-      <div
-        className="absolute bottom-0 w-full h-[20vh] bg-gradient-to-b from-black to-transparent"
-        style={{ background: 'linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)' }}
-      ></div>
     </motion.div>
   );
 }
@@ -124,7 +140,7 @@ Card.propTypes = {
   image: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.instanceOf(Uint8Array),
-    PropTypes.instanceOf(ArrayBuffer)
+    PropTypes.instanceOf(ArrayBuffer),
   ]).isRequired,
   index: PropTypes.number.isRequired,
   totalCards: PropTypes.number.isRequired,

@@ -1,27 +1,19 @@
-
-import Logo from '@components/logo';
-import { showToast } from '@components/toast';
+import { motion } from 'framer-motion';
 import { useEffect, useState, useCallback } from 'react';
+import { showToast } from '@components/toast';
 import { getMatches, getUserByParams, getPhotosByParams } from '@api/api';
-import MenuHamburger from '@icons/menuHamburger';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem
-} from "@heroui/dropdown";
-import { Button } from '@heroui/button';
+import Header from '@components/header';
 import Card from '@components/card';
 import { useContext } from 'react';
 import UserContext from '@provider/userContext';
-import { useNavigate } from 'react-router';
 
 function HomePage() {
   const [matches, setMatches] = useState([]);
   const [cards, setCards] = useState([]);
   const { user } = useContext(UserContext);
-  const navigate = useNavigate();
+  const [color, setColor] = useState('transparent');
+  const [isVisible, setIsVisible] = useState(false);
 
   async function createCards(newMatches, numbers = 3) {
     if (!newMatches || newMatches.length === 0) return;
@@ -94,7 +86,7 @@ function HomePage() {
     });
   }, [matches]);
 
-  function updateCard() {
+  function updateCard(direction) {
     setCards((prevCards) => {
       const newCards = prevCards.slice(1);
       createCards(matches, 1);
@@ -107,6 +99,18 @@ function HomePage() {
       }
       return prevMatches;
     });
+
+    if (direction === 1) {
+      setColor('linear-gradient(180deg, #DD016D 0%, rgba(221, 1, 109, 0.6139) 55%, rgba(221, 1, 109, 0.01) 100%)');
+    } else {
+      setColor('linear-gradient(180deg, #871A1A 0%, rgba(135, 26, 26, 0.6139) 55%, rgba(135, 26, 26, 0.01) 100%)');
+    }
+
+    setIsVisible(true);
+
+    setTimeout(() => {
+      setIsVisible(false);
+    }, 1500);
   }
 
   useEffect(() => {
@@ -115,24 +119,9 @@ function HomePage() {
     }
   }, [user.email]);
 
-
   return (
     <div className="container relative w-full h-screen flex justify-center items-center bg-pink-600">
-      <div className='flex z-50 absolute top-2 justify-around w-screen items-center'>
-        <Logo width={2} />
-        <h1 className="text-white text-[1rem] font-bold">HackTheLove</h1>
-        <Dropdown>
-          <DropdownTrigger>
-            <Button isIconOnly variant="bordered" className='rounded-lg'>
-              <MenuHamburger width={50} height={50} />
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Static Actions">
-            <DropdownItem key="new" className='text-white bg-[#DD016D] rounded-lg' onPress={() => navigate('/profile')}>Profilo</DropdownItem>
-            <DropdownItem key="new" className='text-white bg-[#DD016D] rounded-lg' onPress={() => navigate('/bio')}>Modifica bio</DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-      </div>
+      <Header />
       <div className="cards_container">
         {cards.map((card, index) => (
           <Card
@@ -147,7 +136,29 @@ function HomePage() {
         ))}
       </div>
       <h1 className='absolute z-0 font-bold text-xl p-12 w-screen text-center'>Sembra siano finiti i match attendi i risultati!</h1>
-    </div >
+
+      <div
+        className="z-49 absolute top-0 w-full h-[10vh] transition-all duration-300 ease-in-out"
+        style={{
+          background: 'linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)'
+        }}
+      ></div>
+
+      <motion.div
+        className="z-49 absolute top-0 w-full h-[10vh]"
+        style={{ background: color }}
+        animate={{ opacity: isVisible ? 1 : 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      />
+
+      <div
+        className="absolute bottom-0 w-full h-[20vh]"
+        style={{
+          background:
+            'linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)',
+        }}
+      ></div>
+    </div>
   );
 }
 
