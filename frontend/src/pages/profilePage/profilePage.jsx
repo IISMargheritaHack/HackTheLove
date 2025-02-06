@@ -1,19 +1,29 @@
 import { useState, useEffect } from 'react';
 import ArrowRight from '@icons/arrowRight';
 import Logo from '@components/logo';
-import { getUser, getPhotos } from '@api/api';
-import { useNavigate } from 'react-router';
+import { getUser, getPhotos, getUserByParams, getPhotosByParams } from '@api/api';
+import { useNavigate, useLocation } from 'react-router';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [urls, setUrls] = useState([]);
+  const query = new URLSearchParams(useLocation().search);
+  const email = query.get("email");
+
   useEffect(() => {
     async function fetchUser() {
+      let data = null;
       try {
         console.log('Chiamata API in corso...');
-        const data = await getUser();
+        console.log('Email:', email);
+        if (email != null && email !== '' && typeof email != 'string') {
+          data = await getUser();
+        } else {
+          data = await getUserByParams(atob(email));
+        }
+
         console.log('Dati ricevuti:', data);
         setUser(data);
       } catch (error) {
@@ -24,7 +34,13 @@ export default function ProfilePage() {
     }
     async function fetchPhotos() {
       try {
-        const photos = await getPhotos();
+        let photos = null;
+        console.log('Email:', email);
+        if (email != null && email !== '' && typeof email != 'string') {
+          photos = await getPhotos();
+        } else {
+          photos = await getPhotosByParams(atob(email));
+        }
         console.log('Foto ricevute:', photos);
 
         const imageUrls = photos.images.map((image) =>

@@ -5,12 +5,14 @@ import LikeIcon from '@icons/likeIcon';
 import { motion, useAnimation, useMotionValue } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 export default function Card({ callBack, image, index, totalCards, userInfo }) {
   const motionValue = useMotionValue(0);
   const animControls = useAnimation();
   const [hasSwiped, setHasSwiped] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (typeof image === 'string') {
@@ -91,7 +93,7 @@ export default function Card({ callBack, image, index, totalCards, userInfo }) {
     >
       <div className="flex flex-col rounded-lg justify-end max-w-md h-full p-6 bg-gradient-to-t from-black/70 via-transparent to-transparent text-white select-none pointer-events-none">
         <div className="mb-4">
-          <h2 className="text-2xl font-semibold">
+          <h2 className="text-2xl font-semibold pointer-events-auto" onClick={() => navigate('/profile?email=' + btoa(userInfo?.user.email))}>
             {userInfo?.user.family_name} {userInfo.user.given_name} {userInfo?.user_info.age}
           </h2>
           <p className="text-sm">{userInfo.user_info.bio}</p>

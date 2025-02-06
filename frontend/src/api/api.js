@@ -54,14 +54,14 @@ export const addSurvey = (surveyResponse) => {
   const isValid = validateSurvey(surveyResponse);
   if (!isValid.valid) return { error: isValid.message };
 
-  return handleRequest(() => api.post('/addSurvey', { response: surveyResponse }));
+  handleRequest(() => api.post('/addSurvey', { response: surveyResponse }));
 };
 
 export const addUserInfo = (userInfo) => {
   const result = validateUserData(userInfo);
   if (!result.valid) return { error: result.message };
 
-  return handleRequest(() => api.post('/addUserInfo', userInfo));
+  handleRequest(() => api.post('/addUserInfo', userInfo));
 };
 
 export const addPhotos = (files) => {
@@ -71,7 +71,7 @@ export const addPhotos = (files) => {
   const formData = new FormData();
   files.forEach((file) => formData.append('files', file));
 
-  return handleRequest(() =>
+  handleRequest(() =>
     api.post('/addPhoto', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
