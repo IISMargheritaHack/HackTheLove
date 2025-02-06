@@ -1,18 +1,28 @@
+import { googleClientId } from '@config';
+import UserProvider from '@provider/userProvider';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
+import { BrowserRouter } from 'react-router';
 import App from './App.jsx';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import UserProvider from '@provider/userProvider';
+import './index.css';
 
-const devTokenOAuth =
-  '443648413060-db7g7i880qktvmlemmcnthg4qptclu2l.apps.googleusercontent.com';
+if (!googleClientId) {
+  console.error('Error: GOOGLE_CLIENT_ID is not defined in environment variables.');
+}
+
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error("Error: 'root' element not found. Ensure the HTML file is correctly structured.");
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <UserProvider>
-      <GoogleOAuthProvider clientId={devTokenOAuth}>
-        <App />
+      <GoogleOAuthProvider clientId={googleClientId}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </GoogleOAuthProvider>
     </UserProvider>
   </StrictMode>
