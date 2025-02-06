@@ -3,13 +3,13 @@ import Logo from '@components/logo';
 import { useNavigate } from 'react-router';
 import { showToast } from '@components/toast';
 import 'toastify-js/src/toastify.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { addUserInfo, addPhotos } from '@api/api';
 
 function BioPage() {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
-  const [age, setEta] = useState(14); // Età iniziale
+  const [age, setEta] = useState(14);
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -24,14 +24,6 @@ function BioPage() {
   const removeImage = (index) => {
     setFiles(files.filter((_, i) => i !== index));
   };
-
-  useEffect(() => {
-    if (localStorage.getItem('bioCompleted') === 'true') {
-      navigate('/survey');
-    }
-  }, [navigate]);
-
-
 
   const validateForm = () => {
     const telefono = document.getElementById('input-phone').value.trim();
@@ -120,7 +112,7 @@ function BioPage() {
             type="number"
             id="input-phone"
             className="bg-white focus:outline-pink-500 text-black rounded-lg h-10 py-3 px-4 block w-full"
-            placeholder="+39123456790 (prefisso non obbligatorio)"
+            placeholder="+39 123456790 (prefisso non obbligatorio)"
           />
         </div>
 
@@ -251,7 +243,7 @@ function BioPage() {
             onClick={handleSubmit}
           >
             <span className="font-bold">Avanti</span>
-            <ArrowRight className="text-xl" width="30" height="25" />
+            <ArrowRight className="text-xl" width={30} height={25} />
           </button>
         </div>
       </div>
