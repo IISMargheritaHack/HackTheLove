@@ -4,6 +4,7 @@ import random
 import uuid
 import re
 import io
+import os  # ✅ Import per gestire la lettura dei file nella directory
 
 fake = Faker()
 
@@ -15,8 +16,12 @@ DB_CONFIG = {
     "port": "5432",
 }
 
-possible_images = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg']
+# ✅ Carica dinamicamente tutte le immagini dalla cartella "images"
+def get_possible_images():
+    image_folder = "./images"
+    return [f for f in os.listdir(image_folder) if f.lower().endswith(('.jpeg', '.jpg', '.png', '.gif'))]
 
+possible_images = get_possible_images()
 
 def connect_db():
     try:
@@ -48,10 +53,15 @@ def generate_fake_user():
 def generate_survey_response():
     return ''.join(random.choices(["a", "b", "c", "d"], k=11))
 
+# ✅ Caricamento dinamico delle immagini
 def fetch_random_image():
     try:
+        if not possible_images:
+            print("⚠️ No images found in the 'images' folder.")
+            return None
+
         image_filename = random.choice(possible_images)
-        with open("./images/" + image_filename, 'rb') as img_file:
+        with open(f"./images/{image_filename}", 'rb') as img_file:
             return io.BytesIO(img_file.read())
     except Exception as e:
         print(f"⚠️ Error loading image: {e}")
