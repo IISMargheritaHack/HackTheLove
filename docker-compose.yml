@@ -13,48 +13,88 @@ services:
     networks:
       - app_network
 
-  # backend:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   restart: unless-stopped
-  #   environment:
-  #     PRODUCTION: 1
-  #     APP_PORT: 8080
-  #     DB_CONNECTION: pgsql
-  #     DB_HOST: ${DB_HOST}
-  #     DB_PORT: ${DB_PORT}
-  #     DB_DATABASE: ${DB_DATABASE}
-  #     DB_USERNAME: ${DB_USERNAME}
-  #     DB_PASSWORD: ${DB_PASSWORD}
-  #     SECRET_KEY: ${SECRET_KEY}
-  #     GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-  #     TIME_RELEASE_MATCH: ${TIME_RELEASE_MATCH}
-  #   depends_on:
-  #     - psql
-  #   ports:
-  #     - "${APP_PORT}:8080"
-  #   networks:
-  #     - app_network
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://umami:umami@db-umami:5432/umami
+      DATABASE_TYPE: postgresql
+      APP_SECRET: replace-me-with-a-random-string
+    depends_on:
+      db-umami:
+        condition: service_healthy
+    init: true
+    restart: always
+    healthcheck:
+      test:
+        ["CMD-SHELL", "curl -f http://localhost:3000/api/heartbeat || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_network
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   restart: unless-stopped
-  #   depends_on:
-  #     - backend
-  #   environment:
-  #     VITE_API_URL: "http://app:8080"
-  #     GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-  #     TIME_RELEASE_MATCH: ${TIME_RELEASE_MATCH}
-  #   ports:
-  #     - "${APP_PORT_FE}:80"
-  #   networks:
-  #     - app_network
+  db-umami:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: umami
+    volumes:
+      - umami-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U umami -d umami"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PRODUCTION: 1
+      APP_PORT: 8080
+      DB_CONNECTION: pgsql
+      DB_HOST: psql
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      TIME_RELEASE_MATCH: ${TIME_RELEASE_MATCH}
+    depends_on:
+      - psql
+    ports:
+      - "${APP_PORT}:8080"
+    networks:
+      - app_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: "http://backend:8080"
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      TIME_RELEASE_MATCH: ${TIME_RELEASE_MATCH}
+    ports:
+      - "${APP_PORT_FE}:80"
+    networks:
+      - app_network
 
 networks:
   app_network:
 
 volumes:
   psql_volume:
+  umami-db-data:
