@@ -17,7 +17,12 @@ func registerPublicRoutes(r *gin.Engine, h *Handler) {
 	public.POST("/verifyGoogleJWT", h.VerifyGoogleToken)
 	public.GET("/", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"YES I AM UP <3!": 200}) })
 	public.GET("/health", h.HealthHandler)
-	public.GET("/getQuestions", GetQuestions)
+	public.GET("/questions", GetQuestions)
+	public.GET("/time", h.GetTime)
+}
+
+func (h *Handler) GetTime(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"time": time.Now().Format(time.RFC3339)})
 }
 
 func GetQuestions(c *gin.Context) {
