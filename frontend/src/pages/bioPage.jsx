@@ -5,20 +5,36 @@ import { showToast } from '@components/toast';
 import 'toastify-js/src/toastify.css';
 import { useState } from 'react';
 import { addUserInfo, addPhotos } from '@api/api';
+import { handleError } from '@utils/utils';
+import { useEffect } from 'react';
 
 function BioPage() {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [age, setEta] = useState(14);
 
+
+  useEffect(() => {
+    if (localStorage.getItem('bioCompleted') === 'true') {
+      navigate('/survey');
+    }
+  }, [])
+
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
-    if (selectedFiles.length > 5) {
+
+    if (selectedFiles.length + files.length > 5) {
       showToast("Puoi caricare un massimo di 5 foto!", 'error');
       e.target.value = "";
       return;
     }
-    setFiles(selectedFiles)
+
+    const filesWithPreview = selectedFiles.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+
+    setFiles((prevFiles) => [...prevFiles, ...filesWithPreview]);
   };
 
   const removeImage = (index) => {
@@ -37,7 +53,7 @@ function BioPage() {
       return false;
     }
 
-    const phoneRegex = /^[0-9]{10,}$/;
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
     if (!phoneRegex.test(telefono)) {
       showToast('⚠️ numero di telefono almeno 10 cifre!', 'error');
       return false;
@@ -63,25 +79,28 @@ function BioPage() {
       classe: parseInt(classe)
     };
 
-    let error = await addUserInfo(data);
+    let results = await addUserInfo(data);
+    let error = handleError(results);
     if (error) {
-      console.error('Errore durante la richiesta:', error);
-      return error.response?.data || { error: 'Errore sconosciuto' };
+      showToast(results.data.message, 'error');
+      return true;
     }
 
-    error = await addPhotos(files);
+    results = await addPhotos(files.map(file => file.file));
+    error = handleError(results);
     if (error) {
-      console.error('Errore durante la richiesta:', error);
-      return error.response?.data || { error: 'Errore sconosciuto' };
+      showToast(results.data.message, 'error');
+      return true;
     }
+
+    localStorage.setItem('bioCompleted', 'true');
+    return false;
   }
 
   const handleSubmit = async () => {
     if (validateForm()) {
       let err = await handleSubmitInfo();
-      if (err != null) {
-        console.log('Errore durante la richiesta:', err);
-        showToast('🟥 Errore nella richiesta!', 'error');
+      if (err) {
         return;
       }
 
@@ -109,7 +128,7 @@ function BioPage() {
         <div className="mt-5">
           <label className="block text-left font-medium mb-2">Numero di telefono</label>
           <input
-            type="number"
+            type="text"
             id="input-phone"
             className="bg-white focus:outline-pink-500 text-black rounded-lg h-10 py-3 px-4 block w-full"
             placeholder="+39 123456790 (prefisso non obbligatorio)"
@@ -121,11 +140,9 @@ function BioPage() {
             <label className="block text-left font-medium mb-2">Classe</label>
             <select id="input-class" className="bg-white focus:outline-pink-500 text-black rounded-lg py-3 px-4 block w-full">
               <option value="">Seleziona...</option>
-              <option value={1}>1</option>
-              <option value={2}>2</option>
-              <option value={3}>3</option>
-              <option value={4}>4</option>
-              <option value={5}>5</option>
+              {[1, 2, 3, 4, 5].map(num => (
+                <option key={num} value={num}>{num}</option>
+              ))}
             </select>
           </div>
 
@@ -133,15 +150,9 @@ function BioPage() {
             <label className="block text-left font-medium mb-2">Sezione</label>
             <select id="input-section" className="bg-white focus:outline-pink-500 text-black rounded-lg py-3 px-4 block w-full">
               <option value="">Seleziona...</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-              <option value="E">E</option>
-              <option value="F">F</option>
-              <option value="G">G</option>
-              <option value="H">H</option>
-              <option value="I">I</option>
+              {["A", "B", "C", "D", "E", "F", "G", "H", "I"].map(sec => (
+                <option key={sec} value={sec}>{sec}</option>
+              ))}
             </select>
           </div>
 
@@ -222,7 +233,7 @@ function BioPage() {
             {files.map((file, index) => (
               <div key={index} className="relative">
                 <img
-                  src={URL.createObjectURL(file)}
+                  src={file.preview}
                   alt={`preview-${index}`}
                   className="w-full h-24 object-cover rounded-lg"
                 />

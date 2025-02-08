@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { GetSignedJWT } from '../api/auth';
 import { showToast } from './toast'
 import 'toastify-js/src/toastify.css';
+import { handleError } from '../utils/utils';
 
 export default function LoginButton() {
   const navigate = useNavigate();
@@ -16,7 +17,12 @@ export default function LoginButton() {
 
   const handleLoginSuccess = async (CredentialResponse) => {
     try {
-      await GetSignedJWT(CredentialResponse.credential);
+      let response = await GetSignedJWT(CredentialResponse.credential);
+      const error = handleError(response);
+      if (error) {
+        showToast(`Errore nel caricamento del profilo: ${error.error}`, 'error');
+        return;
+      }
       showToast('✅ Login avvenuto con successo!', 'success');
       handleRedirect();
     } catch (error) {
@@ -33,7 +39,6 @@ export default function LoginButton() {
       onSuccess={handleLoginSuccess}
       onError={() => {
         showToast('❌ Login fallito. Riprova!', 'error');
-        console.log('Login Failed');
       }}
     />
   );

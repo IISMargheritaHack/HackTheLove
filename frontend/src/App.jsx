@@ -10,6 +10,8 @@ import ProfilePage from '@pages/profilePage';
 import SurveyPage from '@pages/surveyPage';
 import PaginaWaiting from '@pages/paginaWaiting';
 import MatchPage from '@pages/matchPage';
+import UpdateProfile from '@pages/editProfilePage'
+import Logout from '@pages/logoutPage';
 
 import React from 'react';
 import { isMobile } from 'react-device-detect';
@@ -51,6 +53,8 @@ function App() {
 
           <Route element={<ProtectedRoute />}>
             <Route path="/likes" element={<MatchPage />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/update" element={<UpdateProfile />} />
             <Route path="/intro" element={<IntroPage />} />
             <Route path="/waiting" element={<PaginaWaiting />} />
             <Route path="/bio" element={<BioPage />} />

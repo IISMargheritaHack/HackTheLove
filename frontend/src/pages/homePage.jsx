@@ -7,6 +7,7 @@ import Header from '@components/header';
 import Card from '@components/card';
 import { useContext } from 'react';
 import UserContext from '@provider/userContext';
+import { handleError } from '@utils/utils';
 
 function HomePage() {
   const [matches, setMatches] = useState([]);
@@ -25,22 +26,26 @@ function HomePage() {
         initialCards.map(async (card) => {
           const emailToGet = card.user_email1 === user.email ? card.user_email2 : card.user_email1;
 
-          try {
-            const [userMatchData, photos] = await Promise.all([
-              getUserByParams(emailToGet),
-              getPhotosByParams(emailToGet)
-            ]);
-
-            return {
-              ...card,
-              user: userMatchData,
-              id: uuidv4(),
-              image: photos.images[0] || '',
-            };
-          } catch (error) {
-            console.error('Error while retrieving user data:', error);
+          const userMatchData = await getUserByParams(emailToGet);
+          const errorUser = handleError(userMatchData);
+          if (errorUser) {
+            showToast(errorUser.error, 'error');
             return null;
           }
+
+          const photos = await getPhotosByParams(emailToGet);
+          const errorPhotos = handleError(photos);
+          if (errorPhotos) {
+            showToast(errorPhotos.error, 'error');
+            return null;
+          }
+
+          return {
+            ...card,
+            user: userMatchData.data,
+            id: uuidv4(),
+            image: photos.data.images[0] || '',
+          };
         })
       );
 
@@ -50,21 +55,27 @@ function HomePage() {
       });
 
     } catch (error) {
-      console.error('Error during the creation of card:', error);
+      showToast('Errore durante la creazione delle carte', 'error');
+      console.error('Error during card creation:', error);
     }
   }
 
   async function handleMatch() {
     try {
       const response = await getMatches();
+      const error = handleError(response);
+      if (error) {
+        showToast(error.error, 'error');
+        return;
+      }
 
-      if (!Array.isArray(response) || response.length === 0) {
+      if (!Array.isArray(response.data) || response.data.length === 0) {
         showToast('Nessun match trovato', 'info');
         return;
       }
 
-      setMatches(response);
-      await createCards(response, 5);
+      setMatches(response.data);
+      await createCards(response.data, 5);
     } catch (error) {
       showToast('Si è verificato un errore imprevisto', 'error');
       console.error('Errore:', error);
@@ -76,10 +87,7 @@ function HomePage() {
       const updatedCards = prevCards.filter(card => card.id !== swipedCardId);
 
       if (matches.length > updatedCards.length) {
-        const nextCard = matches[updatedCards.length];
-        if (nextCard) {
-          createCards(matches, 1);
-        }
+        createCards(matches, 1);
       }
 
       return updatedCards;
@@ -87,30 +95,21 @@ function HomePage() {
   }, [matches]);
 
   function updateCard(direction) {
+    setColor(
+      direction === 1
+        ? 'linear-gradient(180deg, #DD016D 0%, rgba(221, 1, 109, 0.6139) 55%, rgba(221, 1, 109, 0.01) 100%)'
+        : 'linear-gradient(180deg, #871A1A 0%, rgba(135, 26, 26, 0.6139) 55%, rgba(135, 26, 26, 0.01) 100%)'
+    );
+
     setCards((prevCards) => {
-      const newCards = prevCards.slice(1);
       createCards(matches, 1);
-      return newCards;
+      return prevCards.slice(1);
     });
 
-    setMatches((prevMatches) => {
-      if (prevMatches.length > 0) {
-        return prevMatches.slice(1);
-      }
-      return prevMatches;
-    });
-
-    if (direction === 1) {
-      setColor('linear-gradient(180deg, #DD016D 0%, rgba(221, 1, 109, 0.6139) 55%, rgba(221, 1, 109, 0.01) 100%)');
-    } else {
-      setColor('linear-gradient(180deg, #871A1A 0%, rgba(135, 26, 26, 0.6139) 55%, rgba(135, 26, 26, 0.01) 100%)');
-    }
-
+    setMatches((prevMatches) => prevMatches.length > 0 ? prevMatches.slice(1) : prevMatches);
     setIsVisible(true);
 
-    setTimeout(() => {
-      setIsVisible(false);
-    }, 1500);
+    setTimeout(() => setIsVisible(false), 1500);
   }
 
   useEffect(() => {
@@ -135,29 +134,30 @@ function HomePage() {
           />
         ))}
       </div>
-      <h1 className='absolute z-0 font-bold text-xl p-12 w-screen text-center'>Sembra siano finiti i match attendi i risultati!</h1>
+      <h1 className='absolute z-0 font-bold text-xl p-12 w-screen text-center'>Sembra siano finiti i match, attendi i risultati!</h1>
 
-      <div
-        className="z-49 absolute top-0 w-full h-[10vh] transition-all duration-300 ease-in-out"
-        style={{
-          background: 'linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)'
-        }}
-      ></div>
-
-      <motion.div
-        className="z-49 absolute top-0 w-full h-[10vh]"
-        style={{ background: color }}
-        animate={{ opacity: isVisible ? 1 : 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-      />
-
-      <div
-        className="absolute bottom-0 w-full h-[20vh]"
-        style={{
-          background:
-            'linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)',
-        }}
-      ></div>
+      {cards.length !== 0 && (
+        <>
+          <div
+            className="z-49 absolute top-0 w-full h-[10vh] transition-all duration-300 ease-in-out"
+            style={{
+              background: 'linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)'
+            }}
+          ></div>
+          <motion.div
+            className="z-49 absolute top-0 w-full h-[8vh]"
+            style={{ background: color }}
+            animate={{ opacity: isVisible ? 1 : 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          />
+          <div
+            className="absolute bottom-0 w-full h-[20vh]"
+            style={{
+              background: 'linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)',
+            }}
+          ></div>
+        </>
+      )}
     </div>
   );
 }

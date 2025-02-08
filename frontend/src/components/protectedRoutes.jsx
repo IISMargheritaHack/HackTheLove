@@ -1,41 +1,49 @@
 import UserContext from '@provider/userContext';
 import PropTypes from 'prop-types';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router';
 
 const isValidJWT = (token) => {
   if (!token) return false;
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
-    const isExpired = payload.exp * 1000 < Date.now();
-    return !isExpired;
+    return payload.exp * 1000 > Date.now();
   } catch (error) {
     console.error('Invalid token:', error);
     return false;
   }
 };
 
+const getUserFromToken = (token) => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return { email: payload.email };
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return null;
+  }
+};
+
 const ProtectedRoute = ({ children }) => {
   const { setUser } = useContext(UserContext);
+  const [isAuth, setIsAuth] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('jwt');
-
     if (isValidJWT(token)) {
-      const email = JSON.parse(atob(token.split('.')[1])).email;
-      setUser({ email });
+      setUser(getUserFromToken(token));
+      setIsAuth(true);
     } else {
       setUser(null);
+      setIsAuth(false);
     }
   }, [setUser]);
 
-  const token = localStorage.getItem('jwt');
-
-  if (!isValidJWT(token)) {
-    return <Navigate to="/login" replace />;
+  if (isAuth === null) {
+    return <div>Caricamento...</div>;
   }
 
-  return children ? children : <Outlet />;
+  return isAuth ? (children ? children : <Outlet />) : <Navigate to="/login" replace />;
 };
 
 ProtectedRoute.propTypes = {

@@ -6,7 +6,7 @@ function IntroPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem('introEnded') === 'true') {
+    if (localStorage.getItem('introCompleted') === 'true') {
       navigate('/bio');
     }
   }, [navigate]);

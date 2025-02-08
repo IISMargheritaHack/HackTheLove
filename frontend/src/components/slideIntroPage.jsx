@@ -71,7 +71,7 @@ export default function SlideIntroPage() {
 
     const handleClick = () => {
       if (isLastSlide) {
-        localStorage.setItem('introEnded', true);
+        localStorage.setItem('introCompleted', true);
         navigate('/bio');
       } else {
         next();

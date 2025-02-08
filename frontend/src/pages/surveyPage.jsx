@@ -6,6 +6,7 @@ import { showToast } from '@components/toast';
 import 'toastify-js/src/toastify.css';
 import { useNavigate } from 'react-router';
 import { addSurvey, getQuestions } from '@api/api';
+import { handleError } from '@utils/utils';
 
 function SurveyPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -16,8 +17,13 @@ function SurveyPage() {
   useEffect(() => {
     async function fetchQuestions() {
       try {
-        const { questions: questionsData } = await getQuestions();
-        console.log(questionsData);
+        let results = await getQuestions();
+        const error = handleError(results);
+        if (error) {
+          showToast(error.error, 'error');
+          return;
+        }
+        const { questions: questionsData } = results.data
         setQuestions(questionsData);
       } catch (error) {
         console.error('Errore durante il recupero delle domande:', error);
@@ -32,11 +38,14 @@ function SurveyPage() {
   }, [navigate]);
 
   async function handleSendSurvey(response) {
-    let error = await addSurvey(response);
+    let results = await addSurvey(response);
+    const error = handleError(results);
     if (error) {
-      console.error('Errore durante la richiesta:', error);
-      return error.response?.data || { error: 'Errore durante la richiesta' };
+      showToast(error.error, 'error');
+      return true;
     }
+
+    return false
   }
 
   const handleNext = async () => {
@@ -47,16 +56,18 @@ function SurveyPage() {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
+
       let err = await handleSendSurvey(
         Object.values(answers).map(item => item).join('')
       );
       if (err) {
         showToast('⚠️ Errore durante l\'invio del questionario!', 'error');
-      } else {
-        showToast('✅ Survey completato! 🎉', 'success');
-        localStorage.setItem('surveyCompleted', 'true');
-        navigate('/');
+        return
       }
+
+      showToast('✅ Survey completato! 🎉', 'success');
+      localStorage.setItem('surveyCompleted', 'true');
+      navigate('/');
     }
   };
 

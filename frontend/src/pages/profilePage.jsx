@@ -4,6 +4,8 @@ import Header from '@components/header';
 import { getUser, getPhotos, getUserByParams, getPhotosByParams } from '@api/api';
 import { useNavigate, useLocation } from 'react-router';
 import { Spacer } from '@heroui/spacer';
+import { handleError } from '@utils/utils';
+import { showToast } from '@components/toast';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -15,43 +17,57 @@ export default function ProfilePage() {
 
   useEffect(() => {
     async function fetchUser() {
-      let data = null;
       try {
-        if (email == null || email === '' || typeof email != 'string') {
-          data = await getUser();
+        let response;
+        if (!email) {
+          response = await getUser();
         } else {
-          data = await getUserByParams(atob(email));
+          response = await getUserByParams(atob(email));
         }
-        setUser(data);
+
+        const error = handleError(response);
+        if (error) {
+          showToast(`Errore nel caricamento del profilo: ${error.error}`, 'error');
+          return;
+        }
+
+        setUser(response.data);
       } catch (error) {
+        showToast('Errore imprevisto nel caricamento del profilo', 'error');
         console.error("Error in the fetch of data:", error);
       } finally {
         setLoading(false);
       }
     }
+
     async function fetchPhotos() {
       try {
-        let photos = null;
-        if (email == null || email === '' || typeof email != 'string') {
-          photos = await getPhotos();
+        let response;
+        if (!email) {
+          response = await getPhotos();
         } else {
-          photos = await getPhotosByParams(atob(email));
+          response = await getPhotosByParams(atob(email));
         }
-        const imageUrls = photos.images.map((image) =>
-          image.startsWith('data:image')
-            ? image
-            : `data:image/jpeg;base64,${image}`
-        );
-        console.log(imageUrls);
-        setUrls((prevImages) => [...prevImages, ...imageUrls]);
-        console.log(urls);
+
+        const error = handleError(response);
+        if (error) {
+          showToast(`Errore nel caricamento delle foto: ${error.error}`, 'error');
+          return;
+        }
+
+        const imageUrls = response.data?.images?.map(image =>
+          image.startsWith('data:image') ? image : `data:image/jpeg;base64,${image}`
+        ) || [];
+
+        setUrls(imageUrls);
       } catch (error) {
+        showToast('Errore imprevisto nel caricamento delle immagini', 'error');
         console.error('Errore nel recupero delle foto:', error);
       }
     }
 
-    fetchPhotos();
     fetchUser();
+    fetchPhotos();
   }, [email]);
 
   if (loading) {
@@ -81,7 +97,7 @@ export default function ProfilePage() {
 
         <div className="relative mx-auto w-24 h-24 bg-gray-200 rounded-full overflow-hidden border-4 border-pink-700">
           <img
-            src={urls[0]}
+            src={urls[0] || '/placeholder.jpg'}
             alt="Profile"
             className="w-full h-full object-cover"
           />
@@ -89,27 +105,25 @@ export default function ProfilePage() {
 
         <div className="text-center mt-5">
           <h3 className="text-xl font-bold text-black">
-            {user.user.given_name || 'Nome non disponibile'}
+            {user.user?.given_name || 'Nome non disponibile'}
           </h3>
           <p className="text-black text-sm">
-            {user.user_info.bio || 'Nessuna bio disponibile'}
+            {user.user_info?.bio || 'Nessuna bio disponibile'}
           </p>
         </div>
 
         <div className="flex justify-between mt-6 px-10 text-black">
           <div className="text-center">
             <p className="text-sm font-bold">ETÁ</p>
-            <p>{user.user_info.age || 'N/D'}</p>
+            <p>{user.user_info?.age || 'N/D'}</p>
           </div>
           <div className="text-center">
             <p className="text-sm font-bold">SESSO</p>
-            <div className="text-center">
-              <p>{user.user_info.sex === true ? 'Uomo' : 'Donna'}</p>
-            </div>
+            <p>{user.user_info?.sex === true ? 'Uomo' : 'Donna'}</p>
           </div>
           <div className="text-center">
             <p className="text-sm font-bold">MATCH</p>
-            <p>{user.user_info.match || 0}</p>
+            <p>{user.user_info?.match || 0}</p>
           </div>
         </div>
 
@@ -137,7 +151,7 @@ export default function ProfilePage() {
         {email == null && (
           <div className="w-full mt-10 flex justify-center">
             <button
-              onClick={() => navigate('/bio')}
+              onClick={() => navigate('/update')}
               className="w-[80%] h-[43px] rounded-3xl bg-pink-700 text-white flex items-center justify-center gap-2 shadow-md"
             >
               <span className="font-bold">Modifica</span>
