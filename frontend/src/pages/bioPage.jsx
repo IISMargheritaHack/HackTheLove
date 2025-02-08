@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { showToast } from '@components/toast';
 import 'toastify-js/src/toastify.css';
 import { useState } from 'react';
-import { addUserInfo, addPhotos } from '@api/api';
+import { addUserInfo, addPhotos, getUser } from '@api/api';
 import { handleError } from '@utils/utils';
 import { useEffect } from 'react';
 
@@ -15,9 +15,19 @@ function BioPage() {
 
 
   useEffect(() => {
-    if (localStorage.getItem('bioCompleted') === 'true') {
-      navigate('/survey');
+    const fetchUser = async () => {
+      let res = await getUser();
+      let error = handleError(res);
+      if (error) {
+        navigate('/login');
+      }
+
+      if (res.data.user_info.age != null && res.data.user_info.sex != null) {
+        navigate('/survey');
+      }
     }
+    fetchUser();
+
   }, [])
 
   const handleFileChange = (e) => {
@@ -93,7 +103,6 @@ function BioPage() {
       return true;
     }
 
-    localStorage.setItem('bioCompleted', 'true');
     return false;
   }
 
@@ -105,7 +114,6 @@ function BioPage() {
       }
 
       showToast('✅ Informazioni salvate con successo!', 'success');
-      localStorage.setItem('bioCompleted', 'true');
       navigate('/survey');
     }
   };
@@ -131,7 +139,7 @@ function BioPage() {
             type="text"
             id="input-phone"
             className="bg-white focus:outline-pink-500 text-black rounded-lg h-10 py-3 px-4 block w-full"
-            placeholder="+39 123456790 (prefisso non obbligatorio)"
+            placeholder="+39123456790 (prefisso non obbligatorio)"
           />
         </div>
 

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { showToast } from '@components/toast';
 import 'toastify-js/src/toastify.css';
 import { useNavigate } from 'react-router';
-import { addSurvey, getQuestions } from '@api/api';
+import { addSurvey, getQuestions, getSurvey } from '@api/api';
 import { handleError } from '@utils/utils';
 
 function SurveyPage() {
@@ -30,11 +30,17 @@ function SurveyPage() {
       }
     }
 
+    async function fetchSurvey() {
+      let results = await getSurvey();
+      if (results.error != "Survey not found") {
+        navigate('/');
+        return;
+      }
+    }
+
+    fetchSurvey();
     fetchQuestions();
 
-    if (localStorage.getItem('surveyCompleted') === 'true') {
-      navigate('/');
-    }
   }, [navigate]);
 
   async function handleSendSurvey(response) {
@@ -66,7 +72,6 @@ function SurveyPage() {
       }
 
       showToast('✅ Survey completato! 🎉', 'success');
-      localStorage.setItem('surveyCompleted', 'true');
       navigate('/');
     }
   };
