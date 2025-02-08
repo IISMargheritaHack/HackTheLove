@@ -71,7 +71,11 @@ func (s *Server) Run() error {
 
 	surveyService := services.NewSurveyService(s.db.GetDB())
 	matchService := services.NewMatchService(s.db.GetDB())
-	scheduleMatching(config.ScheduleTime, func() {
+	scheduleTime, err := time.Parse(time.RFC3339, config.ScheduleTime)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error parsing schedule time the format should be RFC3339 (2021-09-01T16:00:00Z)")
+	}
+	scheduleMatching(scheduleTime, func() {
 		if err := surveyService.StartMatching(matchService); err != nil {
 			log.Error().Err(err).Msg("Error starting matching")
 		}

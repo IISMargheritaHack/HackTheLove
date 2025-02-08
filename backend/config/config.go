@@ -9,7 +9,7 @@ import (
 // App
 var LogLevel = utils.GetEnv("LOG_LEVEL", "debug")
 var LogFile = utils.GetEnv("LOG_FILE", "")
-var ScheduleTime = time.Now().Add(120 * time.Second)
+var ScheduleTime = utils.GetEnv("TIME_ALGO", time.Now().Add(120*time.Second).Format(time.RFC3339))
 
 const MIN_VALUE_COMPATIBILITY = 40
 const BATCH_SIZE = 1000
