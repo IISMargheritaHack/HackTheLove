@@ -122,8 +122,8 @@ export default function ProfilePage() {
             <p>{user.user_info?.sex === true ? 'Uomo' : 'Donna'}</p>
           </div>
           <div className="text-center">
-            <p className="text-sm font-bold">MATCH</p>
-            <p>{user.user_info?.match || 0}</p>
+            <p className="text-sm font-bold">CLASSE</p>
+            <p>{user.user_info?.classe || 0}{user.user_info?.section || "A"}</p>
           </div>
         </div>
 

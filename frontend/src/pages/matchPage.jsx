@@ -66,6 +66,9 @@ export default function MatchPage() {
     <div>
       <Header />
       <Spacer y={20} />
+      <div className="m-3" id="title">
+        <h1 className="text-left text-[1.2rem] font-bold selection:bg-pink-300 selection:text-white">Guarda chi ha ricambiato il like</h1>
+      </div>
       {users.length === 0 ? (
         <p className='text-center m-3'>Sembra che nessuno abbia ancora ricambiato il tuo like!</p>
       ) : (

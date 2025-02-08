@@ -7,11 +7,21 @@ import { useState } from 'react';
 import { addUserInfo, addPhotos, getUser } from '@api/api';
 import { handleError } from '@utils/utils';
 import { useEffect } from 'react';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  useDisclosure,
+} from "@heroui/modal";
+import { Button } from '@heroui/button';
 
 function BioPage() {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [age, setEta] = useState(14);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [consent, setConsent] = useState(false);
 
 
   useEffect(() => {
@@ -109,7 +119,7 @@ function BioPage() {
   const handleSubmit = async () => {
     if (validateForm()) {
       let err = await handleSubmitInfo();
-      if (err) {
+      if (err || !consent) {
         return;
       }
 
@@ -123,6 +133,24 @@ function BioPage() {
 
   return (
     <div id="main" className="flex flex-col items-left justify-start min-h-screen px-4 py-6 m-2">
+
+
+      <Modal isOpen={isOpen} placement='auto' className='bg-white text-black rounded-lg m-0' onOpenChange={onOpenChange} backdrop="blur" radius="lg">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Sei sicuro?</ModalHeader>
+              <ModalBody> Le foto potranno essere scelte solo una volta!</ModalBody>
+              <div className="flex items-center gap-6 m-5 justify-center">
+                <Button className='bg-red-800 text-white min-w-[40vw] rounded-lg' color="danger" onPress={onClose}>Annulla</Button>
+                <Button className='bg-pink-500 text-white min-w-[40vw] rounded-lg ' color="primary" onPress={() => { handleSubmit(); onClose() }}>Conferma</Button>
+              </div>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+
       <div id="header" className="">
         <Logo width={4} />
       </div>
@@ -259,7 +287,7 @@ function BioPage() {
         <div className="w-full mt-10 flex justify-center">
           <button
             className="w-[80vw] h-[43px] rounded-4xl bg-white text-black flex items-center justify-center gap-2 shadow-md"
-            onClick={handleSubmit}
+            onClick={onOpen}
           >
             <span className="font-bold">Avanti</span>
             <ArrowRight className="text-xl" width={30} height={25} />

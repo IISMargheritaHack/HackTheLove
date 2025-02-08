@@ -7,8 +7,6 @@ import { Spacer } from '@heroui/spacer';
 import { handleError } from '@utils/utils';
 
 function UpdateProfile() {
-  const [files, setFiles] = useState([]);
-  const [filesOld, setFilesOld] = useState([]);
   const [age, setAge] = useState(14);
   const [user, setUser] = useState(null);
   const [classe, setClasse] = useState("");
@@ -31,19 +29,6 @@ function UpdateProfile() {
           showToast(resultPhoto.error, 'error');
         }
 
-        if (photos?.images?.length > 0) {
-          const filesArray = photos.images.map((photo, index) => {
-            const base64Image = photo.startsWith('data:image') ? photo : `data:image/jpeg;base64,${photo}`;
-            return {
-              file: base64Image,
-              preview: base64Image
-            };
-          });
-
-          setFiles(filesArray);
-          setFilesOld(filesArray)
-        }
-
         if (user?.user_info) {
           setClasse(user.user_info.classe || "");
           setSection(user.user_info.section || "A");
@@ -59,27 +44,6 @@ function UpdateProfile() {
     fetchUser();
   }, []);
 
-  const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-
-    if (selectedFiles.length + files.length > 5) {
-      showToast("Puoi caricare un massimo di 5 foto!", 'error');
-      e.target.value = "";
-      return;
-    }
-
-    const filesWithPreview = selectedFiles.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }));
-
-    setFiles((prevFiles) => [...prevFiles, ...filesWithPreview]);
-  };
-
-  const removeImage = (index) => {
-    setFiles(files.filter((_, i) => i !== index));
-  };
-
   const validateForm = () => {
     const telefono = document.getElementById('input-phone').value.trim();
     const sesso = document.getElementById('input-sex').value;
@@ -87,7 +51,7 @@ function UpdateProfile() {
     const bio = document.getElementById('input-bio').value.trim();
     const classe = document.getElementById('input-class').value.trim();
 
-    if (!telefono || !sesso || !sezione || !bio || !classe || files.length === 0) {
+    if (!telefono || !sesso || !sezione || !bio || !classe) {
       showToast('⚠️ Tutti i campi sono obbligatori!', 'error');
       return false;
     }
@@ -125,19 +89,6 @@ function UpdateProfile() {
       return;
     }
 
-    if (files.length === 0) {
-      return;
-    }
-
-    if (files !== filesOld) {
-      results = await addPhotos(files.map((file) => file.file));
-      const errorPhotos = handleError(results);
-      if (errorPhotos) {
-        showToast(errorPhotos.error, 'error');
-        return;
-      }
-    }
-
     showToast('✅ Informazioni salvate con successo!', 'success');
   };
 
@@ -156,7 +107,7 @@ function UpdateProfile() {
       <Spacer y={10} />
       <div id="main" className="flex flex-col items-left justify-start min-h-screen px-4 py-6 m-2">
         <div className="mt-3" id="title">
-          <h1 id="titleBioPage" className="text-left text-[1.2rem] font-bold selection:bg-pink-300 selection:text-white">Alcune informazioni personali</h1>
+          <h1 className="text-left text-[1.2rem] font-bold selection:bg-pink-300 selection:text-white">Modifica il profilo</h1>
         </div>
 
         <div className="w-full max-w-md flex flex-col items-left">
@@ -190,6 +141,7 @@ function UpdateProfile() {
             <div className="w-1/2">
               <label className="block text-left font-medium mb-2">Sezione</label>
               <select
+
                 id="input-section"
                 value={section}
                 onChange={(e) => setSection(e.target.value)}
@@ -248,45 +200,6 @@ function UpdateProfile() {
               rows="3"
               placeholder="Mi piace il calcio"
             ></textarea>
-          </div>
-
-          <div className="max-w-[40vh] mt-10">
-            <form>
-              <label className="block">
-                <span className="sr-only">Scegli le foto del profilo</span>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/png, image/jpeg, image/jpg, image/gif"
-                  onChange={handleFileChange}
-                  className="block w-full text-sm text-white
-                      file:me-4 file:py-2 file:px-4
-                      file:rounded-lg file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-white file:text-black
-                      hover:file:bg-pink-700
-                      file:disabled:opacity-50 file:disabled:pointer-events-none"
-                />
-              </label>
-            </form>
-
-            <div className="mt-4 grid grid-cols-3 gap-2">
-              {files.map((file, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={file.preview}
-                    alt={`preview-${index}`}
-                    className="w-full h-24 object-cover rounded-lg"
-                  />
-                  <button
-                    onClick={() => removeImage(index)}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full px-1 text-xs"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className="w-full mt-10 flex justify-center">
