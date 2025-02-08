@@ -20,6 +20,7 @@ export default defineConfig({
       '@api': '/src/api/',
       '@provider': '/src/provider',
       '@config': '/src/config.js',
+      '@utils': '/src/utils',
     }
   },
 
