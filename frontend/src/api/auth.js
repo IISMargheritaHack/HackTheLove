@@ -8,6 +8,7 @@ async function GetSignedJWT(googleToken) {
     );
     console.debug(response.data.token)
     localStorage.setItem('jwt', response.data.token);
+    return { "data": response.data, "status": response.status }
   } catch (error) {
     console.error('Errore durante la richiesta:', error);
   }

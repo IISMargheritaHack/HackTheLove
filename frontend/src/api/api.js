@@ -30,7 +30,7 @@ api.interceptors.response.use(
 const handleRequest = async (callback) => {
   try {
     const response = await callback();
-    return response.data;
+    return { data: response.data, status: response.status };
   } catch (error) {
     return error;
   }
@@ -56,14 +56,14 @@ export const addSurvey = (surveyResponse) => {
   const isValid = validateSurvey(surveyResponse);
   if (!isValid.valid) return { error: isValid.message };
 
-  handleRequest(() => api.post('/addSurvey', { response: surveyResponse }));
+  return handleRequest(() => api.post('/addSurvey', { response: surveyResponse }));
 };
 
 export const addUserInfo = (userInfo) => {
   const result = validateUserData(userInfo);
   if (!result.valid) return { error: result.message };
 
-  handleRequest(() => api.post('/addUserInfo', userInfo));
+  return handleRequest(() => api.post('/addUserInfo', userInfo));
 };
 
 export const addPhotos = (files) => {
@@ -73,7 +73,7 @@ export const addPhotos = (files) => {
   const formData = new FormData();
   files.forEach((file) => formData.append('files', file));
 
-  handleRequest(() =>
+  return handleRequest(() =>
     api.post('/addPhoto', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
@@ -119,12 +119,11 @@ function validatePhotos(files) {
 function validateUserData(data) {
   const errors = [];
 
-  // Normalize phone number
   if (data.phone && !data.phone.startsWith('+')) {
     data.phone = `+39${data.phone}`;
   }
 
-  const phoneRegex = /^\+\d{1,3}\d{6,14}$/;
+  const phoneRegex = /^\+\d{1,9}\d{6,14}$/;
   if (!phoneRegex.test(data.phone)) {
     errors.push('Invalid phone number format.');
   }
