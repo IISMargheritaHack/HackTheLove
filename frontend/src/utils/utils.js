@@ -49,4 +49,11 @@ async function getImages(containerId = 'image-container') {
   }
 }
 
-export { getImages };
+
+function handleError(requestResult) {
+  if (requestResult.status != 200 && requestResult.status != 201) {
+    return requestResult;
+  }
+}
+
+export { getImages, handleError };
