@@ -41,8 +41,9 @@ export const getUser = () => handleRequest(() => api.get('/getUser'));
 export const getUserByParams = (email) => handleRequest(() => api.get('/getUserByParams', { params: { email } }));
 export const getSurvey = () => handleRequest(() => api.get('/getSurvey'));
 export const getMatches = () => handleRequest(() => api.get('/getMatches'));
-export const getQuestions = () => handleRequest(() => api.get('/getQuestions'));
+export const getQuestions = () => handleRequest(() => api.get('/questions'));
 export const getLikesMatches = () => handleRequest(() => api.get('/getLikesMatches'));
+export const getTime = () => handleRequest(() => api.get('/time'));
 
 export const healCheck = () => handleRequest(() => api.get('/health'));
 

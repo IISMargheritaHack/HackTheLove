@@ -1,9 +1,9 @@
 import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router';
-import { GetSignedJWT } from '../api/auth';
-import { showToast } from './toast'
+import { GetSignedJWT } from '@api/auth';
+import { showToast } from '@components/toast'
 import 'toastify-js/src/toastify.css';
-import { handleError } from '../utils/utils';
+import { handleError } from '@utils/utils';
 
 export default function LoginButton() {
   const navigate = useNavigate();

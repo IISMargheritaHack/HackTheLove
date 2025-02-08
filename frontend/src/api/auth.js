@@ -6,7 +6,6 @@ async function GetSignedJWT(googleToken) {
       '/verifyGoogleJWT',
       { idToken: googleToken },
     );
-    console.debug(response.data.token)
     localStorage.setItem('jwt', response.data.token);
     return { "data": response.data, "status": response.status }
   } catch (error) {

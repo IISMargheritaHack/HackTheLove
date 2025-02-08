@@ -3,12 +3,11 @@ import './App.css';
 import ProtectedRoute from '@components/protectedRoutes';
 import Page404 from '@pages/404Page';
 import BioPage from '@pages/bioPage';
-import HomePage from '@pages/homePage';
+import MainPage from '@pages/mainPage';
 import IntroPage from '@pages/introPage.jsx';
 import LoginPage from '@pages/loginPage';
 import ProfilePage from '@pages/profilePage';
 import SurveyPage from '@pages/surveyPage';
-import PaginaWaiting from '@pages/paginaWaiting';
 import MatchPage from '@pages/matchPage';
 import UpdateProfile from '@pages/editProfilePage'
 import Logout from '@pages/logoutPage';
@@ -48,7 +47,7 @@ function App() {
         </Modal>
       ) : (
         <Routes>
-          <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
           <Route path="/login" element={<LoginPage />} />
 
           <Route element={<ProtectedRoute />}>
@@ -56,7 +55,6 @@ function App() {
             <Route path="/logout" element={<Logout />} />
             <Route path="/update" element={<UpdateProfile />} />
             <Route path="/intro" element={<IntroPage />} />
-            <Route path="/waiting" element={<PaginaWaiting />} />
             <Route path="/bio" element={<BioPage />} />
             <Route path="/survey" element={<SurveyPage />} />
             <Route path="/profile" element={<ProfilePage />} />
