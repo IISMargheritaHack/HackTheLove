@@ -4,7 +4,7 @@ import random
 import uuid
 import re
 import io
-import os  # ✅ Import per gestire la lettura dei file nella directory
+import os
 
 fake = Faker()
 
@@ -16,7 +16,6 @@ DB_CONFIG = {
     "port": "5432",
 }
 
-# ✅ Carica dinamicamente tutte le immagini dalla cartella "images"
 def get_possible_images():
     image_folder = "./images"
     return [f for f in os.listdir(image_folder) if f.lower().endswith(('.jpeg', '.jpg', '.png', '.gif'))]
