@@ -3,6 +3,6 @@ const googleClientId = import.meta.env.GOOGLE_CLIENT_ID ||
 
 const timeReleaseMatch = import.meta.env.TIME_RELEASE_MATCH
   ? new Date(import.meta.env.TIME_RELEASE_MATCH)
-  : new Date("2025-02-07T00:00:00Z"); // 2025-02-14T00:00:00Z
+  : new Date("2025-02-14T00:00:00Z"); // 2025-02-14T00:00:00Z
 
 export { googleClientId, timeReleaseMatch };
