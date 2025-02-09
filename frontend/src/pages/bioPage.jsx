@@ -21,8 +21,6 @@ function BioPage() {
   const [files, setFiles] = useState([]);
   const [age, setEta] = useState(14);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [consent, setConsent] = useState(false);
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -119,7 +117,7 @@ function BioPage() {
   const handleSubmit = async () => {
     if (validateForm()) {
       let err = await handleSubmitInfo();
-      if (err || !consent) {
+      if (err) {
         return;
       }
 
