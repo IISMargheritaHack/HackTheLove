@@ -89,3 +89,6 @@ class HackTheLoveUser(HttpUser):
 
     def set_like(self):
         self.client.post("/setLike", json={"data": "like_data"})
+
+
+# locust -f loadingtest.py
