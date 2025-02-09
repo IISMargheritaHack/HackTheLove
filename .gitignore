@@ -57,3 +57,4 @@ frontend/*.sw?
 # Other
 algo
 .venv
+__pycache__
