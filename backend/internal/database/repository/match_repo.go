@@ -21,8 +21,8 @@ func (r *MatchRepository) InsertMatches(matches []models.Match) error {
 		return nil
 	}
 
-	for i := 0; i < len(matches); i += config.BATCH_SIZE {
-		end := i + config.BATCH_SIZE
+	for i := 0; i < len(matches); i += config.BatchSize {
+		end := i + config.BatchSize
 		if end > len(matches) {
 			end = len(matches)
 		}

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"backend/config"
 	"backend/internal/logger"
 	"sync"
 	"time"
@@ -10,8 +11,6 @@ import (
 )
 
 var log = logger.GetLogger()
-
-const requestsPerSecond = 50
 
 type clientLimiter struct {
 	limiter  *rate.Limiter
@@ -29,7 +28,7 @@ func RateLimiterMiddleware() gin.HandlerFunc {
 		limiter, exists := ipLimiters[ip]
 		if !exists {
 			limiter = &clientLimiter{
-				limiter:  rate.NewLimiter(rate.Limit(requestsPerSecond), requestsPerSecond),
+				limiter:  rate.NewLimiter(rate.Limit(config.RequestPerSecond), config.RequestPerSecond),
 				lastSeen: time.Now(),
 			}
 			ipLimiters[ip] = limiter

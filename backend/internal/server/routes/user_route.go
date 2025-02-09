@@ -1,12 +1,24 @@
 package routes
 
 import (
+	"backend/config"
 	"backend/internal/models"
 	"backend/internal/server/middleware"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
+
+var timeRelease time.Time
+
+func init() {
+	var err error
+	timeRelease, err = time.Parse(time.RFC3339, config.TimeReleaseMatch)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error parsing schedule time. The format should be RFC3339 (e.g., 2021-09-01T16:00:00Z)")
+	}
+}
 
 func (h *Handler) GetUser(c *gin.Context) {
 	email := middleware.GetEmail(c)
@@ -79,6 +91,13 @@ func (h *Handler) AddUserInfo(c *gin.Context) {
 }
 
 func (h *Handler) GetMatches(c *gin.Context) {
+	log.Debug().Msgf("Time release: %s", timeRelease)
+
+	if timeRelease.After(time.Now()) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Matches are not available yet"})
+		return
+	}
+
 	email := middleware.GetEmail(c)
 	matches, err := h.MatchRepo.GetMatches(email)
 	if err != nil {

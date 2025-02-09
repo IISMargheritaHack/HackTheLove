@@ -22,7 +22,6 @@ func GenerateTestJWT(email string) string {
 		"email": email,
 		"exp":   9999999999,
 	})
-
 	tokenString, _ := token.SignedString(config.JwtSecret)
 	return tokenString
 }

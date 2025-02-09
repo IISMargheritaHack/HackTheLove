@@ -3,6 +3,7 @@ package config
 import (
 	"backend/internal/utils"
 	_ "embed"
+	"strconv"
 	"time"
 )
 
@@ -10,10 +11,12 @@ import (
 var LogLevel = utils.GetEnv("LOG_LEVEL", "debug")
 var LogFile = utils.GetEnv("LOG_FILE", "")
 var ScheduleTime = utils.GetEnv("TIME_ALGO", time.Now().Add(120*time.Second).Format(time.RFC3339))
+var TimeReleaseMatch = utils.GetEnv("TIME_RELEASE_MATCH", time.Now().Add(120*time.Second).Format(time.RFC3339))
 
-const MIN_VALUE_COMPATIBILITY = 40
-const BATCH_SIZE = 1000
-const MAX_PHOTO_NUMBER = 5
+var MinValueCompatibility, _ = strconv.Atoi(utils.GetEnv("MIN_VALUE_COMPATIBILITY", "40"))
+var BatchSize, _ = strconv.Atoi(utils.GetEnv("BATCH_SIZE", "1000"))
+var MaxPhotoNumber, _ = strconv.Atoi(utils.GetEnv("MAX_PHOTO_NUMBER", "5"))
+var RequestPerSecond, _ = strconv.Atoi(utils.GetEnv("REQUEST_PER_SECOND", "50"))
 
 // Security configuration
 var JwtSecret = []byte(utils.GetEnv("SECRET_KEY", "secretkey"))

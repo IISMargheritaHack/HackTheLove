@@ -88,7 +88,7 @@ func (h *Handler) AddPhoto(c *gin.Context) {
 
 	log.Debug().Int("number file uploaded", len(files)).Msg("File uploaded")
 
-	if len(files) > config.MAX_PHOTO_NUMBER {
+	if len(files) > config.MaxPhotoNumber {
 		log.Warn().Str("email", email).Msg("Too many files uploaded")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Too many files uploaded"})
 		return
@@ -108,7 +108,7 @@ func (h *Handler) AddPhoto(c *gin.Context) {
 		return
 	}
 
-	if photoNumber > config.MAX_PHOTO_NUMBER {
+	if photoNumber > config.MaxPhotoNumber {
 		log.Warn().Str("email", email).Err(err).Msg("User does not have enough space")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User does not have enough space"})
 		return

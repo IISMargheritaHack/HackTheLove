@@ -69,7 +69,7 @@ func CalculateMatch(answersMatrix []models.Response, weights []float32) []models
 
 				email1, email2 := normalizeEmails(answersMatrix[userMain].Email, answersMatrix[indexUserMatched].Email)
 
-				if compatibility > config.MIN_VALUE_COMPATIBILITY {
+				if compatibility > float64(config.MinValueCompatibility) {
 					localMatches = append(localMatches, models.Match{
 						UserEmail1:    email1,
 						UserEmail2:    email2,

@@ -32,8 +32,7 @@ func NewServer() *Server {
 
 	db := database.New()
 	log.Info().Msg("Initializing database tables")
-	err = db.InitTables()
-	if err != nil {
+	if err := db.InitTables(); err != nil {
 		log.Fatal().Err(err).Msg("Failed to initialize database tables")
 	}
 
@@ -58,7 +57,7 @@ func NewServer() *Server {
 func scheduleMatching(runAt time.Time, task func()) {
 	delay := time.Until(runAt)
 	if delay <= 0 {
-		log.Info().Msg("Task already expired")
+		log.Warn().Msg("Task already expired")
 		return
 	}
 
@@ -71,23 +70,28 @@ func (s *Server) Run() error {
 
 	surveyService := services.NewSurveyService(s.db.GetDB())
 	matchService := services.NewMatchService(s.db.GetDB())
+
 	scheduleTime, err := time.Parse(time.RFC3339, config.ScheduleTime)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error parsing schedule time the format should be RFC3339 (2021-09-01T16:00:00Z)")
+		log.Fatal().Err(err).Msg("Error parsing schedule time. The format should be RFC3339 (e.g., 2021-09-01T16:00:00Z)")
 	}
+
 	scheduleMatching(scheduleTime, func() {
 		if err := surveyService.StartMatching(matchService); err != nil {
 			log.Error().Err(err).Msg("Error starting matching")
 		}
 	})
 
+	log.Info().Msg("Server is now running and listening for requests")
 	return s.http.ListenAndServe()
 }
 
 func (s *Server) Shutdown(ctx context.Context) error {
 	log.Info().Msg("Shutting down server...")
+
 	if err := s.db.Close(); err != nil {
 		log.Error().Err(err).Msg("Error closing database connection")
 	}
+
 	return s.http.Shutdown(ctx)
 }
