@@ -22,7 +22,7 @@ backend/go.work
 backend/go.work.sum
 
 # env file
-.env
+# .env
 
 # binary
 backend/bin
