@@ -20,10 +20,10 @@ services:
     restart: unless-stopped
     environment:
       PRODUCTION: 1
-      APP_PORT: 8080
+      APP_PORT: ${APP_PORT}
       DB_CONNECTION: pgsql
       DB_HOST: db-hackthelove
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
       DB_DATABASE: ${DB_DATABASE}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -56,6 +56,7 @@ services:
       TIME_RELEASE_MATCH: ${TIME_RELEASE_MATCH}
     ports:
       - "${APP_PORT_FE}:80"
+      - "4000:4000"
     networks:
       - app_network
 

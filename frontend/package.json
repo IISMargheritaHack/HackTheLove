@@ -30,7 +30,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "vite preview"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
