@@ -4,6 +4,7 @@ import (
 	"backend/internal/utils"
 	_ "embed"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -25,6 +26,7 @@ var GoogleClientID = utils.GetEnv("GOOGLE_CLIENT_ID", "443648413060-db7g7i880qkt
 // Server
 var AppPort = utils.GetEnv("APP_PORT", "8080")
 var GINMODE = utils.GetEnv("GIN_MODE", "debug")
+var AllowedOrigins = strings.Split(utils.GetEnv("ALLOWED_ORIGINS", "http://localhost:5173,http://frontend:80,http://localhost:80,http://localhost"), ",")
 
 // Database
 var DatabaseName = utils.GetEnv("DB_DATABASE", "postgres")

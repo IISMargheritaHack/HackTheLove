@@ -38,7 +38,7 @@ export default defineConfig({
     },
   },
   define: {
-    'import.meta.env.MODE': '"production"',
+    'import.meta.env.MODE': 'production',
     'import.meta.env.PROD': 'true',
   },
 })

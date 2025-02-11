@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"backend/config"
 	"backend/internal/database"
 	"backend/internal/logger"
 	"backend/internal/server/middleware"
@@ -16,12 +17,7 @@ func InitRoutes(db database.Database) *gin.Engine {
 	h := NewHandler(db)
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{
-			"http://localhost:5173",
-			"http://frontend:80",
-			"http://localhost:80",
-			"http://localhost",
-		},
+		AllowOrigins:     config.AllowedOrigins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true,

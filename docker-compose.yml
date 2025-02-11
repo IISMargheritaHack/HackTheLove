@@ -51,7 +51,8 @@ services:
     depends_on:
       - backend
     environment:
-      VITE_API_URL: "http://backend:8080"
+      VITE_API_URL: ${BACKEND_URL}
+      BACKEND_URL: ${BACKEND_URL}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       TIME_RELEASE_MATCH: ${TIME_RELEASE_MATCH}
     ports:
