@@ -1,9 +1,7 @@
-FROM golang:1.23.4-alpine AS build
+FROM arm32v7/golang:1.23.4-alpine AS build
 
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=amd64 \
     GIN_MODE=release
 
 WORKDIR /app

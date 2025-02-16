@@ -121,7 +121,6 @@ function SurveyPage() {
                   onChange={() => { handleSelect(questions[currentQuestion].values[index]) }}
                   checked={answers[questions[currentQuestion].id] === questions[currentQuestion].values[index]}
                 />
-
                 <label
                   htmlFor={`option-${index}`}
                   className="text-white text-left ms-3 text-[12px] mt-1"

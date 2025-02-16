@@ -8,6 +8,7 @@ import Card from '@components/card';
 import { useContext } from 'react';
 import UserContext from '@provider/userContext';
 import { handleError } from '@utils/utils';
+import Spinner from '@components/spinner';
 
 function HomePage() {
   const [matches, setMatches] = useState([]);
@@ -15,6 +16,7 @@ function HomePage() {
   const { user } = useContext(UserContext);
   const [color, setColor] = useState('transparent');
   const [isVisible, setIsVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   async function createCards(newMatches, numbers = 3) {
     if (!newMatches || newMatches.length === 0) return;
@@ -36,7 +38,7 @@ function HomePage() {
           const photos = await getPhotosByParams(emailToGet);
           const errorPhotos = handleError(photos);
           if (errorPhotos) {
-            showToast(errorPhotos.error, 'error');
+            console.log(errorPhotos.error);
             return null;
           }
 
@@ -54,6 +56,7 @@ function HomePage() {
         return uniqueCards;
       });
 
+      setLoading(false);
     } catch (error) {
       showToast('Errore durante la creazione delle carte', 'error');
       console.error('Error during card creation:', error);
@@ -70,7 +73,8 @@ function HomePage() {
       }
 
       if (!Array.isArray(response.data) || response.data.length === 0) {
-        showToast('Nessun match trovato', 'info');
+        showToast('Nessun utente interessante trovato', 'info');
+        setLoading(false);
         return;
       }
 
@@ -116,47 +120,53 @@ function HomePage() {
     if (user?.email && matches.length === 0) {
       handleMatch();
     }
+
   }, [user.email]);
 
   return (
     <div className="container relative w-full h-screen flex justify-center items-center bg-pink-600">
       <Header />
-      <div className="cards_container">
-        {cards.map((card, index) => (
-          <Card
-            callBack={updateCard}
-            key={card.id}
-            index={index}
-            image={card.image}
-            totalCards={cards.length}
-            userInfo={card.user}
-            onSwipe={() => handleCardSwipe(card.id)}
-          />
-        ))}
-      </div>
-      <h1 className='absolute z-0 font-bold text-xl p-12 w-screen text-center'>Sembra siano finiti i match, attendi i risultati!</h1>
-
-      {cards.length !== 0 && (
+      {!loading ? (
         <>
-          <div
-            className="z-49 absolute top-0 w-full h-[10vh] transition-all duration-300 ease-in-out"
-            style={{
-              background: 'linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)'
-            }}
-          ></div>
-          <motion.div
-            className="z-49 absolute top-0 w-full h-[8vh]"
-            style={{ background: color }}
-            animate={{ opacity: isVisible ? 1 : 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-          />
-          <div
-            className="absolute bottom-0 w-full h-[20vh]"
-            style={{
-              background: 'linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)',
-            }}
-          ></div>
+          <div className="cards_container">
+            {cards.map((card, index) => (
+              <Card
+                callBack={updateCard}
+                key={card.id}
+                index={index}
+                image={card.image}
+                totalCards={cards.length}
+                userInfo={card.user}
+                onSwipe={() => handleCardSwipe(card.id)}
+              />
+            ))}
+          </div>
+          <h1 className='absolute z-0 font-bold text-xl p-12 w-screen text-center'>Sembra siano finiti i match, attendi i risultati!</h1>
+          {cards.length !== 0 && (
+            <>
+              <div
+                className="z-49 absolute top-0 w-full h-[10vh] transition-all duration-300 ease-in-out"
+                style={{
+                  background: 'linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)'
+                }}
+              ></div>
+              <motion.div
+                className="z-49 absolute top-0 w-full h-[8vh]"
+                style={{ background: color }}
+                animate={{ opacity: isVisible ? 1 : 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              />
+              <div
+                className="absolute bottom-0 w-full h-[20vh]"
+                style={{
+                  background: 'linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0.6139) 55%, rgba(0, 0, 0, 0.01) 100%)',
+                }}
+              ></div>
+            </>
+          )}
         </>
+      ) : (
+        <Spinner />
       )}
     </div>
   );

@@ -5,14 +5,16 @@ import Header from '@components/header'
 import { Spacer } from "@heroui/spacer";
 import { handleError } from '@utils/utils'
 import { showToast } from '@components/toast'
+import Spinner from '@components/spinner'
 
 export default function MatchPage() {
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await getLikesMatches()
+        const response = await getLikesMatches();
         const error = handleError(response);
         if (error) {
           showToast(error.error, 'error');
@@ -21,7 +23,7 @@ export default function MatchPage() {
 
         if (!response.data || !Array.isArray(response.data.likes_by) || response.data.likes_by.length === 0) {
           showToast('Nessun match trovato', 'info');
-          return
+          return;
         }
 
         const usersDataPromises = response.data.likes_by.map(email => getUserByParams(email));
@@ -56,6 +58,8 @@ export default function MatchPage() {
       } catch (error) {
         showToast('Errore nel recupero dei match', 'error');
         console.error("Errore nel recupero dei match:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -69,7 +73,11 @@ export default function MatchPage() {
       <div className="m-3" id="title">
         <h1 className="text-left text-[1.2rem] font-bold selection:bg-pink-300 selection:text-white">Guarda chi ha ricambiato il like</h1>
       </div>
-      {users.length === 0 ? (
+      {loading ? (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Spinner color="default" />
+        </div>
+      ) : users.length === 0 ? (
         <p className='text-center m-3'>Sembra che nessuno abbia ancora ricambiato il tuo like!</p>
       ) : (
         users.map((user, index) => (

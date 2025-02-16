@@ -1,11 +1,12 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: import.meta.env.BACKEND_URL || 'http://localhost:8080',
+  baseURL: "https://back.hackthe.love",
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
   },
+
 });
 
 api.interceptors.request.use(
@@ -22,7 +23,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API Error:', error);
+    // console.error('API Error:', error);
     return Promise.reject(error.response ? error.response.data : { error: 'Network Error' });
   }
 );

@@ -3,6 +3,7 @@ package repository
 import (
 	"backend/internal/logger"
 	"backend/internal/models"
+	"backend/internal/utils"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -58,7 +59,7 @@ func (r *UserRepository) AddUser(user *models.User) error {
 		VALUES ($1, $2, $3)
 		ON CONFLICT (email) DO NOTHING;
 	`
-	_, err := r.db.Exec(query, user.Email, user.GivenName, user.FamilyName)
+	_, err := r.db.Exec(query, user.Email, utils.CapitalizeWords(user.GivenName), utils.CapitalizeWords(user.FamilyName))
 	if err != nil {
 		log.Error().Err(err).Str("email", user.Email).Msg("Error inserting user")
 		return fmt.Errorf("error inserting user: %w", err)

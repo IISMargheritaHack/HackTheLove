@@ -7,7 +7,7 @@ export default function CardLike({ userInfo }) {
   const navigate = useNavigate();
   return (
     <div className="flex items-center gap-3 m-4 w-[90vw] bg-white rounded-lg justify-around">
-      <img src={userInfo.image} alt="profile" className="size-10 m-2 rounded-full object-cover" />
+      <img src={userInfo.image} loading='lazy' alt="profile" className="size-10 m-2 rounded-full object-cover" />
       <h2 onClick={() => navigate(`/profile?email=${btoa(userInfo.user.email)}`)} className="text-lg text-black">{userInfo.user.family_name}{' '}{userInfo.user.given_name}</h2>
       <Button isIconOnly onPress={() => {
         window.open(`https://wa.me/${userInfo.user_info.phone}`, '_blank');

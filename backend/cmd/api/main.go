@@ -10,6 +10,7 @@ import (
 	"backend/internal/logger"
 	"backend/internal/server"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 )
 
@@ -26,6 +27,8 @@ func init() {
 		Level:   logLevel,
 		LogFile: logFile,
 	})
+
+	gin.SetMode(gin.ReleaseMode) // Disable debug mode
 }
 
 func main() {

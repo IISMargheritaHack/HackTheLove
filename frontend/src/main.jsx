@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import App from './App.jsx';
 import './index.css';
+import { HeroUIProvider } from "@heroui/system";
 
 if (!googleClientId) {
   console.error('Error: GOOGLE_CLIENT_ID is not defined in environment variables.');
@@ -21,7 +22,9 @@ createRoot(document.getElementById('root')).render(
     <UserProvider>
       <GoogleOAuthProvider clientId={googleClientId}>
         <BrowserRouter>
-          <App />
+          <HeroUIProvider>
+            <App />
+          </HeroUIProvider>
         </BrowserRouter>
       </GoogleOAuthProvider>
     </UserProvider>

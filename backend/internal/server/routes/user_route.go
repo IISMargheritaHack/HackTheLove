@@ -93,10 +93,10 @@ func (h *Handler) AddUserInfo(c *gin.Context) {
 func (h *Handler) GetMatches(c *gin.Context) {
 	log.Debug().Msgf("Time release: %s", timeRelease)
 
-	if timeRelease.After(time.Now()) {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Matches are not available yet"})
-		return
-	}
+	// if !timeRelease.After(time.Now()) {
+	// 	c.JSON(http.StatusForbidden, gin.H{"error": "Matches are not available yet"})
+	// 	return
+	// }
 
 	email := middleware.GetEmail(c)
 	matches, err := h.MatchRepo.GetMatches(email)
