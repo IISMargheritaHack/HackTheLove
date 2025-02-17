@@ -6,18 +6,18 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // preview: {
-  //   host: '0.0.0.0',
-  //   port: 4000,
-  //   strictPort: true,
-  //   allowedHosts: 'all',
-  // },
-  // server: {
-  //   host: '0.0.0.0',
-  //   port: 4000,
-  //   strictPort: true,
-  //   allowedHosts: 'all',
-  // },
+  preview: {
+    host: '0.0.0.0',
+    port: 4000,
+    strictPort: true,
+    allowedHosts: 'all',
+  },
+  server: {
+    host: '0.0.0.0',
+    port: 4000,
+    strictPort: true,
+    allowedHosts: 'all',
+  },
   build: {
     target: 'esnext',
     outDir: 'dist',
@@ -50,8 +50,8 @@ export default defineConfig({
       '@utils': path.resolve(__dirname, 'src/utils'),
     },
   },
-  // define: {
-  //   'import.meta.env.MODE': 'production',
-  //   'import.meta.env.PROD': 'true',
-  // },
+  define: {
+    'import.meta.env.MODE': 'production',
+    'import.meta.env.PROD': 'true',
+  },
 })
